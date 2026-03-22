@@ -166,12 +166,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 <div class="page active" id="page-home">
   <div class="hero">
     <h1>Profesionální<br>výcvik psů<br><em>s Michalem</em></h1>
-    <div style="font-size:0.91rem;color:rgba(255,255,255,0.88);line-height:1.72;margin-bottom:1.1rem;">
-      <p style="margin-bottom:0.55rem">Vítejte na výcvikových lekcích s Michalem.</p>
-      <p style="margin-bottom:0.55rem">Lekce jsou rozděleny na skupinové víkendové, skupinové pondělní a také na individuální lekce, které jsou vypisovány na požadavek v sekci <strong style="color:var(--gold)">&bdquo;MÁM ZÁJEM&ldquo;</strong>. Vyberte si prosím variantu, která vám vyhovuje. U skupinových lekcí není možné přestupovat mezi jednotlivými skupinami.</p>
-      <p style="margin-bottom:0.55rem">Opakovací skupinové lekce jsou vhodné pro všechny, kdo si chtějí něco procvičit, zlepšit nebo vyřešit konkrétní problém.</p>
-      <p style="color:var(--gold);font-weight:600">Těším se na vás. Instruktor Michal 🐾</p>
-    </div>
+    <div style="font-size:0.91rem;color:rgba(255,255,255,0.88);line-height:1.72;margin-bottom:1.1rem;"><p style="margin-bottom:0.55rem">Vítejte na výcvikových lekcích s Michalem.</p><p style="margin-bottom:0.55rem">Lekce jsou rozděleny na skupinové víkendové, skupinové pondělní a individuální lekce na požadavek v sekci <strong style="color:var(--gold)">&bdquo;MÁM ZÁJEM&ldquo;</strong>. U skupinových lekcí nelze přestupovat mezi skupinami.</p><p style="margin-bottom:0.55rem">Opakovací lekce jsou pro ty, kdo chtějí procvičit nebo vyřešit problém.</p><p style="color:var(--gold);font-weight:600">Těším se na vás. Instruktor Michal 🐾</p></div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
       <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
@@ -235,9 +230,9 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="stats-row" id="admin-stats"></div>
     <div class="atabs">
-      <button class="atab active" onclick="switchTab('requests',this)">Poptávky</button>
-      <button class="atab" onclick="switchTab('trainings',this)">Tréninky</button>
-      <button class="atab" onclick="switchTab('registrations',this)">Přihlášení skupinové</button>
+      <button class="atab active" onclick="switchTab('poptávky',this)">Poptávky</button>
+      <button class="atab" onclick="switchTab('školení',this)">Tréninky</button>
+      <button class="atab" onclick="switchTab('registrace',this)">Přihlášení skupinové</button>
       <button class="atab" onclick="switchTab('notice',this)">📢 Info klientům</button>
       <button class="atab" onclick="switchTab('settings',this)">⚙ Nastavení</button>
     </div>
@@ -397,63 +392,26 @@ function startListeners() {
   setSyncDot('loading');
 
   unsubs.push(onSnapshot(collection(db,'školení'), snap => {
-    S.tr = snap.docs.map(d => {
-    const x=d.data(), typ=x.typ||x.type||'skupina';
-    return {id:d.id,
-      name:x.jméno||x.name||'',
-      date:x.datum||x.date||'',
-      time:x.čas||x.time||'',
-      price:x.cena||x.price||0,
-      dur:x.trvání||x.dur||0,
-      spots:x.skvrny||x.spots||1,
-      note:x.poznámka||x.note||'',
-      regpw:x.regpw||'',
-      type:typ==='skupina'?'group':typ==='individuální'?'individual':typ==='group'?'group':'individual'
-    };
-  });
+    S.tr = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderHome();
     if(adminIn){ renderTrainTable(); renderAdminPanel(); }
     setSyncDot('ok');
   }, () => setSyncDot('err')));
 
   unsubs.push(onSnapshot(collection(db,'poptávky'), snap => {
-    S.rq = snap.docs.map(d => {
-    const x=d.data();
-    return {id:d.id,
-      name:x.jméno||x.name||'',
-      phone:x.telefon||x.phone||'',
-      email:x['e-mail']||x.email||'',
-      note:x.poznámka||x.note||'',
-      ca:x.Kalifornie||x.ca||new Date().toISOString(),
-      status:x.status||'pending',
-      trainerNote:x.trainerNote||''
-    };
-  });
+    S.rq = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderPublicReqs();
     if(adminIn){ renderAdminReqs(); renderAdminPanel(); }
   }, ()=>{}));
 
   unsubs.push(onSnapshot(collection(db,'registrace'), snap => {
-    S.re = snap.docs.map(d => {
-    const x=d.data();
-    return {id:d.id,
-      tid:x['časný']||x.tid||'',
-      name:x.jméno||x.name||'',
-      phone:x.telefon||x.phone||'',
-      email:x['e-mail']||x.email||'',
-      dog:x.pes||x.dog||'',
-      note:x.poznámka||x.note||'',
-      ca:x.Kalifornie||x.ca||new Date().toISOString(),
-      status:x.status||'pending',
-      trainerNote:x.trainerNote||''
-    };
-  });
+    S.re = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderHome();
     if(adminIn){ renderGroupRegs(); renderAdminPanel(); }
   }, ()=>{}));
 
   unsubs.push(onSnapshot(doc(db,'konfigurace','hlavní'), snap => {
-    if(snap.exists()){ const d=snap.data(); S.no=d.oznámení||d.notice||''; S.pw=d.pw||'261497'; renderNotice(); }
+    if(snap.exists()){ const d=snap.data(); S.no=d.notice||''; S.pw=d.pw||'261497'; renderNotice(); }
   }, ()=>{}));
 }
 
@@ -484,8 +442,8 @@ window.showPage = function(name){
 
 // ── NOTICE ──
 function renderNotice(){ const el=document.getElementById('notice-display'); if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none'; }
-window.saveNotice = async function(){ await setDoc(doc(db,'konfigurace','hlavní'),{oznámení:document.getElementById('notice-input').value.trim(),pw:S.pw},{merge:true}); toast('Zpráva zveřejněna ✓'); };
-window.clearNotice = async function(){ document.getElementById('notice-input').value=''; document.getElementById('notice-pw-wrap').style.display='none'; await setDoc(doc(db,'konfigurace','hlavní'),{oznámení:'',pw:S.pw},{merge:true}); toast('Zpráva odstraněna'); };
+window.saveNotice = async function(){ await setDoc(doc(db,'konfigurace','hlavní'),{notice:document.getElementById('notice-input').value.trim(),pw:S.pw},{merge:true}); toast('Zpráva zveřejněna ✓'); };
+window.clearNotice = async function(){ document.getElementById('notice-input').value=''; document.getElementById('notice-pw-wrap').style.display='none'; await setDoc(doc(db,'konfigurace','hlavní'),{notice:'',pw:S.pw},{merge:true}); toast('Zpráva odstraněna'); };
 window.previewNotice = function(){ const v=document.getElementById('notice-input').value.trim(); const w=document.getElementById('notice-pw-wrap'); if(v){document.getElementById('notice-preview').textContent=v;w.style.display='block';}else w.style.display='none'; };
 
 // ── HOME ──
@@ -578,8 +536,8 @@ window.switchTab = function(tab,btn){
   document.querySelectorAll('.asec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
   document.getElementById('atab-'+tab).classList.add('active'); if(btn)btn.classList.add('active');
-  if(tab==='trainings')renderTrainTable();
-  if(tab==='registrations')renderGroupRegs();
+  if(tab==='školení')renderTrainTable();
+  if(tab==='registrace')renderGroupRegs();
   if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';window.previewNotice();}
 };
 
