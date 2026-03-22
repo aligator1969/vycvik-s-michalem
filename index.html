@@ -173,7 +173,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
+      <a href="/cdn-cgi/l/email-protection#8bfdf2e8e3e4fdeee1fbf8eacbf8eef1e5eae6a5e8f1">✉ <span class="__cf_email__" data-cfemail="acdad5cfc4c3dac9c6dcdfcdecdfc9d6c2cdc182cfd6">[email&#160;protected]</span></a>
     </div>
   </div>
   <div class="notice-wrap" id="notice-display">
@@ -182,6 +182,13 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
   </div>
   <div class="sec-title">Vypsané tréninky</div>
   <div class="sec-sub">Klikněte na trénink pro detail a přihlášení</div>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
+    <button class="atab active" id="f-all" onclick="setFilter('all',this)">Všechny</button>
+    <button class="atab" id="f-vikend" onclick="setFilter('víkendov',this)">🗓 Společné víkendovky (5x) – skupina 1</button>
+    <button class="atab" id="f-vsedni" onclick="setFilter('všední',this)">📅 Společné všední (5x) – skupina 2</button>
+    <button class="atab" id="f-opak" onclick="setFilter('opakovací',this)">🔁 Společné opakovací</button>
+    <button class="atab" id="f-ind" onclick="setFilter('individuální',this)">🐕 Individuální</button>
+  </div>
   <div class="t-grid" id="home-trainings"></div>
   <div class="int-box" id="int-home-box" style="display:none">
     <div>
@@ -362,7 +369,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 <div class="toast" id="toast"></div>
 
 <!-- Firebase v8 - funguje všude bez type=module -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
 // ═══════════════════════════════════════════
@@ -501,6 +508,15 @@ function toast(msg, type) {
 // ═══════════════════════════════════════════
 //  NAVIGACE
 // ═══════════════════════════════════════════
+var currentFilter = 'all';
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('#page-home .atab').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderHome();
+}
+
 function showPage(name) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('page-' + name).classList.add('active');
@@ -551,6 +567,13 @@ function renderHome() {
   var now = new Date(); now.setHours(0,0,0,0);
   var up = S.tr.filter(function(t) { return new Date(t.date) >= now; })
     .sort(function(a,b) { return new Date(a.date+' '+(a.time||'00:00')) - new Date(b.date+' '+(b.time||'00:00')); });
+  // Filtrování
+  if (currentFilter !== 'all') {
+    up = up.filter(function(t) {
+      if (currentFilter === 'individuální') return t.type === 'individual';
+      return t.name.toLowerCase().indexOf(currentFilter) >= 0;
+    });
+  }
   if (!up.length) {
     el.innerHTML = '<div class="empty"><div class="ei">🐕</div><p>Zatím nejsou vypsány žádné tréninky</p></div>';
     ibox.style.display = 'none';
@@ -1044,8 +1067,3 @@ function showConf(title, body, extra, cb) {
   document.getElementById('conf-ok').onclick = function() { if (confCb) confCb(); };
   document.getElementById('conf-overlay').classList.add('open');
 }
-function closeConf() { document.getElementById('conf-overlay').classList.remove('open'); }
-document.getElementById('conf-overlay').addEventListener('click', function(e) { if (e.target===e.currentTarget) closeConf(); });
-</script>
-</body>
-</html>
