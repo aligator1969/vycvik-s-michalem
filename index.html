@@ -182,7 +182,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
   </div>
   <div class="sec-title">Vypsané tréninky</div>
   <div class="sec-sub">Klikněte na trénink pro detail a přihlášení</div>
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
+  <div id="filter-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.2rem">
     <button class="atab active" id="f-all" onclick="setFilter('all',this)">Všechny</button>
     <button class="atab" id="f-vikend" onclick="setFilter('víkendov',this)">🗓 Společné víkendovky (5x) – skupina 1</button>
     <button class="atab" id="f-vsedni" onclick="setFilter('všední',this)">📅 Společné všední (5x) – skupina 2</button>
@@ -512,7 +512,7 @@ var currentFilter = 'all';
 
 function setFilter(f, btn) {
   currentFilter = f;
-  document.querySelectorAll('#page-home .atab').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('#filter-row .atab').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
   renderHome();
 }
