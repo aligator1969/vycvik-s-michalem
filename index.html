@@ -253,7 +253,16 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
       <div class="aform">
         <h4 id="tform-title">➕ Přidat trénink</h4>
         <div class="fr2">
-          <div class="fg"><label>Název *</label><input id="t-name" type="text" placeholder="Skupinový výcvik"></div>
+          <div class="fg"><label>Název *</label>
+            <select id="t-name-preset" onchange="applyPreset(this.value)" style="margin-bottom:0.4rem;display:block;width:100%;padding:0.63rem 0.82rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--bark);background:var(--cream);outline:none;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\'%3E%3Cpath fill=\'%235C3D1E\' d=\'M6 8L0 0h12z\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 0.75rem center;padding-right:2rem;">
+              <option value="">— Vyberte předvolbu —</option>
+              <option value="skupina|SKUPINA 1-víkendová">🗓 Skupina 1 – víkendová</option>
+              <option value="skupina|SKUPINA 2-všední">📅 Skupina 2 – všední</option>
+              <option value="skupina|SKUPINOVÝ-OPAKOVÁNÍ">🔁 Skupinové opakování</option>
+              <option value="individuální|Individuální lekce">🐕 Individuální lekce</option>
+            </select>
+            <input id="t-name" type="text" placeholder="Nebo napište vlastní název">
+          </div>
           <div class="fg"><label>Typ *</label><select id="t-type"><option value="skupina">Skupinový</option><option value="individuální">Individuální</option></select></div>
         </div>
         <div class="fr2">
@@ -551,6 +560,14 @@ document.getElementById('t-rcount').addEventListener('input',updateRPreview);
 document.getElementById('t-date').addEventListener('input',updateRPreview);
 function addDays(s,d){var dt=new Date(s);dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
 function addMonths(s,m){var dt=new Date(s);dt.setMonth(dt.getMonth()+m);return dt.toISOString().slice(0,10);}
+function applyPreset(val) {
+  if (!val) return;
+  var parts = val.split('|');
+  document.getElementById('t-type').value = parts[0];
+  document.getElementById('t-name').value = parts[1];
+  document.getElementById('t-name-preset').value = '';
+}
+
 function saveTraining(){var name=document.getElementById('t-name').value.trim(),typ=document.getElementById('t-type').value,date=document.getElementById('t-date').value,time=document.getElementById('t-time').value,price=parseInt(document.getElementById('t-price').value),dur=parseInt(document.getElementById('t-dur').value)||0,spots=parseInt(document.getElementById('t-spots').value)||1,note=document.getElementById('t-note').value.trim(),regpw=document.getElementById('t-regpw').value.trim(),editId=document.getElementById('t-edit-id').value;if(!name||!date||!price){toast('Vyplňte název, datum a cenu','err');return;}var data={'jméno':name,typ:typ,datum:date,'čas':time,cena:price,'trvání':dur,skvrny:spots,'poznámka':note,regpw:regpw};if(editId){db.collection('školení').doc(editId).update(data).then(function(){clearTForm();toast('Trénink upraven ✓');});return;}var cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1);var cur=date;var batch=db.batch();for(var i=0;i<cnt;i++){var d2=Object.assign({},data,{datum:cur});batch.set(db.collection('školení').doc(uid()),d2);if(i<cnt-1){if(repeatMode==='weekly')cur=addDays(cur,7);else if(repeatMode==='biweekly')cur=addDays(cur,14);else cur=addMonths(cur,1);}}batch.commit().then(function(){clearTForm();toast(cnt>1?('Vytvořeno '+cnt+' tréninků ✓'):'Trénink uložen ✓');});}
 function delTraining(id){showConf('Smazat trénink','Opravdu smazat? Vymažou se i přihlášení.','',function(){var batch=db.batch();batch.delete(db.collection('školení').doc(id));S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Smazáno');});});}
 
