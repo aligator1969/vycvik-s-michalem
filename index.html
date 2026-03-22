@@ -164,6 +164,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 <div class="page active" id="page-home">
   <div class="hero">
     <h1>Profesionální<br>výcvik psů<br><em>s Michalem</em></h1>
+    <div style="font-size:0.91rem;color:rgba(255,255,255,0.88);line-height:1.72;margin-bottom:1.1rem;"><p style="margin-bottom:0.55rem">Vítejte na výcvikových lekcích s Michalem.</p><p style="margin-bottom:0.55rem">Lekce jsou rozděleny na skupinové víkendové, skupinové pondělní a individuální lekce na požadavek v sekci <strong style="color:var(--gold)">&bdquo;MÁM ZÁJEM&ldquo;</strong>. U skupinových lekcí nelze přestupovat mezi skupinami.</p><p style="margin-bottom:0.55rem">Opakovací lekce jsou pro ty, kdo chtějí procvičit nebo vyřešit problém.</p><p style="color:var(--gold);font-weight:600">Těším se na vás. Instruktor Michal 🐾</p></div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
       <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
@@ -226,9 +227,9 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="stats-row" id="admin-stats"></div>
     <div class="atabs">
-      <button class="atab active" onclick="switchTab('popt\u00e1vky',this)">Poptávky</button>
-      <button class="atab" onclick="switchTab('\u0161kolen\u00ed',this)">Tréninky</button>
-      <button class="atab" onclick="switchTab('registrace',this)">Přihlášení</button>
+      <button class="atab active" onclick="switchTab('requests',this)">Poptávky</button>
+      <button class="atab" onclick="switchTab('trainings',this)">Tréninky</button>
+      <button class="atab" onclick="switchTab('registrations',this)">Přihlášení</button>
       <button class="atab" onclick="switchTab('notice',this)">📢 Info klientům</button>
       <button class="atab" onclick="switchTab('settings',this)">⚙ Nastavení</button>
     </div>
@@ -360,7 +361,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -564,8 +565,8 @@ window.switchTab=(tab,btn)=>{
   document.querySelectorAll('.asec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
   document.getElementById('atab-'+tab).classList.add('active'); if(btn)btn.classList.add('active');
-  if(tab==='\u0161kolen\u00ed')renderTrainTable();
-  if(tab==='registrace'){ renderGroupRegs(); document.getElementById('greg-content').style.display='block'; document.getElementById('ireg-content').style.display='none'; document.getElementById('regtab-g').classList.add('active'); document.getElementById('regtab-i').classList.remove('active'); }
+  if(tab==='trainings')renderTrainTable();
+  if(tab==='registrations'){ renderGroupRegs(); document.getElementById('greg-content').style.display='block'; document.getElementById('ireg-content').style.display='none'; document.getElementById('regtab-g').classList.add('active'); document.getElementById('regtab-i').classList.remove('active'); }
   if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';window.previewNotice();}
 };
 
