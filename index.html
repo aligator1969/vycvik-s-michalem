@@ -361,9 +361,9 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
 
 const firebaseConfig = {
   apiKey: "AIzaSyDGOUKfk1LVIaRGF85ejycLs_ffrzykErE",
@@ -374,8 +374,8 @@ const firebaseConfig = {
   appId: "1:250895543681:web:54c75129c4c950cac14c80"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Data cache - normalizovaná na anglická pole
 let S = { tr:[], rq:[], re:[], no:'', pw:'261497' };
@@ -420,26 +420,26 @@ function startListeners() {
   unsubs.forEach(u=>u()); unsubs=[];
   setSyncDot('loading');
 
-  unsubs.push(onSnapshot(collection(db,'školení'), snap=>{
+  unsubs.push(db.collection('školení').onSnapshot, snap=>{
     S.tr = snap.docs.map(d=>normT(d.id, d.data()));
     renderHome();
     if(adminIn){ renderTrainTable(); renderAdminPanel(); }
     setSyncDot('ok');
   }, ()=>setSyncDot('err')));
 
-  unsubs.push(onSnapshot(collection(db,'poptávky'), snap=>{
+  unsubs.push(db.collection('poptávky').onSnapshot, snap=>{
     S.rq = snap.docs.map(d=>normR(d.id, d.data()));
     renderPublicReqs();
     if(adminIn){ renderAdminReqs(); renderAdminPanel(); }
   }, ()=>{}));
 
-  unsubs.push(onSnapshot(collection(db,'registrace'), snap=>{
+  unsubs.push(db.collection('registrace').onSnapshot, snap=>{
     S.re = snap.docs.map(d=>normR(d.id, d.data()));
     renderHome();
     if(adminIn){ renderGroupRegs(); renderAdminPanel(); }
   }, ()=>{}));
 
-  unsubs.push(onSnapshot(doc(db,'konfigurace','hlavní'), snap=>{
+  unsubs.push(db.collection('konfigurace').doc('hlavní').onSnapshot, snap=>{
     if(snap.exists()){ const d=snap.data(); S.no=d.oznámení||d.notice||''; S.pw=d.pw||'261497'; renderNotice(); }
   }, ()=>{}));
 }
@@ -466,8 +466,8 @@ window.showPage = function(name){
 
 // NOTICE
 function renderNotice(){ const el=document.getElementById('notice-display'); if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none'; }
-window.saveNotice   = async()=>{ await setDoc(doc(db,'konfigurace','hlavní'),{oznámení:document.getElementById('notice-input').value.trim(),pw:S.pw},{merge:true}); toast('Zpráva zveřejněna ✓'); };
-window.clearNotice  = async()=>{ document.getElementById('notice-input').value=''; document.getElementById('notice-pw-wrap').style.display='none'; await setDoc(doc(db,'konfigurace','hlavní'),{oznámení:'',pw:S.pw},{merge:true}); toast('Zpráva odstraněna'); };
+window.saveNotice   = async()=>{ await db.collection('konfigurace').doc('hlavní').set({oznámení:document.getElementById('notice-input').value.trim(),pw:S.pw},{merge:true}); toast('Zpráva zveřejněna ✓'); };
+window.clearNotice  = async()=>{ document.getElementById('notice-input').value=''; document.getElementById('notice-pw-wrap').style.display='none'; await db.collection('konfigurace').doc('hlavní').set({oznámení:'',pw:S.pw},{merge:true}); toast('Zpráva odstraněna'); };
 window.previewNotice= ()=>{ const v=document.getElementById('notice-input').value.trim(); const w=document.getElementById('notice-pw-wrap'); if(v){document.getElementById('notice-preview').textContent=v;w.style.display='block';}else w.style.display='none'; };
 
 // HOME
@@ -531,7 +531,7 @@ window.submitRegistration=async()=>{
   if(regs.length>=(t.spots||1)){toast('Trénink je již obsazen','err');return;}
   if(regs.find(r=>r.email.toLowerCase()===email.toLowerCase())){toast('Již jste přihlášeni','err');return;}
   showConf('Potvrdit přihlášení',`Přihlásit <strong>${esc(name)}</strong> na <strong>${esc(t.name)}</strong><br>${fmtDate(t.date)}${t.time?' v '+t.time:''}?`,'',async()=>{
-    await setDoc(doc(db,'registrace','reg'+Date.now()),{ časný:currentDetailId, jméno:name, telefon:phone, 'e-mail':email, pes:dog, poznámka:note, Kalifornie:new Date().toISOString() });
+    await db.collection('registrace').doc('reg'+Date.now().delete(),{ časný:currentDetailId, jméno:name, telefon:phone, 'e-mail':email, pes:dog, poznámka:note, Kalifornie:new Date().toISOString() });
     window.closeDet(); closeConf(); toast('✅ Přihlášení proběhlo úspěšně!');
   });
 };
@@ -541,7 +541,7 @@ window.submitInterest=async()=>{
   const name=document.getElementById('i-name').value.trim(), phone=document.getElementById('i-phone').value.trim(), email=document.getElementById('i-email').value.trim(), note=document.getElementById('i-note').value.trim();
   if(!name||!phone||!email){toast('Vyplňte jméno, telefon a email','err');return;}
   showConf('Odeslat poptávku',`Odeslat poptávku pro <strong>${esc(name)}</strong>?`,'',async()=>{
-    await setDoc(doc(db,'poptávky','r'+Date.now()),{ jméno:name, telefon:phone, 'e-mail':email, poznámka:note, Kalifornie:new Date().toISOString(), status:'pending' });
+    await db.collection('poptávky').doc('r'+Date.now().delete(),{ jméno:name, telefon:phone, 'e-mail':email, poznámka:note, Kalifornie:new Date().toISOString(), status:'pending' });
     ['i-name','i-phone','i-email','i-note'].forEach(i=>document.getElementById(i).value='');
     toast('✅ Poptávka odeslána!'); closeConf();
   });
@@ -589,11 +589,11 @@ window.respondReq=(id,status)=>{
   const extra=`<div style="margin-top:0.5rem"><label style="font-size:0.74rem;font-weight:600;color:var(--soil);display:block;margin-bottom:0.3rem;text-transform:uppercase">Poznámka pro klienta</label><input type="text" id="tnote" placeholder="${status==='approved'?'Těším se na vás!':'Navrhnu jiný termín…'}" style="display:block;width:100%;padding:0.6rem 0.8rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.88rem;background:var(--cream);outline:none"></div>`;
   showConf(status==='approved'?'Potvrdit termín':'Odmítnout poptávku',status==='approved'?`Potvrdit poptávku od <strong>${esc(r.name)}</strong>?`:`Odmítnout poptávku od <strong>${esc(r.name)}</strong>?`,extra,async()=>{
     const n=document.getElementById('tnote'); const upd={status}; if(n&&n.value.trim())upd.trainerNote=n.value.trim();
-    await updateDoc(doc(db,'poptávky',id),upd); closeConf(); toast(status==='approved'?'Potvrzeno ✓':'Odmítnuto');
+    await db.collection('poptávky').doc(id),upd); closeConf(); toast(status==='approved'?'Potvrzeno ✓':'Odmítnuto');
   });
 };
-window.reopenReq=async(id)=>{ await updateDoc(doc(db,'poptávky',id),{status:'pending',trainerNote:''}); toast('Znovu otevřeno'); };
-window.deleteReq=(id)=>{ showConf('Smazat poptávku','Opravdu smazat?','',async()=>{ await deleteDoc(doc(db,'poptávky',id)); closeConf(); toast('Smazáno'); }); };
+window.reopenReq=async(id)=>{ await db.collection('poptávky').doc(id).update({status:'pending',trainerNote:''}); toast('Znovu otevřeno'); };
+window.deleteReq=(id)=>{ showConf('Smazat poptávku','Opravdu smazat?','',async()=>{ await db.collection('poptávky').doc(id).delete(); closeConf(); toast('Smazáno'); }); };
 
 // TRÉNINKY
 function renderTrainTable(){
@@ -618,13 +618,13 @@ window.saveTraining=async()=>{
   const name=document.getElementById('t-name').value.trim(), typ=document.getElementById('t-type').value, date=document.getElementById('t-date').value, time=document.getElementById('t-time').value, price=parseInt(document.getElementById('t-price').value), dur=parseInt(document.getElementById('t-dur').value)||0, spots=parseInt(document.getElementById('t-spots').value)||1, note=document.getElementById('t-note').value.trim(), regpw=document.getElementById('t-regpw').value.trim(), editId=document.getElementById('t-edit-id').value;
   if(!name||!date||!price){toast('Vyplňte název, datum a cenu','err');return;}
   const data = { jméno:name, typ, datum:date, čas:time, cena:price, trvání:dur, skvrny:spots, poznámka:note, regpw };
-  if(editId){ await updateDoc(doc(db,'školení',editId),data); window.clearTForm(); toast('Trénink upraven ✓'); return; }
+  if(editId){ await db.collection('školení').doc(editId),data); window.clearTForm(); toast('Trénink upraven ✓'); return; }
   const cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1);
-  let cur=date; const batch=writeBatch(db);
+  let cur=date; const batch=db.batch();
   for(let i=0;i<cnt;i++){ batch.set(doc(db,'školení',uid()),{...data,datum:cur}); if(i<cnt-1){ if(repeatMode==='weekly')cur=addDays(cur,7); else if(repeatMode==='biweekly')cur=addDays(cur,14); else cur=addMonths(cur,1); } }
   await batch.commit(); window.clearTForm(); toast(cnt>1?`Vytvořeno ${cnt} tréninků ✓`:'Trénink uložen ✓');
 };
-window.delTraining=(id)=>{ showConf('Smazat trénink','Opravdu smazat? Vymažou se i přihlášení.','',async()=>{ const b=writeBatch(db); b.delete(doc(db,'školení',id)); S.re.filter(r=>r.tid===id).forEach(r=>b.delete(doc(db,'registrace',r.id))); await b.commit(); closeConf(); toast('Smazáno'); }); };
+window.delTraining=(id)=>{ showConf('Smazat trénink','Opravdu smazat? Vymažou se i přihlášení.','',async()=>{ const b=db.batch(); b.delete(db.collection('školení').doc(id)); S.re.filter(r=>r.tid===id).forEach(r=>b.delete(db.collection('registrace').doc(r.id))); await b.commit(); closeConf(); toast('Smazáno'); }); };
 
 // PŘIHLÁŠENÍ
 window.switchRegTab=(tab,btn)=>{
@@ -653,12 +653,12 @@ function renderIndRegs(){
   }).join('');
 }
 
-window.deleteReg=(id)=>{ showConf('Odhlásit účastníka','Opravdu odhlásit?','',async()=>{ await deleteDoc(doc(db,'registrace',id)); closeConf(); toast('Účastník odhlášen'); }); };
-window.clearRegs=(tid)=>{ showConf('Smazat přihlášení','Smazat všechna přihlášení?','',async()=>{ const b=writeBatch(db); S.re.filter(r=>r.tid===tid).forEach(r=>b.delete(doc(db,'registrace',r.id))); await b.commit(); closeConf(); toast('Přihlášení smazána'); }); };
+window.deleteReg=(id)=>{ showConf('Odhlásit účastníka','Opravdu odhlásit?','',async()=>{ await db.collection('registrace').doc(id).delete(); closeConf(); toast('Účastník odhlášen'); }); };
+window.clearRegs=(tid)=>{ showConf('Smazat přihlášení','Smazat všechna přihlášení?','',async()=>{ const b=db.batch(); S.re.filter(r=>r.tid===tid).forEach(r=>b.delete(db.collection('registrace').doc(r.id))); await b.commit(); closeConf(); toast('Přihlášení smazána'); }); };
 
 window.exportCSV=(tid)=>{ const t=S.tr.find(x=>x.id===tid),regs=S.re.filter(r=>r.tid===tid); if(!regs.length){toast('Žádní přihlášení','err');return;} const blob=new Blob(['\uFEFF'+'Pořadí;Jméno;Telefon;Email;Pes;Poznámka;Datum tréninku\n'+regs.map((r,i)=>[i+1,r.name,r.phone,r.email,r.dog||'',r.note||'',fmtDate(t?t.date:'')].join(';')).join('\n')],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prihlasenI_'+(t?t.name:'').replace(/\s/g,'_')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('CSV staženo ✓'); };
 
-window.changePw=async()=>{ const o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value; if(o!==S.pw){toast('Stávající heslo není správné','err');return;} if(!n1||n1.length<4){toast('Nové heslo musí mít alespoň 4 znaky','err');return;} if(n1!==n2){toast('Nová hesla se neshodují','err');return;} await setDoc(doc(db,'konfigurace','hlavní'),{pw:n1,oznámení:S.no},{merge:true}); ['pw-old','pw-new','pw-new2'].forEach(i=>document.getElementById(i).value=''); toast('Heslo bylo změněno ✓'); };
+window.changePw=async()=>{ const o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value; if(o!==S.pw){toast('Stávající heslo není správné','err');return;} if(!n1||n1.length<4){toast('Nové heslo musí mít alespoň 4 znaky','err');return;} if(n1!==n2){toast('Nová hesla se neshodují','err');return;} await db.collection('konfigurace').doc('hlavní').set({pw:n1,oznámení:S.no},{merge:true}); ['pw-old','pw-new','pw-new2'].forEach(i=>document.getElementById(i).value=''); toast('Heslo bylo změněno ✓'); };
 
 let confCb=null;
 function showConf(title,body,extra,cb){ document.getElementById('conf-title').textContent=title; document.getElementById('conf-body').innerHTML=body; document.getElementById('conf-extra').innerHTML=extra||''; confCb=cb; document.getElementById('conf-ok').onclick=()=>{if(confCb)confCb();}; document.getElementById('conf-overlay').classList.add('open'); }
