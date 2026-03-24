@@ -174,7 +174,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
+      <a href="/cdn-cgi/l/email-protection#fe88879d9691889b948e8d9fbe8d9b84909f93d09d84">✉ <span class="__cf_email__" data-cfemail="cabcb3a9a2a5bcafa0bab9ab8ab9afb0a4aba7e4a9b0">[email&#160;protected]</span></a>
     </div>
   </div>
   <div class="notice-wrap" id="notice-display">
@@ -341,6 +341,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     <h2 id="det-title"></h2>
     <div style="font-size:0.83rem;color:var(--soil);margin-bottom:1.2rem;opacity:0.8" id="det-sub"></div>
     <div id="det-rows"></div>
+    <div style="margin-top:1rem"><button class="btn btn-s btn-sm" style="width:100%;justify-content:center" onclick="addToGCal(currentDetailId)">📅 Přidat do Google kalendáře</button></div>
     <div id="det-full-msg" style="display:none;color:var(--red);font-weight:600;margin-top:1.3rem;text-align:center;padding:0.8rem;background:#FEE2E2;border-radius:10px">Tento trénink je již plně obsazen.</div>
     <div id="det-pw-gate" style="display:none;margin-top:1.4rem">
       <hr><div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:0.5rem">🔑 Přihlášení na trénink</div>
@@ -376,7 +377,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
 firebase.initializeApp({
@@ -702,10 +703,27 @@ function clearRegs(tid) { showConf('Smazat přihlášení', 'Smazat všechna př
 function exportCSV(tid) { var t = S.tr.find(function(x) { return x.id === tid; }), regs = S.re.filter(function(r) { return r.tid === tid; }); if (!regs.length) { toast('Žádní přihlášení', 'err'); return; } var rows = regs.map(function(r, i) { return [i+1, r.name, r.phone, r.email, r.dog||'', r.note||'', fmtDate(t ? t.date : '')].join(';'); }); var blob = new Blob(['\uFEFF' + 'Pořadí;Jméno;Telefon;Email;Pes;Poznámka;Datum tréninku\n' + rows.join('\n')], {type:'text/csv;charset=utf-8'}); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'prihlasenI_' + (t ? t.name : '').replace(/\s/g,'_') + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('CSV staženo ✓'); }
 function changePw() { var o = document.getElementById('pw-old').value, n1 = document.getElementById('pw-new').value, n2 = document.getElementById('pw-new2').value; if (o !== S.pw) { toast('Stávající heslo není správné', 'err'); return; } if (!n1 || n1.length < 4) { toast('Nové heslo musí mít alespoň 4 znaky', 'err'); return; } if (n1 !== n2) { toast('Nová hesla se neshodují', 'err'); return; } db.collection('konfigurace').doc('hlavn\u00ed').set({pw: n1, 'ozn\u00e1men\u00ed': S.no}, {merge: true}).then(function() { ['pw-old','pw-new','pw-new2'].forEach(function(i) { document.getElementById(i).value = ''; }); toast('Heslo bylo změněno ✓'); }); }
 
+
+function addToGCal(id) {
+  var t = S.tr.find(function(x) { return x.id === id; });
+  if (!t) return;
+  var dt = t.date.replace(/-/g,'');
+  var timeStart = t.time ? t.time.replace(':','') + '00' : '000000';
+  var dur = t.dur || 60;
+  var dtEnd = new Date(t.date + 'T' + (t.time || '00:00') + ':00');
+  dtEnd.setMinutes(dtEnd.getMinutes() + dur);
+  var endStr = dtEnd.getFullYear() + 
+    String(dtEnd.getMonth()+1).padStart(2,'0') + 
+    String(dtEnd.getDate()).padStart(2,'0') + 'T' +
+    String(dtEnd.getHours()).padStart(2,'0') +
+    String(dtEnd.getMinutes()).padStart(2,'0') + '00';
+  var startStr = dt + 'T' + timeStart;
+  var title = encodeURIComponent('Výcvik psa – ' + t.name);
+  var details = encodeURIComponent('Cena: ' + t.price + ' Kč\nTrenér Michal: 601 242 160');
+  var url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + title + '&dates=' + startStr + '/' + endStr + '&details=' + details;
+  window.open(url, '_blank');
+}
+
 var confCb = null;
 function showConf(title, body, extra, cb) { document.getElementById('conf-title').textContent = title; document.getElementById('conf-body').innerHTML = body; document.getElementById('conf-extra').innerHTML = extra || ''; confCb = cb; document.getElementById('conf-ok').onclick = function() { if (confCb) confCb(); }; document.getElementById('conf-overlay').classList.add('open'); }
-function closeConf() { document.getElementById('conf-overlay').classList.remove('open'); }
-document.getElementById('conf-overlay').addEventListener('click', function(e) { if (e.target === e.currentTarget) closeConf(); });
-</script>
-</body>
-</html>
+f
