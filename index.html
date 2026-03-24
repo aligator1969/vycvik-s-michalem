@@ -174,7 +174,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
+      <a href="/cdn-cgi/l/email-protection#84f2fde7ecebf2e1eef4f7e5c4f7e1feeae5e9aae7fe">✉ <span class="__cf_email__" data-cfemail="1a6c637972756c7f706a697b5a697f60747b77347960">[email&#160;protected]</span></a>
     </div>
   </div>
   <div class="notice-wrap" id="notice-display">
@@ -379,7 +379,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
 firebase.initializeApp({
@@ -553,7 +553,17 @@ function renderPublicReqs() {
   var r2=S.rq.slice().sort(function(a,b){return new Date(b.ca)-new Date(a.ca);}).slice(0,6);
   if(!r2.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p style="font-size:0.83rem">Zatím žádné poptávky</p></div>';return;}
   var sl={pending:'Čeká',approved:'✅ Potvrzeno',rejected:'❌ Odmítnuto'};
-  el.innerHTML=r2.map(function(r){return'<div class="ri '+r.status+'"><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.22rem">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--soil)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--soil);font-style:italic;margin-top:0.2rem;opacity:0.8">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.78rem;color:var(--sage);margin-top:0.22rem">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')+'</div>';}).join('');
+  el.innerHTML=r2.map(function(r){
+    var gcalBtn='';
+    if(r.status==='approved'){
+      var rid=encodeURIComponent('Individuální výcvik – '+r.name);
+      var details=encodeURIComponent('Trenér Michal: 601 242 160
+vychovejpsa@seznam.cz'+(r.trainerNote?'
+'+r.trainerNote:''));
+      gcalBtn='<a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text='+rid+'&details='+details+'" target="_blank" style="display:inline-block;margin-top:0.5rem;font-size:0.78rem;font-weight:600;color:var(--amber);text-decoration:none;padding:0.3rem 0.7rem;border:1.5px solid var(--amber);border-radius:20px;">📅 Přidat do Google kalendáře</a>';
+    }
+    return'<div class="ri '+r.status+'"><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.22rem">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--soil)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--soil);font-style:italic;margin-top:0.2rem;opacity:0.8">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.78rem;color:var(--sage);margin-top:0.22rem">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')+gcalBtn+'</div>';
+  }).join('');
 }
 
 function checkAdmin() { if(document.getElementById('admin-pw').value===S.pw){adminIn=true;document.getElementById('admin-gate').style.display='none';document.getElementById('admin-panel').style.display='block';renderAdminPanel();}else toast('Nesprávné heslo','err'); }
@@ -680,9 +690,4 @@ function exportCSV(tid){var t=S.tr.find(function(x){return x.id===tid;}),regs=S.
 function changePw(){var o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;if(o!==S.pw){toast('Stávající heslo není správné','err');return;}if(!n1||n1.length<4){toast('Nové heslo musí mít alespoň 4 znaky','err');return;}if(n1!==n2){toast('Nová hesla se neshodují','err');return;}db.collection('konfigurace').doc('hlavn\u00ed').set({pw:n1,'ozn\u00e1men\u00ed':S.no},{merge:true}).then(function(){['pw-old','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';});toast('Heslo bylo změněno \u2713');});}
 
 var confCb=null;
-function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add('open');}
-function closeConf(){document.getElementById('conf-overlay').classList.remove('open');}
-document.getElementById('conf-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeConf();});
-</script>
-</body>
-</html>
+function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add(
