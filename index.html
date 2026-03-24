@@ -174,7 +174,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
+      <a href="/cdn-cgi/l/email-protection#c9bfb0aaa1a6bfaca3b9baa889baacb3a7a8a4e7aab3">✉ <span class="__cf_email__" data-cfemail="d6a0afb5beb9a0b3bca6a5b796a5b3acb8b7bbf8b5ac">[email&#160;protected]</span></a>
     </div>
   </div>
   <div class="notice-wrap" id="notice-display">
@@ -376,7 +376,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyDGOUKfk1LVIaRGF85ejycLs_ffrzykErE",authDomain:"vycvik-psa-s-michalem.firebaseapp.com",projectId:"vycvik-psa-s-michalem",storageBucket:"vycvik-psa-s-michalem.firebasestorage.app",messagingSenderId:"250895543681",appId:"1:250895543681:web:54c75129c4c950cac14c80"});
@@ -409,17 +409,34 @@ function renderHome(){
     if(activeFt==='vse')return true;
     if(activeFt==='ind')return t.type==='individual';
     var nu=t.name.toUpperCase();
-    if(activeFt==='vikend')return nu.indexOf('V\u00cdKENDOV')>=0||nu.indexOf('VIKENDOV')>=0;
-    if(activeFt==='vsedni')return nu.indexOf('V\u0160EDN')>=0||nu.indexOf('VSEDNI')>=0||nu.indexOf('SKUPINA 2')>=0;
+    if(activeFt==='vikend')return nu.indexOf('VÍKENDOV')>=0||nu.indexOf('VIKENDOV')>=0;
+    if(activeFt==='vsedni')return nu.indexOf('VŠEDN')>=0||nu.indexOf('VSEDNI')>=0||nu.indexOf('SKUPINA 2')>=0;
     if(activeFt==='opak')return nu.indexOf('OPAKOV')>=0;
     return true;
   }).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
   if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné tréninky v této kategorii</p></div>';ibox.style.display='none';return;}
   var html='';
-  up.forEach(function(t){var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max;html+='<div class="t-card'+(t.type==='individual'?' ind':'')+'" onclick="openDetail(\''+t.id+'\')">';html+='<span class="tbadge '+t.type+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';html+='<h3>'+esc(t.name)+'</h3>';html+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' v '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';html+='<div class="t-price">'+t.price+' Kč</div>';if(t.type==='group'){html+='<div style="font-size:0.78rem;color:'+(full?'var(--red)':'var(--soil)')+';margin-top:0.4rem;'+(full?'font-weight:600':'')+'"> '+(full?'Obsazeno':'Volná místa: '+(max-filled)+' / '+max)+'</div><div class="spots-bar"><div class="spots-fill'+(full?' full':'')+'" style="width:'+pct+'%"></div></div>';}else{html+='<div style="font-size:0.78rem;margin-top:0.4rem;color:'+(full?'var(--red)':'var(--sage)')+';font-weight:600">'+(full?'Obsazeno':'Volné místo')+'</div>';}if(t.regpw&&!full)html+='<div style="font-size:0.75rem;color:var(--soil);margin-top:0.4rem;opacity:0.7">🔑 Přihlášení pod heslem</div>';html+='<div class="t-more">Klikněte pro přihlášení →</div></div>';});
+  up.forEach(function(t){
+    var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max;
+    html+='<div class="t-card'+(t.type==='individual'?' ind':'')+'" onclick="openDetail(''+t.id+'')">';
+    html+='<span class="tbadge '+t.type+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';
+    html+='<h3>'+esc(t.name)+'</h3>';
+    html+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' v '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';
+    html+='<div class="t-price">'+t.price+' Kč</div>';
+    if(t.type==='group'){
+      html+='<div style="font-size:0.78rem;color:'+(full?'var(--red)':'var(--soil)')+';margin-top:0.4rem;'+(full?'font-weight:600':'')+'">'+(full?'Obsazeno':'Volná místa: '+(max-filled)+' / '+max)+'</div>';
+      html+='<div class="spots-bar"><div class="spots-fill'+(full?' full':'')+'" style="width:'+pct+'%"></div></div>';
+    } else {
+      html+='<div style="font-size:0.78rem;margin-top:0.4rem;color:'+(full?'var(--red)':'var(--sage)')+';font-weight:600">'+(full?'Obsazeno':'Volné místo')+'</div>';
+    }
+    if(t.regpw&&!full) html+='<div style="font-size:0.75rem;color:var(--soil);margin-top:0.4rem;opacity:0.7">🔑 Přihlášení pod heslem</div>';
+    if(regs.length) html+='<div style="font-size:0.75rem;color:var(--soil);margin-top:0.5rem;border-top:1px solid #F0E8DC;padding-top:0.5rem"><span style="font-weight:600;color:var(--sage)">✅ Přihlášeni:</span> '+regs.map(function(r){return esc(r.name);}).join(', ')+'</div>';
+    html+='<div class="t-more">Klikněte pro přihlášení →</div></div>';
+  });
   el.innerHTML=html;
   ibox.style.display=up.some(function(t){return t.type==='individual';})?'none':'flex';
 }
+
 function openDetail(id){var t=S.tr.find(function(x){return x.id===id;});if(!t)return;currentDetailId=id;document.getElementById('det-badge').className='tbadge '+t.type;document.getElementById('det-badge').textContent=t.type==='group'?'Skupinový':'Individuální';document.getElementById('det-title').textContent=t.name;document.getElementById('det-sub').textContent=fmtDate(t.date)+(t.time?' v '+t.time:'');var regs=S.re.filter(function(r){return r.tid===id;}),filled=regs.length,max=t.spots||1,full=filled>=max;var rows=[['Datum',fmtDate(t.date)],['Čas',t.time||'—'],t.dur?['Délka',t.dur+' min']:null,['Cena',t.price+' Kč'],['Volná místa',full?'<span style="color:var(--red);font-weight:700">Obsazeno</span>':(t.type==='group'?(max-filled)+' z '+max:'Volné místo')],t.note?['Poznámka',esc(t.note)]:null].filter(Boolean);document.getElementById('det-rows').innerHTML=rows.map(function(r){return'<div class="drow"><span class="dr-l">'+r[0]+'</span><span class="dr-v">'+r[1]+'</span></div>';}).join('');['det-full-msg','det-pw-gate','det-reg-form'].forEach(function(i){document.getElementById(i).style.display='none';});document.getElementById('reg-pw-input').value='';document.getElementById('reg-pw-err').style.display='none';['reg-name','reg-phone','reg-email','reg-dog','reg-note'].forEach(function(i){document.getElementById(i).value='';});if(full){document.getElementById('det-full-msg').style.display='block';}else if(t.regpw&&t.regpw.trim()){document.getElementById('det-pw-gate').style.display='block';document.getElementById('reg-spots-info').textContent='Zbývá '+(t.type==='group'?(max-filled)+' míst z '+max:'1 místo');}else{document.getElementById('det-reg-form').style.display='block';document.getElementById('reg-spots-info').textContent='Zbývá '+(t.type==='group'?(max-filled)+' míst z '+max:'1 místo');}document.getElementById('det-overlay').classList.add('open');}
 function closeDet(){document.getElementById('det-overlay').classList.remove('open');currentDetailId=null;}
 document.getElementById('det-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeDet();});
@@ -457,9 +474,4 @@ function clearRegs(tid){showConf('Smazat přihlášení','Smazat všechna přihl
 function exportCSV(tid){var t=S.tr.find(function(x){return x.id===tid;}),regs=S.re.filter(function(r){return r.tid===tid;});if(!regs.length){toast('Žádní přihlášení','err');return;}var rows=regs.map(function(r,i){return[i+1,r.name,r.phone,r.email,r.dog||'',r.note||'',fmtDate(t?t.date:'')].join(';');});var blob=new Blob(['\uFEFF'+'Pořadí;Jméno;Telefon;Email;Pes;Poznámka;Datum tréninku\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prihlasenI_'+(t?t.name:'').replace(/\s/g,'_')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('CSV staženo ✓');}
 function changePw(){var o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;if(o!==S.pw){toast('Stávající heslo není správné','err');return;}if(!n1||n1.length<4){toast('Nové heslo musí mít alespoň 4 znaky','err');return;}if(n1!==n2){toast('Nová hesla se neshodují','err');return;}db.collection('konfigurace').doc('hlavn\u00ed').set({pw:n1,'ozn\u00e1men\u00ed':S.no},{merge:true}).then(function(){['pw-old','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';});toast('Heslo bylo změněno ✓');});}
 var confCb=null;
-function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add('open');}
-function closeConf(){document.getElementById('conf-overlay').classList.remove('open');}
-document.getElementById('conf-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeConf();});
-</script>
-</body>
-</html>
+function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add(
