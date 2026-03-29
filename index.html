@@ -40,6 +40,15 @@ header{background:var(--bark);padding:0.55rem 1.25rem;display:flex;align-items:c
 .notice-wrap::after{content:'📢';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:5rem;opacity:0.1;pointer-events:none;}
 .nb-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--soil);margin-bottom:0.4rem;}
 .nb-text{font-size:1rem;font-weight:600;color:var(--bark);line-height:1.6;}
+.info-box{background:#fff;border:2px solid var(--amber);border-radius:14px;margin-bottom:1.75rem;overflow:hidden;}
+.info-box-header{background:var(--amber);color:#fff;padding:0.6rem 1rem;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.info-box-header span{font-size:1rem;}
+.info-box-body{padding:1.1rem 1.2rem;font-size:0.86rem;line-height:1.75;color:var(--bark);display:none;}
+.info-box-body.open{display:block;}
+.info-box-body p{margin-bottom:0.5rem;}
+.info-box-body p:last-child{margin-bottom:0;}
+.info-box-body a{color:var(--amber);font-weight:600;}
+.info-box-body strong{color:var(--bark);}
 .sec-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;margin-bottom:0.3rem;}
 .sec-sub{color:var(--soil);font-size:0.87rem;margin-bottom:1rem;opacity:0.8;}
 .ftabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.2rem;}
@@ -177,6 +186,24 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
       <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
     </div>
   </div>
+
+  <div class="info-box">
+    <div class="info-box-header" onclick="toggleInfo()">
+      <span>ℹ️ REGISTRACE – INFORMACE</span>
+      <span id="info-arrow">▼</span>
+    </div>
+    <div class="info-box-body" id="info-body">
+      <p>🔴 <strong>Registrace na lekce</strong> 🔴</p>
+      <p>Pro zájem o individuální lekce mimo vypsané termíny na hlavní stránce klikněte vpravo nahoře na text 👉 <strong>„MÁM ZÁJEM"</strong> 👈. Trenér vám (podle své volné časové kapacity) zpětně váš termín odsouhlasí, nebo zamítne. 👉 Zkontrolujte si včas vaši poptávku a pokud je schválena, máte možnost si ji přidat do 👉 <strong>GOOGLE KALENDÁŘE</strong> 👈 jako připomínku.</p>
+      <p>👉 Společné lekce probíhají pouze při minimálním počtu 2 týmů (psovod + pes).</p>
+      <p>👉 Pokud se přihlásí pouze jeden tým, lekce se automaticky považuje za individuální (cena tedy bude 400,- Kč).</p>
+      <p>👉 Při registraci je možné zvolit pouze jednu hlavní skupinu: 👉 <strong>Skupinu 1</strong> 👈 nebo 👉 <strong>Skupinu 2</strong> 👈. 🔴 Přihlášení do obou skupin současně není možné! 🔴 Proto zvolte skupinu, která vám nejvíce vyhovuje.</p>
+      <p>Pro všechny účastníky je navíc k dispozici dobrovolná opakovací skupina, která slouží k procvičení a bude tu čas na řešení vašich problémů, které máte ve výchově psa.</p>
+      <p>👉 Vše ostatní si řekneme osobně na lekcích. Budu se těšit, instruktor Michal.</p>
+      <p>👉 WhatsApp skupina: <a href="https://chat.whatsapp.com/GFEg8duR6aM82viDCRFCsS?mode=gi_t" target="_blank">Připojit se ke skupině</a></p>
+    </div>
+  </div>
+
   <div class="notice-wrap" id="notice-display">
     <div class="nb-label">📢 Aktuální informace od trenéra</div>
     <div class="nb-text" id="notice-text"></div>
@@ -388,7 +415,7 @@ var S={tr:[],rq:[],re:[],no:'',pw:'261497'};
 var adminIn=false,currentDetailId=null,repeatMode='none',activeFt='vse';
 function setSyncDot(s){document.getElementById('sync-dot').className='sync '+s;}
 function normT(id,x){var typ=x.typ||x.type||'skupina';return{id:id,name:x['jm\u00e9no']||x.name||'',date:x.datum||x.date||'',time:x['\u010das']||x.time||'',price:x.cena||x.price||0,dur:x['trv\u00e1n\u00ed']||x.dur||0,spots:x.skvrny||x.spots||1,note:x['pozn\u00e1mka']||x.note||'',regpw:x.regpw||'',type:(typ==='skupina'?'group':typ==='individu\u00e1ln\u00ed'?'individual':typ==='group'?'group':'individual')};}
-function normR(id,x){return{id:id,tid:x['\u010dasn\u00fd']||x.tid||'',name:x['jm\u00e9no']||x.name||'',phone:x.telefon||x.phone||'',email:x['e-mail']||x.email||'',dog:x.pes||x.dog||'',note:x['pozn\u00e1mka']||x.note||'',ca:x.Kalifornie||x.ca||new Date().toISOString(),status:x.status||'pending',trainerNote:x.trainerNote||''};}
+function normR(id,x){return{id:id,tid:x['\u010dasn\u00fd']||x.tid||'',name:x['jm\u00e9no']||x.name||'',phone:x.telefon||x.phone||'',email:x['e-mail']||x.email||'',dog:x.pes||x.dog||'',note:x['pozn\u00e1mka']||x.note||'',ca:x.Kalifornie||x.ca||new Date().toISOString(),status:x.status||'pending',trainerNote:x.trainerNote||'',clientFeedback:x.clientFeedback||''};}
 db.collection('\u0161kolen\u00ed').onSnapshot(function(snap){S.tr=snap.docs.map(function(d){return normT(d.id,d.data());});renderHome();if(adminIn){renderTrainTable();renderAdminPanel();}setSyncDot('ok');},function(){setSyncDot('err');});
 db.collection('popt\u00e1vky').onSnapshot(function(snap){S.rq=snap.docs.map(function(d){return normR(d.id,d.data());});renderPublicReqs();if(adminIn){renderAdminReqs();renderAdminPanel();}});
 db.collection('registrace').onSnapshot(function(snap){S.re=snap.docs.map(function(d){return normR(d.id,d.data());});renderHome();if(adminIn){renderGroupRegs();renderAdminPanel();}});
@@ -398,8 +425,10 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 function fmtDate(s){if(!s)return'\u2014';var p=s.split('-');if(p.length<3)return s;var mo=[' ledna',' \u00fanora',' b\u0159ezna',' dubna',' kv\u011btna',' \u010dervna',' \u010dervence',' srpna',' z\u00e1\u0159\u00ed',' \u0159\u00edjna',' listopadu',' prosince'];return parseInt(p[2])+'.'+mo[parseInt(p[1])-1]+' '+p[0];}
 function uid(){return 't'+Date.now()+Math.random().toString(36).slice(2,6);}
 function toast(msg,type){type=type||'ok';var t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3200);}
-function gcalUrl(title,date,time,dur,details){var d=date.replace(/-/g,'');var ts=time||'09:00';var durMin=dur||60;var sd=new Date(date+'T'+ts+':00');var ed=new Date(sd.getTime()+durMin*60000);function p(n){return String(n).padStart(2,'0');}function fmt(dt){return dt.getFullYear()+p(dt.getMonth()+1)+p(dt.getDate())+'T'+p(dt.getHours())+p(dt.getMinutes())+'00';}return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+fmt(sd)+'/'+fmt(ed)+'&details='+encodeURIComponent(details);}
-function addToGCal(){var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;window.open(gcalUrl('Výcvik psa \u2013 '+t.name,t.date,t.time,t.dur,'Cena: '+t.price+' K\u010d\nTren\u00e9r Michal: 601 242 160\nvychovejpsa@seznam.cz'),'_blank');}
+function toggleInfo(){var b=document.getElementById('info-body');var a=document.getElementById('info-arrow');if(b.classList.contains('open')){b.classList.remove('open');a.textContent='▼';}else{b.classList.add('open');a.textContent='▲';}}
+function gcalUrl(title,date,time,dur,details){var ts=time||'09:00';var durMin=dur||60;var sd=new Date((date||new Date().toISOString().slice(0,10))+'T'+ts+':00');var ed=new Date(sd.getTime()+durMin*60000);function p(n){return String(n).padStart(2,'0');}function fmt(dt){return dt.getFullYear()+p(dt.getMonth()+1)+p(dt.getDate())+'T'+p(dt.getHours())+p(dt.getMinutes())+'00';}return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+fmt(sd)+'/'+fmt(ed)+'&details='+encodeURIComponent(details);}
+function addToGCal(){var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;window.open(gcalUrl('V\u00fdcvik psa \u2013 '+t.name,t.date,t.time,t.dur,'Cena: '+t.price+' K\u010d\nTren\u00e9r Michal: 601 242 160\nvychovejpsa@seznam.cz'),'_blank');}
+function clientFeedback(id,fb){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:fb}).then(function(){toast(fb==='souhlas\u00edm'?'✅ Potvrzeno – těšíme se!':'Trenér byl upozorněn');});}
 function setFt(f,btn){activeFt=f;document.querySelectorAll('.ftab').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');renderHome();}
 function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){renderHome();renderNotice();}if(name==='interest')renderPublicReqs();if(name==='admin')renderAdminPanel();}
 function renderNotice(){var el=document.getElementById('notice-display');if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none';}
@@ -423,7 +452,7 @@ function renderHome(){
   var html='';
   up.forEach(function(t){
     var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max;
-    html+='<div class="t-card'+(t.type==='individual'?' ind':'')+'" onclick="openDetail(\''+t.id+'\')"> ';
+    html+='<div class="t-card'+(t.type==='individual'?' ind':'')+'" onclick="openDetail(\''+t.id+'\')">';
     html+='<span class="tbadge '+t.type+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';
     html+='<h3>'+esc(t.name)+'</h3>';
     html+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' v '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';
@@ -473,7 +502,7 @@ function submitInterest(){
   var name=document.getElementById('i-name').value.trim(),phone=document.getElementById('i-phone').value.trim(),email=document.getElementById('i-email').value.trim(),note=document.getElementById('i-note').value.trim();
   if(!name||!phone||!email){toast('Vyplňte jméno, telefon a email','err');return;}
   showConf('Odeslat poptávku','Odeslat poptávku pro <strong>'+esc(name)+'</strong>?','',function(){
-    db.collection('popt\u00e1vky').doc('r'+Date.now()).set({'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString(),status:'pending'}).then(function(){['i-name','i-phone','i-email','i-note'].forEach(function(i){document.getElementById(i).value='';});toast('✅ Poptávka odeslána!');closeConf();});
+    db.collection('popt\u00e1vky').doc('r'+Date.now()).set({'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString(),status:'pending',clientFeedback:''}).then(function(){['i-name','i-phone','i-email','i-note'].forEach(function(i){document.getElementById(i).value='';});toast('✅ Poptávka odeslána!');closeConf();});
   });
 }
 function renderPublicReqs(){
@@ -482,21 +511,39 @@ function renderPublicReqs(){
   if(!r2.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p style="font-size:0.83rem">Zatím žádné poptávky</p></div>';return;}
   var sl={pending:'Čeká',approved:'✅ Potvrzeno',rejected:'❌ Odmítnuto'};
   el.innerHTML=r2.map(function(r){
-    var gcal='';
+    var gcal='',feedback='';
     if(r.status==='approved'){
-      var url=gcalUrl('Individu\u00e1ln\u00ed v\u00fdcvik \u2013 '+r.name,'','','','Tren\u00e9r Michal: 601 242 160\nvychovejpsa@seznam.cz'+(r.trainerNote?'\n'+r.trainerNote:''));
-      gcal='<a href="'+url+'" target="_blank" style="display:inline-block;margin-top:0.5rem;font-size:0.78rem;font-weight:600;color:var(--amber);text-decoration:none;padding:0.28rem 0.65rem;border:1.5px solid var(--amber);border-radius:20px;">📅 Přidat do Google kalendáře</a>';
+      gcal='<a href="'+gcalUrl('Individu\u00e1ln\u00ed v\u00fdcvik \u2013 '+r.name,'','','','Tren\u00e9r Michal: 601 242 160\nvychovejpsa@seznam.cz'+(r.trainerNote?'\n'+r.trainerNote:''))+'" target="_blank" style="display:inline-block;margin-top:0.5rem;font-size:0.78rem;font-weight:600;color:var(--amber);text-decoration:none;padding:0.28rem 0.65rem;border:1.5px solid var(--amber);border-radius:20px;">📅 Přidat do Google kalendáře</a>';
+      if(!r.clientFeedback){
+        feedback='<div style="margin-top:0.6rem;padding:0.6rem;background:#F0FBF0;border-radius:8px;border:1px solid var(--sage)">'
+          +'<div style="font-size:0.78rem;font-weight:600;color:var(--bark);margin-bottom:0.4rem">Váš termín byl schválen – potvrďte prosím:</div>'
+          +'<div style="display:flex;gap:0.4rem;flex-wrap:wrap">'
+          +'<button onclick="clientFeedback(\''+r.id+'\',\'souhlas\u00edm\')" style="padding:0.35rem 0.8rem;border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;background:var(--sage);color:#fff;">✅ SOUHLASÍM</button>'
+          +'<button onclick="clientFeedback(\''+r.id+'\',\'jin\u00fd term\u00edn\')" style="padding:0.35rem 0.8rem;border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;border:2px solid var(--red);background:transparent;color:var(--red);">🔄 JINÝ TERMÍN</button>'
+          +'</div></div>';
+      } else {
+        feedback='<div style="margin-top:0.5rem;font-size:0.8rem;font-weight:600;color:'+(r.clientFeedback==='souhlas\u00edm'?'var(--sage)':'var(--red)')+'">'+( r.clientFeedback==='souhlas\u00edm'?'✅ Potvrzeno klientem':'🔄 Klient žádá jiný termín')+'</div>';
+      }
     }
-    return'<div class="ri '+r.status+'"><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.22rem">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--soil)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--soil);font-style:italic;margin-top:0.2rem;opacity:0.8">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.78rem;color:var(--sage);margin-top:0.22rem">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')+gcal+'</div>';
+    return'<div class="ri '+r.status+'"><div style="font-size:0.9rem;font-weight:600;margin-bottom:0.22rem">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--soil)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--soil);font-style:italic;margin-top:0.2rem;opacity:0.8">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.78rem;color:var(--sage);margin-top:0.22rem">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')+gcal+feedback+'</div>';
   }).join('');
 }
 function checkAdmin(){if(document.getElementById('admin-pw').value===S.pw){adminIn=true;document.getElementById('admin-gate').style.display='none';document.getElementById('admin-panel').style.display='block';renderAdminPanel();}else toast('Nesprávné heslo','err');}
 function logoutAdmin(){adminIn=false;document.getElementById('admin-gate').style.display='block';document.getElementById('admin-panel').style.display='none';document.getElementById('admin-pw').value='';}
 function switchTab(tab,btn){document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.atab').forEach(function(b){b.classList.remove('active');});document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active');if(tab==='trainings')renderTrainTable();if(tab==='registrations'){renderGroupRegs();document.getElementById('greg-content').style.display='block';document.getElementById('ireg-content').style.display='none';document.getElementById('regtab-g').classList.add('active');document.getElementById('regtab-i').classList.remove('active');}if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';previewNotice();}}
 function renderAdminPanel(){if(!adminIn)return;var pend=S.rq.filter(function(r){return r.status==='pending';}).length;document.getElementById('admin-stats').innerHTML='<div class="stat"><div class="sn">'+S.rq.length+'</div><div class="sl">Poptávek ind.</div></div><div class="stat"><div class="sn" style="color:var(--red)">'+pend+'</div><div class="sl">Čeká na odpověď</div></div><div class="stat"><div class="sn">'+S.tr.length+'</div><div class="sl">Tréninků</div></div><div class="stat"><div class="sn" style="color:#2563EB">'+S.re.length+'</div><div class="sl">Přihlášených</div></div>';renderAdminReqs();}
-function renderAdminReqs(){var el=document.getElementById('admin-req-list');if(!S.rq.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p>Žádné poptávky</p></div>';return;}var sl={pending:'Čeká',approved:'Potvrzeno',rejected:'Odmítnuto'};el.innerHTML=S.rq.slice().sort(function(a,b){return new Date(b.ca)-new Date(a.ca);}).map(function(r){return'<div class="areq '+r.status+'"><div class="areq-info"><h4>'+esc(r.name)+' <span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></h4><p>📞 <a href="tel:'+esc(r.phone)+'">'+esc(r.phone)+'</a> · ✉ <a href="mailto:'+esc(r.email)+'">'+esc(r.email)+'</a></p>'+(r.note?'<p style="font-style:italic;opacity:0.8">"'+esc(r.note)+'"</p>':'')+(r.trainerNote?'<p style="color:var(--sage)">💬 '+esc(r.trainerNote)+'</p>':'')+'<div class="areq-meta">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div></div><div class="areq-acts">'+(r.status==='pending'?'<button class="btn btn-g btn-sm" onclick="respondReq(\''+r.id+'\',\'approved\')">✓ Potvrdit</button><button class="btn btn-d btn-sm" onclick="respondReq(\''+r.id+'\',\'rejected\')">✕ Odmítnout</button>':'<button class="btn btn-s btn-sm" onclick="reopenReq(\''+r.id+'\')">↩ Znovu</button>')+'<button class="btn btn-d btn-sm" onclick="deleteReq(\''+r.id+'\')">🗑</button></div></div>';}).join('');}
+function renderAdminReqs(){
+  var el=document.getElementById('admin-req-list');
+  if(!S.rq.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p>Žádné poptávky</p></div>';return;}
+  var sl={pending:'Čeká',approved:'Potvrzeno',rejected:'Odmítnuto'};
+  var fbLabels={'souhlas\u00edm':'✅ Souhlasím','jin\u00fd term\u00edn':'🔄 Jiný termín'};
+  el.innerHTML=S.rq.slice().sort(function(a,b){return new Date(b.ca)-new Date(a.ca);}).map(function(r){
+    var fbBadge=r.clientFeedback?'<span style="display:inline-block;margin-left:0.4rem;font-size:0.7rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:12px;background:'+(r.clientFeedback==='souhlas\u00edm'?'#D1FAE5;color:#065F46':'#FEE2E2;color:#991B1B')+'">Klient: '+(fbLabels[r.clientFeedback]||r.clientFeedback)+'</span>':'';
+    return'<div class="areq '+r.status+'"><div class="areq-info"><h4>'+esc(r.name)+' <span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span>'+fbBadge+'</h4><p>📞 <a href="tel:'+esc(r.phone)+'">'+esc(r.phone)+'</a> · ✉ <a href="mailto:'+esc(r.email)+'">'+esc(r.email)+'</a></p>'+(r.note?'<p style="font-style:italic;opacity:0.8">"'+esc(r.note)+'"</p>':'')+(r.trainerNote?'<p style="color:var(--sage)">💬 '+esc(r.trainerNote)+'</p>':'')+'<div class="areq-meta">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div></div><div class="areq-acts">'+(r.status==='pending'?'<button class="btn btn-g btn-sm" onclick="respondReq(\''+r.id+'\',\'approved\')">✓ Potvrdit</button><button class="btn btn-d btn-sm" onclick="respondReq(\''+r.id+'\',\'rejected\')">✕ Odmítnout</button>':'<button class="btn btn-s btn-sm" onclick="reopenReq(\''+r.id+'\')">↩ Znovu</button>')+'<button class="btn btn-d btn-sm" onclick="deleteReq(\''+r.id+'\')">🗑</button></div></div>';
+  }).join('');
+}
 function respondReq(id,status){var r=S.rq.find(function(x){return x.id===id;});if(!r)return;var extra='<div style="margin-top:0.5rem"><label style="font-size:0.74rem;font-weight:600;color:var(--soil);display:block;margin-bottom:0.3rem;text-transform:uppercase">Poznámka pro klienta</label><input type="text" id="tnote" placeholder="'+(status==='approved'?'Těším se na vás!':'Navrhnu jiný termín…')+'" style="display:block;width:100%;padding:0.6rem 0.8rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;background:var(--cream);outline:none"></div>';showConf(status==='approved'?'Potvrdit termín':'Odmítnout poptávku',(status==='approved'?'Potvrdit poptávku od ':'Odmítnout poptávku od ')+'<strong>'+esc(r.name)+'</strong>?',extra,function(){var n=document.getElementById('tnote');var upd={status:status};if(n&&n.value.trim())upd.trainerNote=n.value.trim();db.collection('popt\u00e1vky').doc(id).update(upd).then(function(){closeConf();toast(status==='approved'?'Potvrzeno \u2713':'Odmítnuto');});});}
-function reopenReq(id){db.collection('popt\u00e1vky').doc(id).update({status:'pending',trainerNote:''}).then(function(){toast('Znovu otevřeno');});}
+function reopenReq(id){db.collection('popt\u00e1vky').doc(id).update({status:'pending',trainerNote:'',clientFeedback:''}).then(function(){toast('Znovu otevřeno');});}
 function deleteReq(id){showConf('Smazat poptávku','Opravdu smazat?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Smazáno');});});}
 function applyPreset(val){if(!val)return;var p=val.split('|');document.getElementById('t-type').value=p[0];document.getElementById('t-name').value=p[1];document.getElementById('t-preset').value='';}
 function renderTrainTable(){var sorted=S.tr.slice().sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});document.getElementById('train-tbody').innerHTML=sorted.map(function(t){var cnt=S.re.filter(function(r){return r.tid===t.id;}).length,hasPw=t.type==='group'&&t.regpw;return'<tr><td>'+esc(t.name)+'</td><td><span class="tbadge '+t.type+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinový':'Individuální')+'</span></td><td style="white-space:nowrap">'+fmtDate(t.date)+'</td><td>'+(t.time||'—')+'</td><td>'+t.price+' Kč</td><td>'+(t.spots||1)+'</td><td>'+(t.type==='group'?'<strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--sage)')+'">'+cnt+'</strong>':'—')+'</td><td>'+(t.type==='group'?(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:#CCC;font-size:0.78rem">bez hesla</span>'):'—')+'</td><td style="white-space:nowrap"><button class="btn btn-s btn-sm" onclick="editTraining(\''+t.id+'\')">✏️</button> <button class="btn btn-s btn-sm" onclick="copyTraining(\''+t.id+'\')">📋</button> <button class="btn btn-d" onclick="delTraining(\''+t.id+'\')">✕</button></td></tr>';}).join('')||'<tr><td colspan="9" style="text-align:center;opacity:0.5;padding:1.5rem">Žádné tréninky</td></tr>';}
