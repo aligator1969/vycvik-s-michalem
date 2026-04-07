@@ -160,6 +160,12 @@ header{background:var(--bark);padding:0.55rem 1.25rem;display:flex;align-items:c
 .btn-sm{padding:0.36rem 0.82rem;font-size:0.78rem;}
 .btn-full{width:100%;justify-content:center;}
 .pw-tag{font-family:monospace;background:#F0E8DC;padding:0.15rem 0.5rem;border-radius:5px;font-weight:700;color:var(--bark);font-size:0.88rem;}
+
+.t-card-wrap{position:relative;}
+.t-card-check{position:absolute;top:0.7rem;right:0.7rem;width:20px;height:20px;accent-color:var(--sage);cursor:pointer;z-index:10;}
+.t-card.selected{border-color:var(--sage);border-width:2px;background:#F0FBF0;}
+.multi-reg-bar{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:0.8rem 1.4rem;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,0.3);display:none;align-items:center;gap:1rem;z-index:500;white-space:nowrap;}
+.multi-reg-bar.show{display:flex;}
 .toast{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--bark);color:var(--cream);padding:0.78rem 1.15rem;border-radius:10px;font-size:0.85rem;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:999;transform:translateY(120px);opacity:0;transition:all 0.3s;max-width:calc(100vw - 2.4rem);}
 .toast.show{transform:none;opacity:1;}
 .toast.ok{border-left:4px solid var(--sage);}
@@ -191,7 +197,7 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
     </div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">✉ vychovejpsa@seznam.cz</a>
+      <a href="/cdn-cgi/l/email-protection#94e2edf7fcfbe2f1fee4e7f5d4e7f1eefaf5f9baf7ee">✉ <span class="__cf_email__" data-cfemail="8afcf3e9e2e5fcefe0faf9ebcaf9eff0e4ebe7a4e9f0">[email&#160;protected]</span></a>
     </div>
   </div>
 
@@ -427,6 +433,12 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<div class="multi-reg-bar" id="multi-bar">
+  <span id="multi-count">0 termínů vybráno</span>
+  <button class="btn btn-g" onclick="openMultiReg()">✅ Přihlásit na vybrané</button>
+  <button style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:1.1rem;" onclick="clearSelection()">✕</button>
+</div>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
@@ -538,8 +550,9 @@ function renderHome(){
     g.items.forEach(function(ti){S.re.filter(function(r){return r.tid===ti.id;}).forEach(function(r){allRegs.push(r);});});
     var regs=S.re.filter(function(r){return r.tid===t.id;});
     var filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max;
-    var cardClass='t-card'+(t.type==='individual'?' ind':'')+(isSerie?' serie':'');
-    html+='<div class="'+cardClass+'" onclick="openDetail(\''+t.id+'\')">';
+    var cardClass='t-card'+(t.type==='individual'?' ind':'')+(isSerie?' serie':'')+(selectedTrainings[t.id]?' selected':'');
+    html+='<div class="t-card-wrap"><input type="checkbox" class="t-card-check" '+(selectedTrainings[t.id]?'checked':'')+' onclick="toggleTrainingSelect(\''+t.id+'\',event)">';
+    html+='<div class="'+cardClass+'" id="tcard-'+t.id+'" onclick="openDetail(\''+t.id+'\')">';
     if(isSerie){html+='<span class="tbadge serie-badge">🔁 Série '+g.items.length+'x termínů</span>';}
     else{html+='<span class="tbadge '+t.type+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';}
     html+='<h3>'+esc(isSerie?(t.serieName||t.name):t.name)+'</h3>';
@@ -556,7 +569,7 @@ function renderHome(){
     }
     if(t.regpw&&!full)html+='<div style="font-size:0.75rem;color:var(--soil);margin-top:0.4rem;opacity:0.7">🔑 Přihlášení pod heslem</div>';
     if(regs.length>0){html+='<div style="font-size:0.75rem;color:var(--soil);margin-top:0.5rem;border-top:1px solid #F0E8DC;padding-top:0.5rem"><span style="font-weight:600;color:var(--sage)">✅ Přihlášeni:</span> '+regs.map(function(r){return esc(r.name);}).join(', ')+'</div>';}
-    html+='<div class="t-more">'+(isSerie?'Klikněte pro výběr termínů →':'Klikněte pro přihlášení →')+'</div></div>';
+    html+='<div class="t-more">'+(isSerie?'Klikněte pro výběr termínů →':'Klikněte pro přihlášení →')+'</div></div></div>';
   });
   el.innerHTML=html;
   ibox.style.display=filtered.some(function(t){return t.type==='individual';})?'none':'flex';
@@ -745,10 +758,50 @@ function deleteReg(id){showConf('Odhlásit účastníka','Opravdu odhlásit?',''
 function clearRegs(tid){showConf('Smazat přihlášení','Smazat všechna přihlášení?','',function(){var batch=db.batch();S.re.filter(function(r){return r.tid===tid;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Přihlášení smazána');});});}
 function exportCSV(tid){var t=S.tr.find(function(x){return x.id===tid;}),regs=S.re.filter(function(r){return r.tid===tid;});if(!regs.length){toast('Žádní přihlášení','err');return;}var rows=regs.map(function(r,i){return[i+1,r.name,r.phone,r.email,r.dog||'',r.note||'',fmtDate(t?t.date:'')].join(';');});var blob=new Blob(['\uFEFF'+'Pořadí;Jméno;Telefon;Email;Pes;Poznámka;Datum tréninku\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prihlasenI_'+(t?t.name:'').replace(/\s/g,'_')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('CSV staženo \u2713');}
 function changePw(){var o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;if(o!==S.pw){toast('Stávající heslo není správné','err');return;}if(!n1||n1.length<4){toast('Nové heslo musí mít alespoň 4 znaky','err');return;}if(n1!==n2){toast('Nová hesla se neshodují','err');return;}db.collection('konfigurace').doc('hlavn\u00ed').set({pw:n1,'ozn\u00e1men\u00ed':S.no},{merge:true}).then(function(){['pw-old','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';});toast('Heslo bylo změněno \u2713');});}
+
+var selectedTrainings={};
+function toggleTrainingSelect(id,e){
+  e.stopPropagation();
+  if(selectedTrainings[id]){delete selectedTrainings[id];}else{selectedTrainings[id]=true;}
+  updateMultiBar();
+  var card=document.getElementById('tcard-'+id);
+  if(card){if(selectedTrainings[id])card.classList.add('selected');else card.classList.remove('selected');}
+}
+function updateMultiBar(){
+  var cnt=Object.keys(selectedTrainings).length;
+  var bar=document.getElementById('multi-bar');
+  document.getElementById('multi-count').textContent=cnt+' termín'+(cnt===1?'':cnt>=2&&cnt<=4?'y':'ů')+' vybráno';
+  if(cnt>0)bar.classList.add('show');else bar.classList.remove('show');
+}
+function clearSelection(){
+  selectedTrainings={};
+  document.querySelectorAll('.t-card.selected').forEach(function(c){c.classList.remove('selected');});
+  document.querySelectorAll('.t-card-check').forEach(function(c){c.checked=false;});
+  updateMultiBar();
+}
+function openMultiReg(){
+  var ids=Object.keys(selectedTrainings);
+  if(!ids.length)return;
+  var names=ids.map(function(id){var t=S.tr.find(function(x){return x.id===id;});return t?fmtDate(t.date)+(t.time?' v '+t.time:''):id;});
+  showConf('Přihlášení na '+ids.length+' termínů','Vyplňte údaje pro přihlášení na vybrané termíny:',
+    '<div style="margin-top:0.5rem"><div class="fg"><label>Jméno a příjmení *</label><input type="text" id="mr-name" placeholder="Jana Nováková" style="display:block;width:100%;padding:0.63rem 0.82rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--bark);background:var(--cream);outline:none;margin-bottom:0.5rem"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem"><div class="fg"><label>Telefon *</label><input type="tel" id="mr-phone" placeholder="777 123 456" style="display:block;width:100%;padding:0.63rem 0.82rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--bark);background:var(--cream);outline:none"></div><div class="fg"><label>Email *</label><input type="email" id="mr-email" placeholder="jana@email.cz" style="display:block;width:100%;padding:0.63rem 0.82rem;border:1.5px solid #E0D4C4;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--bark);background:var(--cream);outline:none"></div></div><div style="font-size:0.78rem;color:var(--soil);margin-top:0.6rem">Termíny: '+names.join(', ')+'</div></div>',
+    function(){
+      var name=document.getElementById('mr-name').value.trim();
+      var phone=document.getElementById('mr-phone').value.trim();
+      var email=document.getElementById('mr-email').value.trim();
+      if(!name||!phone||!email){toast('Vyplňte jméno, telefon a email','err');return;}
+      var batch=db.batch();
+      var ok=true;
+      ids.forEach(function(tid){
+        var tt=S.tr.find(function(x){return x.id===tid;});
+        var regsForT=S.re.filter(function(r){return r.tid===tid;});
+        if(regsForT.find(function(r){return r.email.toLowerCase()===email.toLowerCase();})){ok=false;toast('Na '+fmtDate(tt?tt.date:'')+' jste již přihlášeni','err');return;}
+        batch.set(db.collection('registrace').doc('reg'+Date.now()+Math.random().toString(36).slice(2,5)),{'časný':tid,'jméno':name,'telefon':phone,'e-mail':email,'pes':'','poznámka':'','Kalifornie':new Date().toISOString()});
+      });
+      if(!ok)return;
+      batch.commit().then(function(){closeConf();clearSelection();toast('✅ Přihlášení na '+ids.length+' termínů proběhlo úspěšně!');});
+    }
+  );
+}
 var confCb=null;
-function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add('open');}
-function closeConf(){document.getElementById('conf-overlay').classList.remove('open');}
-document.getElementById('conf-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeConf();});
-</script>
-</body>
-</html>
+function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add(
