@@ -443,20 +443,45 @@ function getClientToken(){
 var MY_TOKEN=getClientToken();
 
 // ══ STORAGE (shared) ══
-var K={tr:'vc8:tr',rq:'vc8:rq',re:'vc8:re',no:'vc8:no',pw:'vc8:pw',hp:'vc8:hp',photos:'vc8:photos'};
-async function sg(k){try{var r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch(e){return null;}}
-async function ss(k,v){try{await window.storage.set(k,JSON.stringify(v),true);}catch(e){}}
+var SAVE_KEY='vc8:';
+// Zkusí načíst data z různých starých klíčů pro migraci
+async function sgMigrate(shortKey){
+  var prefixes=['vc8:','vc7:','vycvik6:','vycvik5:','vycvik4:','vycvik3:','vycvik2:','vycvik:'];
+  for(var i=0;i<prefixes.length;i++){
+    try{
+      var r=await window.storage.get(prefixes[i]+shortKey,true);
+      if(r&&r.value){
+        var data=JSON.parse(r.value);
+        var hasData=Array.isArray(data)?data.length>0:(data&&typeof data==='object'&&Object.keys(data).length>0);
+        if(hasData){
+          console.log('Nalezena data pod klíčem: '+prefixes[i]+shortKey);
+          return data;
+        }
+      }
+    }catch(e){}
+  }
+  return null;
+}
+async function sg(fullKey){try{var r=await window.storage.get(fullKey,true);return r?JSON.parse(r.value):null;}catch(e){return null;}}
+async function ss(fullKey,v){try{await window.storage.set(fullKey,JSON.stringify(v),true);}catch(e){}}
 var S={tr:[],rq:[],re:[],no:'',pw:'261497',hp:{title:'Profesionální|výcvik psů|s Michalem',desc:''},photos:[]};
 async function loadAll(){
-  S.tr=(await sg(K.tr))||[];
-  S.rq=(await sg(K.rq))||[];
-  S.re=(await sg(K.re))||[];
-  S.no=(await sg(K.no))||'';
-  S.pw=(await sg(K.pw))||'261497';
-  S.hp=(await sg(K.hp))||{title:'Profesionální|výcvik psů|s Michalem',desc:''};
-  S.photos=(await sg(K.photos))||[];
+  // Načti tréninky, poptávky a přihlášení s migrací ze starých klíčů
+  S.tr=(await sgMigrate('tr'))||[];
+  S.rq=(await sgMigrate('rq'))||[];
+  S.re=(await sgMigrate('re'))||[];
+  var no=await sgMigrate('no');S.no=no||'';
+  var pw=await sgMigrate('pw');S.pw=pw||'261497';
+  var hp=await sg(SAVE_KEY+'hp');S.hp=hp||{title:'Profesionální|výcvik psů|s Michalem',desc:''};
+  var photos=await sg(SAVE_KEY+'photos');S.photos=photos||[];
+  // Po načtení ulož pod aktuální klíče (migrace)
+  await ss(SAVE_KEY+'tr',S.tr);
+  await ss(SAVE_KEY+'rq',S.rq);
+  await ss(SAVE_KEY+'re',S.re);
+  await ss(SAVE_KEY+'no',S.no);
+  await ss(SAVE_KEY+'pw',S.pw);
 }
-async function sv(k){await ss(K[k],S[k]);}
+async function sv(k){await ss(SAVE_KEY+k,S[k]);}
 
 // ══ NAV ══
 function showPage(name){
