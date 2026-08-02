@@ -443,7 +443,7 @@ function getClientToken(){
 var MY_TOKEN=getClientToken();
 
 // ══ STORAGE (shared) ══
-var K={tr:'vc9:tr',rq:'vc9:rq',re:'vc9:re',no:'vc9:no',pw:'vc9:pw',hp:'vc9:hp',photos:'vc9:photos'};
+var K={tr:'vc8:tr',rq:'vc8:rq',re:'vc8:re',no:'vc8:no',pw:'vc8:pw',hp:'vc8:hp',photos:'vc8:photos'};
 async function sg(k){try{var r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch(e){return null;}}
 async function ss(k,v){try{await window.storage.set(k,JSON.stringify(v),true);}catch(e){}}
 var S={tr:[],rq:[],re:[],no:'',pw:'261497',hp:{title:'Profesionální|výcvik psů|s Michalem',desc:''},photos:[]};
