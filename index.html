@@ -207,12 +207,6 @@ hr{border:none;border-top:1px solid #E0D4C4;margin:1rem 0;}
   </div>
 
   <div id="sec-spolecne">
-    <div class="ftabs">
-      <button class="ftab active" onclick="setFt('vse',this)">Všechny</button>
-      <button class="ftab" onclick="setFt('vikend',this)">🗓 Víkendovky – skupina 1</button>
-      <button class="ftab" onclick="setFt('vsedni',this)">📅 Všední – skupina 2</button>
-      <button class="ftab" onclick="setFt('opak',this)">🔁 Opakovací</button>
-    </div>
     <div class="t-grid" id="home-trainings"></div>
   </div>
 
@@ -452,7 +446,7 @@ var db=firebase.firestore();
 var DEF_HERO='Vítejte na výcvikových lekcích s Michalem. Jsem profesionální psovod s více než 30letou praxí jako psovod specialista a metodik výcviku psů u Policie ČR.\nLekce jsou rozděleny na společné víkendovky (5x) – skupina 1, společné všední (5x) – skupina 2 a společné opakovací.\nTěším se na vás. Instruktor Michal 🐾';
 var DEF_INFO='🔴 Registrace na lekce 🔴\nPro zájem o individuální lekce mimo vypsané termíny klikněte na „MÁM ZÁJEM" vpravo nahoře.\nSpolečné lekce probíhají při minimálním počtu 2 týmů (psovod + pes).\nPokud se přihlásí pouze jeden tým, lekce se považuje za individuální (cena 400,- Kč).\nLze zvolit pouze jednu hlavní skupinu: Skupinu 1 nebo Skupinu 2.\nVše ostatní si řekneme osobně. Budu se těšit, instruktor Michal.\nWhatsApp: https://chat.whatsapp.com/GFEg8duR6aM82viDCRFCsS?mode=gi_t';
 var S={tr:[],rq:[],re:[],no:'',pw:'261497',heroTxt:DEF_HERO,infoTxt:DEF_INFO,texts:{}};
-var adminIn=false,currentDetailId=null,repeatMode='none',activeFt='vse',activeSection='spolecne';
+var adminIn=false,currentDetailId=null,repeatMode='none',activeSection='spolecne';
 var selectedIds={},myEmail='';
 
 function setSyncDot(s){document.getElementById('sync-dot').className='sync '+s;}
@@ -508,7 +502,7 @@ function openMultiReg(){
   });
 }
 
-function setFt(f,btn){activeFt=f;document.querySelectorAll('.ftab').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');renderHome();}
+
 function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){renderHome();renderIndTrainings();renderNotice();renderHeroTxt();renderInfoTxt();}if(name==='interest'){renderPublicReqs();}if(name==='admin')renderAdminPanel();}
 function renderNotice(){var el=document.getElementById('notice-display');if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none';}
 function saveNotice(){db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':document.getElementById('notice-input').value.trim(),pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpráva zveřejněna \u2713');});}
@@ -517,9 +511,9 @@ function previewNotice(){var v=document.getElementById('notice-input').value.tri
 
 function renderHome(){
   var now=new Date();now.setHours(0,0,0,0);
-  var up=S.tr.filter(function(t){if(new Date(t.date)<now)return false;if(t.type!=='group')return false;if(activeFt==='vse')return true;var nu=t.name.toUpperCase();if(activeFt==='vikend')return nu.indexOf('V\u00cdKENDOV')>=0||nu.indexOf('VIKENDOV')>=0;if(activeFt==='vsedni')return nu.indexOf('V\u0160EDN')>=0||nu.indexOf('VSEDNI')>=0||nu.indexOf('SKUPINA 2')>=0;if(activeFt==='opak')return nu.indexOf('OPAKOV')>=0;return true;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
+  var up=S.tr.filter(function(t){return t.type==='group'&&new Date(t.date)>=now;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
   var el=document.getElementById('home-trainings');
-  if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné společné tréninky v této kategorii</p></div>';return;}
+  if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné společné tréninky</p></div>';return;}
   var html='';
   up.forEach(function(t){
     var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max,isSel=!!selectedIds[t.id];
