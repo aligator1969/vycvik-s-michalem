@@ -466,14 +466,23 @@ function saveTexts(){var t={indSub:document.getElementById('txt-ind-sub-in').val
 function setSection(sec,btn){activeSection=sec;document.querySelectorAll('.hsec-btn').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');document.getElementById('sec-spolecne').style.display=sec==='spolecne'?'block':'none';document.getElementById('sec-individualni').style.display=sec==='individualni'?'block':'none';document.getElementById('sec-schvalene').style.display=sec==='schvalene'?'block':'none';if(sec==='individualni')renderIndTrainings();if(sec==='schvalene')renderApprovedReqs();}
 
 /* CARD TOGGLE - using delegated events, no ID in onclick string */
-function toggleCard(id){
+function toggleCard(id,event){
+  // Ignore clicks from inputs, buttons, links inside the card
+  if(event&&event.target){
+    var tg=event.target;
+    var tag=tg.tagName.toUpperCase();
+    if(tag==='INPUT'||tag==='BUTTON'||tag==='TEXTAREA'||tag==='SELECT'||tag==='A'||tag==='LABEL'){return;}
+    // Also check if click is inside the t-expand area
+    var exp=document.getElementById('texp-'+id);
+    if(exp&&exp.contains(tg)&&tag!=='DIV'){return;}
+  }
   var det=document.getElementById('texp-'+id);
   var card=document.getElementById('tc-'+id);
   var btn=document.getElementById('tbtn-'+id);
   if(!det)return;
   var open=det.classList.toggle('open');
   if(card){if(open)card.classList.add('expanded');else card.classList.remove('expanded');}
-  if(btn)btn.textContent=open?'▲ Skrýt':'▼ Detail a přihlášení';
+  if(btn)btn.textContent=open?'▲ Skrýt detail':'▼ Detail a přihlášení';
 }
 /* INLINE REG */
 function inlineSubmitReg(id){
@@ -521,7 +530,7 @@ function buildCardExpand(t,full,max,filled){
       html+='<div style="margin-top:0.65rem">'+buildRegForm(t.id)+'</div>';
     }
   }
-  html+='<button class="btn btn-s btn-full" style="margin-top:0.7rem;font-size:0.74rem" onclick="window.open(''+gcalUrl('Výcvik psa – '+t.name,t.date,t.time,t.dur,'Cena: '+t.price+' Kč\nMichal: 601 242 160')+'','_blank')">📅 Google kalendář</button>';
+  html+='<button class="btn btn-s btn-full" style="margin-top:0.7rem;font-size:0.74rem" onclick="event.stopPropagation();window.open(''+gcalUrl('Výcvik psa – '+t.name,t.date,t.time,t.dur,'Cena: '+t.price+' Kč\nMichal: 601 242 160')+'','_blank')">📅 Google kalendář</button>';
   html+='</div>';
   return html;
 }
@@ -556,7 +565,7 @@ function renderHome(){
     var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max,isSel=!!selectedIds[t.id];
     html+='<div class="t-wrap">';
     html+='<input type="checkbox" class="t-chk"'+(isSel?' checked':'')+' onclick="toggleSel(''+t.id+'',event)">';
-    html+='<div class="t-card'+(isSel?' sel':'')+(document.getElementById('texp-'+t.id)&&document.getElementById('texp-'+t.id).classList.contains('open')?' expanded':'')+'" id="tc-'+t.id+'" onclick="toggleCard(''+t.id+'')">';
+    html+='<div class="t-card'+(isSel?' sel':'')+(document.getElementById('texp-'+t.id)&&document.getElementById('texp-'+t.id).classList.contains('open')?' expanded':'')+'" id="tc-'+t.id+'" onclick="toggleCard(''+t.id+'',event)">';
     html+='<span class="tbadge group">Skupinový</span><h3>'+esc(t.name)+'</h3>';
     html+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' · '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';
     html+='<div class="t-price">'+t.price+' Kč</div>';
@@ -579,7 +588,7 @@ function renderIndTrainings(){
   var html='';
   up.forEach(function(t){
     var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,full=filled>=max;
-    html+='<div class="t-card ind" id="tc-'+t.id+'" onclick="toggleCard(''+t.id+'')">';
+    html+='<div class="t-card ind" id="tc-'+t.id+'" onclick="toggleCard(''+t.id+'',event)">';
     html+='<span class="tbadge individual">Individuální</span><h3>'+esc(t.name)+'</h3>';
     html+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' · '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';
     html+='<div class="t-price">'+t.price+' Kč</div>';
