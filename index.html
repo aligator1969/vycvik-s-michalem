@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Výcvik psů s Michalem</title>
+<title>Psí škola VYCHOVEJ PSA s Michalem</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0D0D0D;--bg2:#181818;--bg3:#222222;--lime:#A8D832;--lime2:#C5F01A;--white:#FFFFFF;--gray:#DDDDDD;--gray2:#999;--border:#333333;--red:#E03333;}
@@ -179,6 +179,34 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .empty .ei{font-size:2rem;margin-bottom:0.5rem;}
 hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 
+/* CALENDAR */
+.cal-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1.3rem;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.cal-header h3{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;letter-spacing:0.05em;color:var(--white);}
+.cal-nav{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--gray);font-size:1rem;cursor:pointer;padding:0.3rem 0.75rem;font-weight:700;transition:all 0.18s;}
+.cal-nav:hover{border-color:var(--lime);color:var(--lime);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-dow{text-align:center;font-size:0.68rem;font-weight:700;color:var(--gray2);text-transform:uppercase;letter-spacing:0.06em;padding:0.3rem 0;}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:default;position:relative;}
+.cal-day.empty{background:transparent;}
+.cal-day.past{color:var(--gray2);background:transparent;}
+.cal-day.today{border:1.5px solid var(--gray2);color:var(--white);}
+.cal-day.free{background:rgba(168,216,50,0.18);color:var(--lime);border:1.5px solid rgba(168,216,50,0.45);cursor:pointer;font-weight:700;}
+.cal-day.free:hover{background:rgba(168,216,50,0.35);border-color:var(--lime);}
+.cal-day.full{background:rgba(224,51,51,0.15);color:var(--red);border:1.5px solid rgba(224,51,51,0.35);}
+.cal-day.normal{color:var(--gray);background:var(--bg3);}
+.cal-day.group-free{background:rgba(240,168,78,0.18);color:#F0A84E;border:1.5px solid rgba(240,168,78,0.5);cursor:pointer;font-weight:700;}
+.cal-day.group-free:hover{background:rgba(240,168,78,0.35);border-color:#F0A84E;}
+.cal-day.group-full{background:rgba(224,51,51,0.12);color:#FF6B6B;border:1.5px solid rgba(224,51,51,0.3);}
+.cal-day.ind-free{background:rgba(168,216,50,0.18);color:var(--lime);border:1.5px solid rgba(168,216,50,0.45);cursor:pointer;font-weight:700;}
+.cal-day.ind-free:hover{background:rgba(168,216,50,0.35);border-color:var(--lime);}
+.cal-day.ind-full{background:rgba(224,51,51,0.12);color:#FF6B6B;border:1.5px solid rgba(224,51,51,0.3);}
+.cal-day.approved-day{background:rgba(96,165,250,0.18);color:#60A5FA;border:1.5px solid rgba(96,165,250,0.45);font-weight:700;}
+.cal-day.multi{background:linear-gradient(135deg,rgba(240,168,78,0.25),rgba(168,216,50,0.2));border:1.5px solid rgba(168,216,50,0.4);cursor:pointer;font-weight:700;}
+.cal-day.multi:hover{filter:brightness(1.2);}
+.cal-legend{display:flex;gap:1.2rem;margin-top:0.8rem;flex-wrap:wrap;}
+.cal-legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.76rem;color:var(--gray);}
+.cal-dot{width:12px;height:12px;border-radius:3px;}
 @media(max-width:540px){
 .hero{padding:1.4rem 1.1rem;}
 .page{padding:1rem 0.75rem;}
@@ -198,7 +226,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 </head>
 <body>
 <header>
-  <div class="logo" onclick="showPage('home')">🐾 Výcvik psů <span>s Michalem</span></div>
+  <div class="logo" onclick="showPage('home')">🐾 Vychovej psa <span>s Michalem</span></div>
   <div class="hact">
     <button class="nb active" onclick="showPage('home')">Úvod</button>
     <button class="nb" onclick="showPage('interest')">Mám zájem</button>
@@ -209,7 +237,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 
 <div class="page active" id="page-home">
   <div class="hero">
-    <h1>Výcvik psů<br><em>s Michalem</em></h1>
+    <h1>Psí škola<br><em>"Vychovej psa"</em><br>s Michalem</h1>
     <div class="hero-txt" id="hero-dynamic-txt"></div>
     <div class="hero-c">
       <a href="tel:601242160">📞 601 242 160</a>
@@ -247,10 +275,38 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div id="sec-spolecne">
+    <div class="cal-wrap" id="main-cal-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="mainCalPrev()">‹</button>
+        <h3 id="main-cal-title">Načítám...</h3>
+        <button class="cal-nav" onclick="mainCalNext()">›</button>
+      </div>
+      <div class="cal-grid" id="main-cal-grid"></div>
+      <div class="cal-legend" style="margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(240,168,78,0.3);border:1.5px solid #F0A84E"></div><span style="color:#F0A84E;font-weight:600">Společný trénink – volno</span></div>
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(168,216,50,0.3);border:1.5px solid var(--lime)"></div><span style="color:var(--lime);font-weight:600">Individuální trénink – volno</span></div>
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(96,165,250,0.3);border:1.5px solid #60A5FA"></div><span style="color:#60A5FA;font-weight:600">Schválená poptávka</span></div>
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(224,51,51,0.2);border:1.5px solid #FF6B6B"></div><span style="color:#FF6B6B;font-weight:600">Obsazeno</span></div>
+      </div>
+    </div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.05em;margin-bottom:0.7rem;color:var(--white)">Vypsané společné tréninky</div>
     <div class="t-grid" id="home-trainings"></div>
   </div>
   <div id="sec-individualni" style="display:none">
-    <div class="sec-sub" id="txt-ind-sub">Individuální lekce vypsané trenérem</div>
+    <div class="sec-sub" id="txt-ind-sub">Klikněte na zelenou buňku pro přihlášení</div>
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="calPrev()">‹</button>
+        <h3 id="cal-title">Načítám...</h3>
+        <button class="cal-nav" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(168,216,50,0.4);border:1.5px solid var(--lime)"></div>Volné místo</div>
+        <div class="cal-legend-item"><div class="cal-dot" style="background:rgba(224,51,51,0.25);border:1.5px solid var(--red)"></div>Obsazeno</div>
+      </div>
+    </div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.05em;margin-bottom:0.7rem;color:var(--white)">Vypsané individuální lekce</div>
     <div class="t-grid" id="home-ind-trainings"></div>
     <div class="int-box" id="int-home-box" style="margin-top:1rem">
       <div>
@@ -499,7 +555,166 @@ function normR(id,x){return{id:id,tid:x['\u010dasn\u00fd']||x.tid||'',name:x['\u
 db.collection('\u0161kolen\u00ed').onSnapshot(function(snap){S.tr=snap.docs.map(function(d){return normT(d.id,d.data());});renderHome();renderIndTrainings();if(adminIn){renderTrainTable();renderAdminPanel();}setSyncDot('ok');},function(){setSyncDot('err');});
 db.collection('popt\u00e1vky').onSnapshot(function(snap){S.rq=snap.docs.map(function(d){return normR(d.id,d.data());});renderPublicReqs();renderApprovedReqs();if(adminIn){renderAdminReqs();renderAdminPanel();}});
 db.collection('registrace').onSnapshot(function(snap){S.re=snap.docs.map(function(d){return normR(d.id,d.data());});renderHome();renderIndTrainings();if(adminIn){renderGroupRegs();renderAdminPanel();}});
-db.collection('konfigurace').doc('hlavn\u00ed').onSnapshot(function(snap){if(snap.exists){var d=snap.data();S.no=d['ozn\u00e1men\u00ed']||d.notice||'';S.pw=d.pw||'261497';if(typeof d.heroTxt==='string')S.heroTxt=d.heroTxt;if(typeof d.infoTxt==='string')S.infoTxt=d.infoTxt;S.texts=d.texts||{};}renderNotice();renderHeroTxt();renderInfoTxt();applyTexts();});
+db.collection('konfigurace').doc('hlavn\u00ed').onSnapshot(function(snap){if(snap.exists){var d=snap.data();S.no=d['ozn\u00e1men\u00ed']||d.notice||'';S.pw=d.pw||'261497';if(typeof d.heroTxt==='string')S.heroTxt=d.heroTxt;if(typeof d.infoTxt==='string')S.infoTxt=d.infoTxt;S.texts=d.texts||{};}renderNotice();/* CALENDAR JS */
+var mainCalYear=new Date().getFullYear(),mainCalMonth=new Date().getMonth();
+function mainCalPrev(){mainCalMonth--;if(mainCalMonth<0){mainCalMonth=11;mainCalYear--;}renderMainCal();}
+function mainCalNext(){mainCalMonth++;if(mainCalMonth>11){mainCalMonth=0;mainCalYear++;}renderMainCal();}
+
+function renderMainCal(){
+  var grid=document.getElementById('main-cal-grid');
+  var title=document.getElementById('main-cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[mainCalMonth]+' '+mainCalYear;
+
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+  var first=new Date(mainCalYear,mainCalMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1;
+  var daysInMonth=new Date(mainCalYear,mainCalMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build training map for all types
+  var groupMap={},indMap={},approvedDays={};
+
+  S.tr.filter(function(t){
+    if(!t.date)return false;
+    var p=t.date.split('-');
+    return parseInt(p[0])===mainCalYear&&parseInt(p[1])-1===mainCalMonth;
+  }).forEach(function(t){
+    var day=parseInt(t.date.split('-')[2]);
+    var regs=S.re.filter(function(r){return r.tid===t.id;});
+    var full=regs.length>=(t.spots||1);
+    if(t.type==='group'){if(!groupMap[day])groupMap[day]=[];groupMap[day].push({t:t,full:full});}
+    else{if(!indMap[day])indMap[day]=[];indMap[day].push({t:t,full:full});}
+  });
+
+  S.rq.filter(function(r){
+    return r.status==='approved'&&r.clientFeedback==='souhlasím';
+  }).forEach(function(r){
+    // approved requests don't have a date stored easily, skip for now
+  });
+
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(mainCalYear,mainCalMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var gTrains=groupMap[d];
+    var iTrains=indMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var label=d+'';
+
+    if(isPast){
+      cls+='past';
+    } else if(gTrains&&iTrains){
+      // both types
+      var gFree=gTrains.find(function(x){return!x.full;});
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(gFree||iFree){
+        cls+='multi';
+        var freeId=gFree?gFree.t.id:iFree.t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      } else cls+='ind-full';
+      label+=' 🗓+🐕';
+    } else if(gTrains){
+      var gFree=gTrains.find(function(x){return!x.full;});
+      if(gFree){cls+='group-free';onclick=' onclick="openDetail(''+gFree.t.id+'')"';}
+      else cls+='group-full';
+      var times=gTrains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      label=d+(times?' · '+times:'');
+    } else if(iTrains){
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(iFree){cls+='ind-free';onclick=' onclick="openDetail(''+iFree.t.id+'')"';}
+      else cls+='ind-full';
+    } else {
+      cls+='normal';
+    }
+
+    html+='<div class="'+cls.trim()+'" title="'+label+'"'+onclick+'>'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+/* CALENDAR JS */
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+var CAL_DAYS=['Po','Út','St','Čt','Pá','So','Ne'];
+var CAL_MONTHS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();}
+
+function renderCal(){
+  var grid=document.getElementById('cal-grid');
+  var title=document.getElementById('cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[calMonth]+' '+calYear;
+
+  // Build day of week headers (Mon first)
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+
+  // First day of month (0=Sun..6=Sat), convert to Mon-first (0=Mon..6=Sun)
+  var first=new Date(calYear,calMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1; // Mon=0
+  var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build map of training dates for this month (individual only)
+  var trainMap={};
+  S.tr.filter(function(t){return t.type==='individual';}).forEach(function(t){
+    if(!t.date)return;
+    var p=t.date.split('-');
+    if(parseInt(p[0])===calYear&&parseInt(p[1])-1===calMonth){
+      var day=parseInt(p[2]);
+      var regs=S.re.filter(function(r){return r.tid===t.id;});
+      var full=regs.length>=(t.spots||1);
+      if(!trainMap[day])trainMap[day]=[];
+      trainMap[day].push({t:t,full:full});
+    }
+  });
+
+  // Empty cells
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+
+  // Day cells
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var trains=trainMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var title2=d+'';
+    if(!trains){
+      cls+=isPast?'past':'normal';
+    } else {
+      var allFull=trains.every(function(x){return x.full;});
+      if(isPast){cls+='past';}
+      else if(allFull){cls+='full';}
+      else{
+        cls+='free';
+        // if multiple trainings on same day, open first free one
+        var freeId=trains.find(function(x){return!x.full;}).t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      }
+      // Show time as tooltip
+      var times=trains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      if(times)title2=d+' · '+times;
+    }
+    html+='<div class="'+cls.trim()+'" title="'+title2+'"'+onclick+'>'+d+'</div>';
+  }
+
+  grid.innerHTML=html;
+}
+
+function renderIndTrainings(){
+  var now=new Date();now.setHours(0,0,0,0);
+  var up=S.tr.filter(function(t){return t.type==='individual'&&new Date(t.date)>=now;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
+  var el=document.getElementById('home-ind-trainings');var ibox=document.getElementById('int-home-box');
+  if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné individuální tréninky od trenéra</p></div>';if(ibox)ibox.style.display='flex';return;}
+  if(ibox)ibox.style.display='none';
+  el.innerHTML=up.map(function(t){return makeCard(t,false);}).join('');
+  renderCal();
+}
+
+renderHeroTxt();renderInfoTxt();applyTexts();});
 
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function fmtDate(s){if(!s)return'\u2014';var p=s.split('-');if(p.length<3)return s;var mo=[' ledna',' \u00fanora',' b\u0159ezna',' dubna',' kv\u011btna',' \u010dervna',' \u010dervence',' srpna',' z\u00e1\u0159\u00ed',' \u0159\u00edjna',' listopadu',' prosince'];return parseInt(p[2])+'.'+mo[parseInt(p[1])-1]+' '+p[0];}
@@ -517,7 +732,7 @@ function saveHeroText(){var v=document.getElementById('hero-text-input').value;S
 function saveInfoText(){var v=document.getElementById('info-text-input').value;S.infoTxt=v;renderInfoTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({infoTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,texts:S.texts},{merge:true}).then(function(){toast('Informace uloženy \u2713');});}
 function saveTexts(){var t={indSub:document.getElementById('txt-ind-sub-in').value,schvaleneSub:document.getElementById('txt-schvalene-sub-in').value,interestTitle:document.getElementById('txt-interest-title-in').value,interestSub:document.getElementById('txt-interest-sub-in').value};S.texts=t;applyTexts();db.collection('konfigurace').doc('hlavn\u00ed').set({texts:t,pw:S.pw,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,infoTxt:S.infoTxt},{merge:true}).then(function(){toast('Textace uloženy \u2713');});}
 
-function setSection(sec,btn){activeSection=sec;document.querySelectorAll('.hsec-btn').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');document.getElementById('sec-spolecne').style.display=sec==='spolecne'?'block':'none';document.getElementById('sec-individualni').style.display=sec==='individualni'?'block':'none';document.getElementById('sec-schvalene').style.display=sec==='schvalene'?'block':'none';if(sec==='individualni')renderIndTrainings();if(sec==='schvalene')renderApprovedReqs();}
+function setSection(sec,btn){activeSection=sec;document.querySelectorAll('.hsec-btn').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');document.getElementById('sec-spolecne').style.display=sec==='spolecne'?'block':'none';document.getElementById('sec-individualni').style.display=sec==='individualni'?'block':'none';document.getElementById('sec-schvalene').style.display=sec==='schvalene'?'block':'none';if(sec==='spolecne'){renderHome();renderMainCal();}if(sec==='individualni'){renderIndTrainings();renderCal();}if(sec==='schvalene')renderApprovedReqs();}
 
 function toggleSel(id,e){e.stopPropagation();if(selectedIds[id]){delete selectedIds[id];}else{selectedIds[id]=true;}var card=document.getElementById('tc-'+id);if(card){if(selectedIds[id])card.classList.add('sel');else card.classList.remove('sel');}var cnt=Object.keys(selectedIds).length;document.getElementById('multi-count').textContent=cnt+' termín'+(cnt===1?'':cnt>=2&&cnt<=4?'y':'ů')+' vybráno';document.getElementById('multi-bar').classList[cnt>0?'add':'remove']('show');}
 function clearSel(){selectedIds={};document.querySelectorAll('.t-card.sel').forEach(function(c){c.classList.remove('sel');});document.querySelectorAll('.t-chk').forEach(function(c){c.checked=false;});document.getElementById('multi-bar').classList.remove('show');}
@@ -547,7 +762,155 @@ function openMultiReg(){
   });
 }
 
-function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){renderHome();renderIndTrainings();renderNotice();renderHeroTxt();renderInfoTxt();}if(name==='interest')renderPublicReqs();if(name==='admin')renderAdminPanel();}
+function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){renderHome();renderIndTrainings();renderNotice();/* CALENDAR JS */
+var mainCalYear=new Date().getFullYear(),mainCalMonth=new Date().getMonth();
+function mainCalPrev(){mainCalMonth--;if(mainCalMonth<0){mainCalMonth=11;mainCalYear--;}renderMainCal();}
+function mainCalNext(){mainCalMonth++;if(mainCalMonth>11){mainCalMonth=0;mainCalYear++;}renderMainCal();}
+
+function renderMainCal(){
+  var grid=document.getElementById('main-cal-grid');
+  var title=document.getElementById('main-cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[mainCalMonth]+' '+mainCalYear;
+
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+  var first=new Date(mainCalYear,mainCalMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1;
+  var daysInMonth=new Date(mainCalYear,mainCalMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build training map for all types
+  var groupMap={},indMap={},approvedDays={};
+
+  S.tr.filter(function(t){
+    if(!t.date)return false;
+    var p=t.date.split('-');
+    return parseInt(p[0])===mainCalYear&&parseInt(p[1])-1===mainCalMonth;
+  }).forEach(function(t){
+    var day=parseInt(t.date.split('-')[2]);
+    var regs=S.re.filter(function(r){return r.tid===t.id;});
+    var full=regs.length>=(t.spots||1);
+    if(t.type==='group'){if(!groupMap[day])groupMap[day]=[];groupMap[day].push({t:t,full:full});}
+    else{if(!indMap[day])indMap[day]=[];indMap[day].push({t:t,full:full});}
+  });
+
+  S.rq.filter(function(r){
+    return r.status==='approved'&&r.clientFeedback==='souhlasím';
+  }).forEach(function(r){
+    // approved requests don't have a date stored easily, skip for now
+  });
+
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(mainCalYear,mainCalMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var gTrains=groupMap[d];
+    var iTrains=indMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var label=d+'';
+
+    if(isPast){
+      cls+='past';
+    } else if(gTrains&&iTrains){
+      // both types
+      var gFree=gTrains.find(function(x){return!x.full;});
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(gFree||iFree){
+        cls+='multi';
+        var freeId=gFree?gFree.t.id:iFree.t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      } else cls+='ind-full';
+      label+=' 🗓+🐕';
+    } else if(gTrains){
+      var gFree=gTrains.find(function(x){return!x.full;});
+      if(gFree){cls+='group-free';onclick=' onclick="openDetail(''+gFree.t.id+'')"';}
+      else cls+='group-full';
+      var times=gTrains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      label=d+(times?' · '+times:'');
+    } else if(iTrains){
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(iFree){cls+='ind-free';onclick=' onclick="openDetail(''+iFree.t.id+'')"';}
+      else cls+='ind-full';
+    } else {
+      cls+='normal';
+    }
+
+    html+='<div class="'+cls.trim()+'" title="'+label+'"'+onclick+'>'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+/* CALENDAR JS */
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+var CAL_DAYS=['Po','Út','St','Čt','Pá','So','Ne'];
+var CAL_MONTHS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();}
+
+function renderCal(){
+  var grid=document.getElementById('cal-grid');
+  var title=document.getElementById('cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[calMonth]+' '+calYear;
+
+  // Build day of week headers (Mon first)
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+
+  // First day of month (0=Sun..6=Sat), convert to Mon-first (0=Mon..6=Sun)
+  var first=new Date(calYear,calMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1; // Mon=0
+  var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build map of training dates for this month (individual only)
+  var trainMap={};
+  S.tr.filter(function(t){return t.type==='individual';}).forEach(function(t){
+    if(!t.date)return;
+    var p=t.date.split('-');
+    if(parseInt(p[0])===calYear&&parseInt(p[1])-1===calMonth){
+      var day=parseInt(p[2]);
+      var regs=S.re.filter(function(r){return r.tid===t.id;});
+      var full=regs.length>=(t.spots||1);
+      if(!trainMap[day])trainMap[day]=[];
+      trainMap[day].push({t:t,full:full});
+    }
+  });
+
+  // Empty cells
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+
+  // Day cells
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var trains=trainMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var title2=d+'';
+    if(!trains){
+      cls+=isPast?'past':'normal';
+    } else {
+      var allFull=trains.every(function(x){return x.full;});
+      if(isPast){cls+='past';}
+      else if(allFull){cls+='full';}
+      else{
+        cls+='free';
+        // if multiple trainings on same day, open first free one
+        var freeId=trains.find(function(x){return!x.full;}).t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      }
+      // Show time as tooltip
+      var times=trains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      if(times)title2=d+' · '+times;
+    }
+    html+='<div class="'+cls.trim()+'" title="'+title2+'"'+onclick+'>'+d+'</div>';
+  }
+
+  grid.innerHTML=html;
+}
+
 function renderNotice(){var el=document.getElementById('notice-display');if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none';}
 function saveNotice(){db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':document.getElementById('notice-input').value.trim(),pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpráva zveřejněna \u2713');});}
 function clearNotice(){document.getElementById('notice-input').value='';document.getElementById('notice-pw-wrap').style.display='none';db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':'',pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpráva odstraněna');});}
@@ -582,15 +945,9 @@ function renderHome(){
   var el=document.getElementById('home-trainings');
   if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné společné tréninky</p></div>';return;}
   el.innerHTML=up.map(function(t){return makeCard(t,true);}).join('');
+  renderMainCal();
 }
-function renderIndTrainings(){
-  var now=new Date();now.setHours(0,0,0,0);
-  var up=S.tr.filter(function(t){return t.type==='individual'&&new Date(t.date)>=now;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
-  var el=document.getElementById('home-ind-trainings');var ibox=document.getElementById('int-home-box');
-  if(!up.length){el.innerHTML='<div class="empty"><div class="ei">🐕</div><p>Žádné individuální tréninky od trenéra</p></div>';ibox.style.display='flex';return;}
-  ibox.style.display='none';
-  el.innerHTML='<div class="t-grid">'+up.map(function(t){return makeCard(t,false);}).join('')+'</div>';
-}
+/* renderIndTrainings defined in calendar section */
 function renderApprovedReqs(){
   var el=document.getElementById('home-approved-reqs');if(!el)return;
   var approved=S.rq.filter(function(r){return r.status==='approved'&&r.clientFeedback==='souhlas\u00edm';});
@@ -712,6 +1069,155 @@ var confCb=null;
 function showConf(title,body,extra,cb){document.getElementById('conf-title').textContent=title;document.getElementById('conf-body').innerHTML=body;document.getElementById('conf-extra').innerHTML=extra||'';confCb=cb;document.getElementById('conf-ok').onclick=function(){if(confCb)confCb();};document.getElementById('conf-overlay').classList.add('open');}
 function closeConf(){document.getElementById('conf-overlay').classList.remove('open');}
 document.getElementById('conf-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeConf();});
+
+/* CALENDAR JS */
+var mainCalYear=new Date().getFullYear(),mainCalMonth=new Date().getMonth();
+function mainCalPrev(){mainCalMonth--;if(mainCalMonth<0){mainCalMonth=11;mainCalYear--;}renderMainCal();}
+function mainCalNext(){mainCalMonth++;if(mainCalMonth>11){mainCalMonth=0;mainCalYear++;}renderMainCal();}
+
+function renderMainCal(){
+  var grid=document.getElementById('main-cal-grid');
+  var title=document.getElementById('main-cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[mainCalMonth]+' '+mainCalYear;
+
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+  var first=new Date(mainCalYear,mainCalMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1;
+  var daysInMonth=new Date(mainCalYear,mainCalMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build training map for all types
+  var groupMap={},indMap={},approvedDays={};
+
+  S.tr.filter(function(t){
+    if(!t.date)return false;
+    var p=t.date.split('-');
+    return parseInt(p[0])===mainCalYear&&parseInt(p[1])-1===mainCalMonth;
+  }).forEach(function(t){
+    var day=parseInt(t.date.split('-')[2]);
+    var regs=S.re.filter(function(r){return r.tid===t.id;});
+    var full=regs.length>=(t.spots||1);
+    if(t.type==='group'){if(!groupMap[day])groupMap[day]=[];groupMap[day].push({t:t,full:full});}
+    else{if(!indMap[day])indMap[day]=[];indMap[day].push({t:t,full:full});}
+  });
+
+  S.rq.filter(function(r){
+    return r.status==='approved'&&r.clientFeedback==='souhlasím';
+  }).forEach(function(r){
+    // approved requests don't have a date stored easily, skip for now
+  });
+
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(mainCalYear,mainCalMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var gTrains=groupMap[d];
+    var iTrains=indMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var label=d+'';
+
+    if(isPast){
+      cls+='past';
+    } else if(gTrains&&iTrains){
+      // both types
+      var gFree=gTrains.find(function(x){return!x.full;});
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(gFree||iFree){
+        cls+='multi';
+        var freeId=gFree?gFree.t.id:iFree.t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      } else cls+='ind-full';
+      label+=' 🗓+🐕';
+    } else if(gTrains){
+      var gFree=gTrains.find(function(x){return!x.full;});
+      if(gFree){cls+='group-free';onclick=' onclick="openDetail(''+gFree.t.id+'')"';}
+      else cls+='group-full';
+      var times=gTrains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      label=d+(times?' · '+times:'');
+    } else if(iTrains){
+      var iFree=iTrains.find(function(x){return!x.full;});
+      if(iFree){cls+='ind-free';onclick=' onclick="openDetail(''+iFree.t.id+'')"';}
+      else cls+='ind-full';
+    } else {
+      cls+='normal';
+    }
+
+    html+='<div class="'+cls.trim()+'" title="'+label+'"'+onclick+'>'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+/* CALENDAR JS */
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+var CAL_DAYS=['Po','Út','St','Čt','Pá','So','Ne'];
+var CAL_MONTHS=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCal();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCal();}
+
+function renderCal(){
+  var grid=document.getElementById('cal-grid');
+  var title=document.getElementById('cal-title');
+  if(!grid||!title)return;
+  title.textContent=CAL_MONTHS[calMonth]+' '+calYear;
+
+  // Build day of week headers (Mon first)
+  var html=CAL_DAYS.map(function(d){return'<div class="cal-dow">'+d+'</div>';}).join('');
+
+  // First day of month (0=Sun..6=Sat), convert to Mon-first (0=Mon..6=Sun)
+  var first=new Date(calYear,calMonth,1).getDay();
+  var startOffset=(first===0)?6:first-1; // Mon=0
+  var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
+
+  // Build map of training dates for this month (individual only)
+  var trainMap={};
+  S.tr.filter(function(t){return t.type==='individual';}).forEach(function(t){
+    if(!t.date)return;
+    var p=t.date.split('-');
+    if(parseInt(p[0])===calYear&&parseInt(p[1])-1===calMonth){
+      var day=parseInt(p[2]);
+      var regs=S.re.filter(function(r){return r.tid===t.id;});
+      var full=regs.length>=(t.spots||1);
+      if(!trainMap[day])trainMap[day]=[];
+      trainMap[day].push({t:t,full:full});
+    }
+  });
+
+  // Empty cells
+  for(var i=0;i<startOffset;i++)html+='<div class="cal-day empty"></div>';
+
+  // Day cells
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    var isPast=dt<today;
+    var trains=trainMap[d];
+    var cls='cal-day ';
+    var onclick='';
+    var title2=d+'';
+    if(!trains){
+      cls+=isPast?'past':'normal';
+    } else {
+      var allFull=trains.every(function(x){return x.full;});
+      if(isPast){cls+='past';}
+      else if(allFull){cls+='full';}
+      else{
+        cls+='free';
+        // if multiple trainings on same day, open first free one
+        var freeId=trains.find(function(x){return!x.full;}).t.id;
+        onclick=' onclick="openDetail(''+freeId+'')"';
+      }
+      // Show time as tooltip
+      var times=trains.map(function(x){return x.t.time||'';}).filter(Boolean).join(', ');
+      if(times)title2=d+' · '+times;
+    }
+    html+='<div class="'+cls.trim()+'" title="'+title2+'"'+onclick+'>'+d+'</div>';
+  }
+
+  grid.innerHTML=html;
+}
 
 renderHeroTxt();renderInfoTxt();
 var _se=localStorage.getItem('vcvikEmail');if(_se){myEmail=_se;var _ef=document.getElementById('my-email-filter');if(_ef)_ef.value=_se;}
