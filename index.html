@@ -453,6 +453,16 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 </div>
 
+<!-- Day picker overlay -->
+<div class="overlay" id="picker-overlay">
+  <div class="obox" style="max-width:380px">
+    <button class="oclose" onclick="closePicker()">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-bottom:0.3rem">Vyberte trénink</div>
+    <div id="picker-title" style="font-size:0.84rem;color:var(--gray2);margin-bottom:1rem"></div>
+    <div id="picker-list"></div>
+  </div>
+</div>
+
 <!-- Detail overlay -->
 <div class="overlay" id="det-overlay">
   <div class="obox">
@@ -671,16 +681,23 @@ function buildCal(gridId, titleId, year, month, filterType) {
       }
     }
 
-    html += '<div class="' + cls + '" title="' + tip + '"' + (clickId ? ' data-tid="'+clickId+'"' : '') + '>' + d + '</div>';
+    // Store all IDs for this day (for multi-training picker)
+    var allIds = entries.map(function(e){ return e.id; }).join(',');
+    html += '<div class="' + cls + '" title="' + tip + '"' + (clickId ? ' data-tids="'+allIds+'"' : '') + '>' + d + '</div>';
   }
 
   grid.innerHTML = html;
 
-  // Attach click to days with data-tid
-  grid.querySelectorAll('[data-tid]').forEach(function(el){
+  // Attach click to days with data-tids
+  grid.querySelectorAll('[data-tids]').forEach(function(el){
     el.style.cursor = 'pointer';
     el.addEventListener('click', function(){
-      openDetail(this.getAttribute('data-tid'));
+      var ids = this.getAttribute('data-tids').split(',').filter(Boolean);
+      if(ids.length === 1){
+        openDetail(ids[0]);
+      } else {
+        openDayPicker(ids);
+      }
     });
   });
 }
@@ -834,6 +851,24 @@ function renderApprovedReqs(){
   }).join('');
 }
 
+// ── DAY PICKER ────────────────────────────────────────────────────────────────
+function openDayPicker(ids){
+  var trains = ids.map(function(id){ return S.tr.find(function(t){ return t.id === id; }); }).filter(Boolean);
+  var rows = trains.map(function(t){
+    var regs = S.re.filter(function(r){ return r.tid === t.id; });
+    var full = regs.length >= (t.spots||1);
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.9rem;background:var(--bg3);border-radius:8px;border:1px solid '+(full?'var(--red)':'var(--lime)')+';margin-bottom:0.5rem;cursor:'+(full?'default':'pointer')+'" '+(full?'':'onclick="closePicker();openDetail(''+t.id+'')"')+'>'
+      +'<div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.04em">'+esc(t.time||'—')+'</div>'
+      +'<div style="font-size:0.8rem;color:var(--gray2)">'+esc(t.name)+' · '+t.price+' Kč</div></div>'
+      +'<div style="font-size:0.82rem;font-weight:700;color:'+(full?'var(--red)':'var(--lime)')+'"> '+(full?'OBSAZENO':'Volné →')+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('picker-title').textContent = trains[0] ? fmtDate(trains[0].date) : '';
+  document.getElementById('picker-list').innerHTML = rows;
+  document.getElementById('picker-overlay').classList.add('open');
+}
+function closePicker(){ document.getElementById('picker-overlay').classList.remove('open'); }
+
 // ── DETAIL OVERLAY ─────────────────────────────────────────────────────────
 function openDetail(id){
   var t = S.tr.find(function(x){ return x.id === id; }); if(!t) return;
@@ -863,6 +898,7 @@ function openDetail(id){
 }
 function closeDet(){ document.getElementById('det-overlay').classList.remove('open'); currentDetailId=null; }
 document.getElementById('det-overlay').addEventListener('click', function(e){ if(e.target===e.currentTarget) closeDet(); });
+document.getElementById('picker-overlay').addEventListener('click', function(e){ if(e.target===e.currentTarget) closePicker(); });
 function checkRegPw(){
   var t = S.tr.find(function(x){ return x.id===currentDetailId; }); if(!t) return;
   if(document.getElementById('reg-pw-input').value.trim() === t.regpw){
