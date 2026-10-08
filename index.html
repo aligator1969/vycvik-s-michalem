@@ -627,40 +627,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 <div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
-window.showSendMsg=function(tid,tname){
-  var regs=S.re.filter(function(r){return r.tid===tid;});
-  if(!regs.length){alert('Žádní přihlášení.');return;}
-  var phones=regs.map(function(r){return r.phone.replace(/\s/g,'');});
-  var existing=document.getElementById('sendmsg-modal');
-  if(existing)existing.remove();
-  var m=document.createElement('div');
-  m.id='sendmsg-modal';
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
-  m.innerHTML='<div style="background:#1a1a1a;border:1px solid var(--lime);border-radius:14px;padding:1.6rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto">'
-    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.3rem;letter-spacing:0.04em;margin-bottom:0.3rem">✉ Zpráva přihlášeným</div>'
-    +'<div style="font-size:0.8rem;color:var(--gray2);margin-bottom:1rem">'+tname+' · '+regs.length+' přihlášených</div>'
-    +'<div style="font-size:0.78rem;color:var(--gray2);margin-bottom:0.3rem">Text zprávy:</div>'
-    +'<textarea id="sendmsg-text" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--white);padding:0.75rem;font-size:0.9rem;font-family:Inter,sans-serif;resize:vertical;min-height:110px;outline:none" placeholder="Napište zprávu...">Dobrý den,\nblíží se náš trénink '+tname+'. Pokud máte dotazy, kontaktujte nás.\n\nS pozdravem, Martin</textarea>'
-    +'<div style="display:grid;gap:0.6rem;margin-top:1rem">'
-    +'<button onclick="(function(){'
-      +'var t=document.getElementById(\'sendmsg-text\').value;'
-      +'window.open(\'https://wa.me/?text=\'+encodeURIComponent(t),\'_blank\');'
-    +'})()" style="background:#25D366;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">💬 Otevřít WhatsApp (vybrat skupinu)</button>'
-    +'<button onclick="(function(){'
-      +'var t=document.getElementById(\'sendmsg-text\').value;'
-      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
-      +'window.open(\'sms:\'+nums.join(\',\')+\'?&body=\'+encodeURIComponent(t));'
-    +'})()" style="background:#2563EB;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">📱 SMS (otevřít na mobilu)</button>'
-    +'<button onclick="(function(){'
-      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
-      +'navigator.clipboard.writeText(nums.join(\', \'));'
-      +'this.textContent=\'✅ Zkopírováno!\';var b=this;setTimeout(function(){b.textContent=\'📋 Kopírovat čísla pro WhatsApp skupinu\';},2000);'
-    +'})()" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:0.75rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem">📋 Kopírovat čísla pro WhatsApp skupinu</button>'
-    +'<button onclick="document.getElementById(\'sendmsg-modal\').remove()" style="background:transparent;border:1px solid var(--border);color:var(--gray2);padding:0.55rem 1rem;border-radius:8px;cursor:pointer;font-size:0.85rem">Zavřít</button>'
-    +'</div></div>';
-  document.body.appendChild(m);
-  m.addEventListener('click',function(e){if(e.target===m)m.remove();});
-};
 </script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
@@ -1171,6 +1137,42 @@ window.showGCalModal=function(url,date,time,name){
   document.body.appendChild(m);
   m.addEventListener('click',function(e){if(e.target===m)m.remove();});
 };
+
+window.showSendMsg=function(tid,tname){
+  var regs=S.re.filter(function(r){return r.tid===tid;});
+  if(!regs.length){alert('Žádní přihlášení.');return;}
+  var phones=regs.map(function(r){return r.phone.replace(/\s/g,'');});
+  var existing=document.getElementById('sendmsg-modal');
+  if(existing)existing.remove();
+  var m=document.createElement('div');
+  m.id='sendmsg-modal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+  m.innerHTML='<div style="background:#1a1a1a;border:1px solid var(--lime);border-radius:14px;padding:1.6rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto">'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.3rem;letter-spacing:0.04em;margin-bottom:0.3rem">✉ Zpráva přihlášeným</div>'
+    +'<div style="font-size:0.8rem;color:var(--gray2);margin-bottom:1rem">'+tname+' · '+regs.length+' přihlášených</div>'
+    +'<div style="font-size:0.78rem;color:var(--gray2);margin-bottom:0.3rem">Text zprávy:</div>'
+    +'<textarea id="sendmsg-text" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--white);padding:0.75rem;font-size:0.9rem;font-family:Inter,sans-serif;resize:vertical;min-height:110px;outline:none" placeholder="Napište zprávu...">Dobrý den,\nblíží se náš trénink '+tname+'. Pokud máte dotazy, kontaktujte nás.\n\nS pozdravem, Martin</textarea>'
+    +'<div style="display:grid;gap:0.6rem;margin-top:1rem">'
+    +'<button onclick="(function(){'
+      +'var t=document.getElementById(\'sendmsg-text\').value;'
+      +'window.open(\'https://wa.me/?text=\'+encodeURIComponent(t),\'_blank\');'
+    +'})()" style="background:#25D366;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">💬 Otevřít WhatsApp (vybrat skupinu)</button>'
+    +'<button onclick="(function(){'
+      +'var t=document.getElementById(\'sendmsg-text\').value;'
+      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
+      +'window.open(\'sms:\'+nums.join(\',\')+\'?&body=\'+encodeURIComponent(t));'
+    +'})()" style="background:#2563EB;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">📱 SMS (otevřít na mobilu)</button>'
+    +'<button onclick="(function(){'
+      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
+      +'navigator.clipboard.writeText(nums.join(\', \'));'
+      +'this.textContent=\'✅ Zkopírováno!\';var b=this;setTimeout(function(){b.textContent=\'📋 Kopírovat čísla pro WhatsApp skupinu\';},2000);'
+    +'})()" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:0.75rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem">📋 Kopírovat čísla pro WhatsApp skupinu</button>'
+    +'<button onclick="document.getElementById(\'sendmsg-modal\').remove()" style="background:transparent;border:1px solid var(--border);color:var(--gray2);padding:0.55rem 1rem;border-radius:8px;cursor:pointer;font-size:0.85rem">Zavřít</button>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)m.remove();});
+};
+
 </script>
 </body>
 </html>
