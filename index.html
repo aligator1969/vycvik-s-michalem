@@ -97,6 +97,8 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .t-price{font-size:1.35rem;font-weight:900;color:var(--lime);}
 .spots-bar{margin-top:0.55rem;background:var(--bg3);border-radius:20px;height:4px;overflow:hidden;}
 .spots-fill{height:100%;background:var(--lime);border-radius:20px;}
+.today-card{border:2px solid var(--lime)!important;box-shadow:0 0 16px rgba(168,216,50,0.25)!important;}
+.today-banner{background:var(--lime);color:#000;font-size:0.7rem;font-weight:900;letter-spacing:0.12em;padding:0.22rem 0.7rem;border-radius:4px;display:inline-block;margin-bottom:0.6rem;}
 .spots-fill.full{background:var(--red);}
 .t-more{font-size:0.78rem;color:var(--lime);margin-top:0.65rem;font-weight:700;}
 .multi-bar{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:var(--lime);color:#000;padding:0.8rem 1.3rem;border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,0.5);display:none;align-items:center;gap:1rem;z-index:500;white-space:nowrap;}
@@ -784,18 +786,22 @@ function previewNotice(){var v=document.getElementById('notice-input').value.tri
 // ── MAKE CARD ──────────────────────────────────────────────────────────────────
 function makeCard(t,showChk){
   var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1,pct=Math.min(100,Math.round(filled/max*100)),full=filled>=max,isSel=!!selectedIds[t.id];
+  var now=new Date();now.setHours(0,0,0,0);
+  var td=new Date(t.date);td.setHours(0,0,0,0);
+  var isToday=td.getTime()===now.getTime();
   var h='';
-  if(showChk)h+='<div class="t-wrap"><input type="checkbox" class="t-chk"'+(isSel?' checked':'')+' id="chk-'+t.id+'" onclick="toggleSel(\''+t.id+'\',event)">';
-  h+='<div class="t-card'+(isSel?' sel':'')+'" id="tc-'+t.id+'" onclick="openDetail(\''+t.id+'\')">';
-  h+='<span class="tbadge '+(t.type==='group'?'group':'individual')+'">'+(t.type==='group'?'Skupinov\u00fd':'Individu\u00e1ln\u00ed')+'</span>';
+  if(showChk)h+='<div class="t-wrap"><input type="checkbox" class="t-chk"'+(isSel?' checked':'')+' id="chk-'+t.id+'" onclick="toggleSel(''+t.id+'',event)">';
+  h+='<div class="t-card'+(isSel?' sel':'')+(isToday?' today-card':'')+'" id="tc-'+t.id+'" onclick="openDetail(''+t.id+'')">';
+  if(isToday)h+='<div class="today-banner">★ DNES ★</div>';
+  h+='<span class="tbadge '+(t.type==='group'?'group':'individual')+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';
   h+='<h3>'+esc(t.name)+'</h3>';
-  h+='<div class="t-meta">\ud83d\udcc5 '+fmtDate(t.date)+(t.time?' \u00b7 '+t.time:'')+(t.dur?' \u00b7 \u23f1 '+t.dur+' min':'')+'</div>';
-  h+='<div class="t-price">'+t.price+' K\u010d</div>';
-  if(t.type==='group'){h+='<div style="font-size:0.84rem;color:'+(full?'var(--red)':'var(--gray)')+';margin-top:0.42rem;'+(full?'font-weight:700':'')+'">'+(full?'OBSAZENO':'Voln\u00e1 m\u00edsta: '+(max-filled)+' / '+max)+'</div><div class="spots-bar"><div class="spots-fill'+(full?' full':'')+'" style="width:'+pct+'%"></div></div>';}
-  else{h+='<div style="font-size:0.84rem;margin-top:0.42rem;color:'+(full?'var(--red)':'var(--lime)')+';font-weight:700">'+(full?'OBSAZENO':'Voln\u00e9 m\u00edsto')+'</div>';}
-  if(t.regpw&&!full)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.4rem">\ud83d\udd11 P\u0159ihl\u00e1\u0161en\u00ed pod heslem</div>';
-  if(regs.length>0)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.48rem;border-top:1px solid var(--border);padding-top:0.48rem"><span style="color:var(--lime);font-weight:700">\u2705</span> '+regs.map(function(r){return esc(r.name);}).join(', ')+'</div>';
-  h+='<div class="t-more">\u25bc Klikn\u011bte pro detail a p\u0159ihl\u00e1\u0161en\u00ed</div>';
+  h+='<div class="t-meta">📅 '+fmtDate(t.date)+(t.time?' · '+t.time:'')+(t.dur?' · ⏱ '+t.dur+' min':'')+'</div>';
+  h+='<div class="t-price">'+t.price+' Kč</div>';
+  if(t.type==='group'){h+='<div style="font-size:0.84rem;color:'+(full?'var(--red)':'var(--gray)')+';margin-top:0.42rem;'+(full?'font-weight:700':'')+'">'+(full?'OBSAZENO':'Volná místa: '+(max-filled)+' / '+max)+'</div><div class="spots-bar"><div class="spots-fill'+(full?' full':'')+'" style="width:'+pct+'%"></div></div>';}
+  else{h+='<div style="font-size:0.84rem;margin-top:0.42rem;color:'+(full?'var(--red)':'var(--lime)')+';font-weight:700">'+(full?'OBSAZENO':'Volné místo')+'</div>';}
+  if(t.regpw&&!full)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.4rem">🔑 Přihlášení pod heslem</div>';
+  if(regs.length>0)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.48rem;border-top:1px solid var(--border);padding-top:0.48rem"><span style="color:var(--lime);font-weight:700">✅</span> '+regs.map(function(r){return esc(r.name);}).join(', ')+'</div>';
+  h+='<div class="t-more">▼ Klikněte pro detail a přihlášení</div>';
   h+='</div>';
   if(showChk)h+='</div>';
   return h;
@@ -868,7 +874,49 @@ function cancelTraining(id){
   showConf('\ud83d\udce2 Zru\u0161it lekci: '+t.name,'\ud83d\udcc5 '+fmtDate(t.date)+(t.time?' \u00b7 '+t.time:''),clientsHtml+actionsHtml,null);
 }
 
-function renderTrainTable(){var sorted=S.tr.slice().sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});document.getElementById('train-tbody').innerHTML=sorted.map(function(t){var cnt=S.re.filter(function(r){return r.tid===t.id;}).length,hasPw=t.type==='group'&&t.regpw;return'<tr><td>'+esc(t.name)+'</td><td><span class="tbadge '+(t.type==='group'?'group':'individual')+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinov\u00fd':'Individu\u00e1ln\u00ed')+'</span></td><td style="white-space:nowrap">'+fmtDate(t.date)+'</td><td>'+(t.time||'\u2014')+'</td><td style="color:var(--lime);font-weight:700">'+t.price+' K\u010d</td><td>'+(t.spots||1)+'</td><td><strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--lime)')+'">'+cnt+'</strong></td><td>'+(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:var(--gray2)">\u2014</span>')+'</td><td style="white-space:nowrap"><button class="btn btn-s btn-sm" onclick="editTraining(\''+t.id+'\')">\u270f\ufe0f</button> <button class="btn btn-s btn-sm" title="Zru\u0161it lekci" onclick="cancelTraining(\''+t.id+'\')">\ud83d\udce2</button> <button class="btn btn-d" onclick="delTraining(\''+t.id+'\')">\u2715</button></td></tr>';}).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--gray2);padding:1.4rem">\u017d\u00e1dn\u00e9 tr\u00e9ninky</td></tr>';}
+function renderTrainTable(){
+  var now=new Date();now.setHours(0,0,0,0);
+  var sorted=S.tr.slice().sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
+  var upcoming=[],past=[];
+  sorted.forEach(function(t){var td=new Date(t.date);td.setHours(0,0,0,0);if(td>=now)upcoming.push(t);else past.push(t);});
+  function rowHtml(t,isPast){
+    var cnt=S.re.filter(function(r){return r.tid===t.id;}).length,hasPw=t.type==='group'&&t.regpw;
+    var td=new Date(t.date);td.setHours(0,0,0,0);
+    var isToday=(td.getTime()===now.getTime());
+    var rowStyle=isPast?'opacity:0.55':(isToday?'background:rgba(168,216,50,0.08);border-left:3px solid var(--lime)':'');
+    return '<tr style="'+rowStyle+'">'
+      +(isToday?'<td><strong style="color:var(--lime)">★ '+esc(t.name)+'</strong></td>':'<td>'+esc(t.name)+'</td>')
+      +'<td><span class="tbadge '+(t.type==='group'?'group':'individual')+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinový':'Individuální')+'</span></td>'
+      +'<td style="white-space:nowrap">'+(isToday?'<strong style="color:var(--lime)">DNES</strong> ':'')+fmtDate(t.date)+'</td>'
+      +'<td>'+(t.time||'—')+'</td>'
+      +'<td style="color:var(--lime);font-weight:700">'+t.price+' Kč</td>'
+      +'<td>'+(t.spots||1)+'</td>'
+      +'<td><strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--lime)')+'">'+cnt+'</strong></td>'
+      +'<td>'+(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:var(--gray2)">—</span>')+'</td>'
+      +'<td style="white-space:nowrap"><button class="btn btn-s btn-sm" onclick="editTraining(\''+t.id+'\')">✏️</button> <button class="btn btn-s btn-sm" title="Zrušit lekci" onclick="cancelTraining(\''+t.id+'\')">📢</button> <button class="btn btn-d" onclick="delTraining(\''+t.id+'\')">✕</button></td></tr>';
+  }
+  var upHtml=upcoming.map(function(t){return rowHtml(t,false);}).join('');
+  if(!upHtml)upHtml='<tr><td colspan="9" style="text-align:center;color:var(--gray2);padding:1.4rem">Žádné nadcházející tréninky</td></tr>';
+  var archHtml='';
+  if(past.length){
+    archHtml='<tr id="arch-toggle-row" style="cursor:pointer;background:rgba(255,255,255,0.03)" onclick="toggleArchive()">'
+      +'<td colspan="9" style="text-align:center;color:var(--gray2);padding:0.6rem;font-size:0.85rem">'
+      +'<span id="arch-toggle-label">📂 Archiv – '+past.length+' proběhlých tréninků (kliknutím zobrazit)</span>'
+      +'</td></tr>'
+      +'<tr id="arch-tr" style="display:none"><td colspan="9" style="padding:0"><table style="width:100%;border-collapse:collapse"><tbody id="arch-tbody">'
+      +past.map(function(t){return rowHtml(t,true);}).join('')
+      +'</tbody></table></td></tr>';
+  }
+  document.getElementById('train-tbody').innerHTML=upHtml+archHtml;
+}
+window.toggleArchive=function(){
+  var tr=document.getElementById('arch-tr');
+  var lbl=document.getElementById('arch-toggle-label');
+  if(!tr)return;
+  var hidden=tr.style.display==='none';
+  tr.style.display=hidden?'':'none';
+  lbl.textContent=hidden?'📂 Archiv – skrýt proběhlé tréninky':'📂 Archiv (kliknutím zobrazit)';
+};
 function fillTForm(t,isEdit){document.getElementById('t-edit-id').value=isEdit?t.id:'';document.getElementById('t-name').value=t.name;document.getElementById('t-type').value=t.type==='group'?'skupina':'individu\u00e1ln\u00ed';document.getElementById('t-date').value=t.date;document.getElementById('t-time').value=t.time||'';document.getElementById('t-price').value=t.price;document.getElementById('t-dur').value=t.dur||'';document.getElementById('t-spots').value=t.spots||'';document.getElementById('t-note').value=t.note||'';document.getElementById('t-regpw').value=t.regpw||'';}
 function editTraining(id){var t=S.tr.find(function(x){return x.id===id;});if(!t)return;fillTForm(t,true);setRepeat('none');document.getElementById('tform-title').textContent='\u270f\ufe0f Upravit tr\u00e9nink';document.querySelector('.aform').scrollIntoView({behavior:'smooth',block:'start'});}
 function copyTraining(id){var t=S.tr.find(function(x){return x.id===id;});if(!t)return;fillTForm(t,false);setRepeat('weekly');document.getElementById('tform-title').textContent='\ud83d\udccb Kop\u00edrovat';document.querySelector('.aform').scrollIntoView({behavior:'smooth',block:'start'});toast('Zvolte opakov\u00e1n\u00ed a ulo\u017ete');}
@@ -879,7 +927,24 @@ document.getElementById('t-rcount').addEventListener('input',updateRPreview);
 document.getElementById('t-date').addEventListener('input',updateRPreview);
 function addDays(s,d){var dt=new Date(s);dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
 function addMonths(s,m){var dt=new Date(s);dt.setMonth(dt.getMonth()+m);return dt.toISOString().slice(0,10);}
-function saveTraining(){var name=document.getElementById('t-name').value.trim(),typ=document.getElementById('t-type').value,date=document.getElementById('t-date').value,time=document.getElementById('t-time').value,price=parseInt(document.getElementById('t-price').value),dur=parseInt(document.getElementById('t-dur').value)||0,spots=parseInt(document.getElementById('t-spots').value)||1,note=document.getElementById('t-note').value.trim(),regpw=document.getElementById('t-regpw').value.trim(),editId=document.getElementById('t-edit-id').value;if(!name||!date||!price){toast('Vyplnte n\u00e1zev, datum a cenu','err');return;}var data={'jm\u00e9no':name,typ:typ,datum:date,'\u010das':time,cena:price,'trv\u00e1n\u00ed':dur,skvrny:spots,'pozn\u00e1mka':note,regpw:regpw};if(editId){db.collection('\u0161kolen\u00ed').doc(editId).update(data).then(function(){clearTForm();toast('Tr\u00e9nink upraven \u2713');});return;}var cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1),cur=date,batch=db.batch();for(var i=0;i<cnt;i++){batch.set(db.collection('\u0161kolen\u00ed').doc(uid()),Object.assign({},data,{datum:cur}));if(i<cnt-1){if(repeatMode==='weekly')cur=addDays(cur,7);else if(repeatMode==='biweekly')cur=addDays(cur,14);else cur=addMonths(cur,1);}}batch.commit().then(function(){clearTForm();toast(cnt>1?'Vytvo\u0159eno '+cnt+' tr\u00e9nink\u016f \u2713':'Tr\u00e9nink ulo\u017een \u2713');});}
+function saveTraining(){var name=document.getElementById('t-name').value.trim(),typ=document.getElementById('t-type').value,date=document.getElementById('t-date').value,time=document.getElementById('t-time').value,price=parseInt(document.getElementById('t-price').value),dur=parseInt(document.getElementById('t-dur').value)||0,spots=parseInt(document.getElementById('t-spots').value)||1,note=document.getElementById('t-note').value.trim(),regpw=document.getElementById('t-regpw').value.trim(),editId=document.getElementById('t-edit-id').value;if(!name||!date||!price){toast('Vyplnte n\u00e1zev, datum a cenu','err');return;}var data={'jm\u00e9no':name,typ:typ,datum:date,'\u010das':time,cena:price,'trv\u00e1n\u00ed':dur,skvrny:spots,'pozn\u00e1mka':note,regpw:regpw};if(editId){db.collection('\u0161kolen\u00ed').doc(editId).update(data).then(function(){clearTForm();toast('Tr\u00e9nink upraven \u2713');});return;}var cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1),cur=date,batch=db.batch();for(var i=0;i<cnt;i++){batch.set(db.collection('\u0161kolen\u00ed').doc(uid()),Object.assign({},data,{datum:cur}));if(i<cnt-1){if(repeatMode==='weekly')cur=addDays(cur,7);else if(repeatMode==='biweekly')cur=addDays(cur,14);else cur=addMonths(cur,1);}}batch.commit().then(function(){
+  clearTForm();
+  toast(cnt>1?'Vytvořeno '+cnt+' tréninků ✓':'Trénink uložen ✓');
+  // GKal link for first training
+  if(cnt===1){
+    var gdate=date.replace(/-/g,'');
+    var gtime=(time||'16:00').replace(':','');
+    var gstart=gdate+'T'+gtime+'00';
+    var durMin=dur||60;
+    var endDate=new Date(date+'T'+(time||'16:00')+':00');
+    endDate.setMinutes(endDate.getMinutes()+durMin);
+    var gend=endDate.toISOString().replace(/[-:]/g,'').slice(0,15);
+    var gurl='https://calendar.google.com/calendar/r/eventedit?text='+encodeURIComponent('🐾 '+name)+'&dates='+gstart+'/'+gend+'&details='+encodeURIComponent('Výcvik psů s Michalem
+Cena: '+price+' Kč'+(note?'
+Poznámka: '+note:''))+'&location='+encodeURIComponent('Rudník, Krkonoše')+'&ctz=Europe%2FPrague';
+    showGCalModal(gurl,date,time,name);
+  }
+});}
 function delTraining(id){showConf('Smazat tr\u00e9nink','Opravdu smazat? Vymažou se i p\u0159ihl\u00e1\u0161en\u00ed.','',function(){var batch=db.batch();batch.delete(db.collection('\u0161kolen\u00ed').doc(id));S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Smaz\u00e1no');});});}
 function switchRegTab(tab,btn){document.getElementById('greg-content').style.display=tab==='g'?'block':'none';document.getElementById('ireg-content').style.display=tab==='i'?'block':'none';document.querySelectorAll('#atab-registrations .atab').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');if(tab==='i')renderIndRegs();else renderGroupRegs();}
 function renderGroupRegs(){var el=document.getElementById('greg-content');var ts=S.tr.filter(function(t){return t.type==='group';}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});if(!ts.length){el.innerHTML='<div class="empty"><div class="ei">&#128101;</div><p>\u017d\u00e1dn\u00e9 skupinov\u00e9 tr\u00e9ninky</p></div>';return;}el.innerHTML=ts.map(function(t){var regs=S.re.filter(function(r){return r.tid===t.id;}),filled=regs.length,max=t.spots||1;var h='<div style="background:var(--bg2);border-radius:10px;padding:1.2rem 1.4rem;border:1px solid var(--border);margin-bottom:1.1rem;"><div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:0.7rem"><div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:0.04em">'+esc(t.name)+' <span style="font-size:0.76rem;font-weight:400;color:var(--gray2);font-family:Inter,sans-serif">'+fmtDate(t.date)+(t.time?' \u00b7 '+t.time:'')+'</span></div><div style="font-size:0.82rem;color:'+(filled>=max?'var(--red)':'var(--lime)')+';font-weight:700;margin-top:0.2rem">'+filled+' / '+max+(filled>=max?' \u2013 OBSAZENO':'')+'</div>'+(t.regpw?'<div style="font-size:0.78rem;margin-top:0.28rem">\ud83d\udd11 <span class="pw-tag">'+esc(t.regpw)+'</span></div>':'<div style="font-size:0.74rem;color:var(--gray2);margin-top:0.24rem">bez hesla</div>')+'</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap">'+(regs.length?'<button class="btn btn-b btn-sm" onclick="exportCSV(\''+t.id+'\')">\u2b07 CSV</button>':'')+'<button class="btn btn-d btn-sm" onclick="clearRegs(\''+t.id+'\')">&#128465;</button></div></div>';if(regs.length){regs.forEach(function(r,i){h+='<div class="greg-item"><div><span style="font-weight:700">'+(i+1)+'. '+esc(r.name)+'</span>'+(r.dog?' <span style="color:var(--lime);font-size:0.78rem">\ud83d\udc36 '+esc(r.dog)+'</span>':'')+'<div style="font-size:0.78rem;color:var(--gray2)">\ud83d\udcde '+esc(r.phone)+' \u00b7 '+esc(r.email)+'</div></div><button class="btn btn-d" style="padding:0.26rem 0.58rem;font-size:0.7rem" onclick="deleteReg(\''+r.id+'\')">\u2715</button></div>';});}else h+='<div style="font-size:0.86rem;color:var(--gray2);padding:0.4rem 0">Zat\u00edm \u017e\u00e1dn\u00ed p\u0159ihl\u00e1\u0161en\u00ed</div>';h+='</div>';return h;}).join('');}
@@ -901,6 +966,24 @@ renderInfoTxt();
 renderGroupCal();
 var _se=localStorage.getItem('vcvikEmail');
 if(_se){myEmail=_se;var _ef=document.getElementById('my-email-filter');if(_ef)_ef.value=_se;}
+
+window.showGCalModal=function(url,date,time,name){
+  var existing=document.getElementById('gcal-modal');
+  if(existing)existing.remove();
+  var m=document.createElement('div');
+  m.id='gcal-modal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center';
+  m.innerHTML='<div style="background:#1a1a1a;border:1px solid var(--lime);border-radius:12px;padding:2rem;max-width:440px;width:90%;text-align:center">'
+    +'<div style="font-size:2rem;margin-bottom:0.5rem">📅</div>'
+    +'<h3 style="color:var(--lime);margin:0 0 0.5rem">Trénink uložen!</h3>'
+    +'<p style="color:var(--gray);margin:0 0 1.2rem;font-size:0.9rem">Přidat <strong style="color:#fff">'+esc(name)+'</strong><br>do Google Kalendáře trenéra?</p>'
+    +'<a href="'+url+'" target="_blank" style="display:inline-block;background:var(--lime);color:#000;font-weight:700;padding:0.75rem 1.5rem;border-radius:8px;text-decoration:none;margin-bottom:0.8rem;width:100%;box-sizing:border-box">'
+    +'📅 Přidat do Google Kalendáře</a>'
+    +'<div style="margin-top:0.5rem"><button onclick="document.getElementById('gcal-modal').remove()" style="background:transparent;border:1px solid var(--gray2);color:var(--gray);padding:0.5rem 1.5rem;border-radius:6px;cursor:pointer;font-size:0.85rem">Přeskočit</button></div>'
+    +'</div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)m.remove();});
+};
 </script>
 </body>
 </html>
