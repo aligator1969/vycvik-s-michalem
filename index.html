@@ -626,7 +626,42 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
+window.showSendMsg=function(tid,tname){
+  var regs=S.re.filter(function(r){return r.tid===tid;});
+  if(!regs.length){alert('Žádní přihlášení.');return;}
+  var phones=regs.map(function(r){return r.phone.replace(/\s/g,'');});
+  var existing=document.getElementById('sendmsg-modal');
+  if(existing)existing.remove();
+  var m=document.createElement('div');
+  m.id='sendmsg-modal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+  m.innerHTML='<div style="background:#1a1a1a;border:1px solid var(--lime);border-radius:14px;padding:1.6rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto">'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.3rem;letter-spacing:0.04em;margin-bottom:0.3rem">✉ Zpráva přihlášeným</div>'
+    +'<div style="font-size:0.8rem;color:var(--gray2);margin-bottom:1rem">'+tname+' · '+regs.length+' přihlášených</div>'
+    +'<div style="font-size:0.78rem;color:var(--gray2);margin-bottom:0.3rem">Text zprávy:</div>'
+    +'<textarea id="sendmsg-text" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--white);padding:0.75rem;font-size:0.9rem;font-family:Inter,sans-serif;resize:vertical;min-height:110px;outline:none" placeholder="Napište zprávu...">Dobrý den,\nblíží se náš trénink '+tname+'. Pokud máte dotazy, kontaktujte nás.\n\nS pozdravem, Martin</textarea>'
+    +'<div style="display:grid;gap:0.6rem;margin-top:1rem">'
+    +'<button onclick="(function(){'
+      +'var t=document.getElementById(\'sendmsg-text\').value;'
+      +'window.open(\'https://wa.me/?text=\'+encodeURIComponent(t),\'_blank\');'
+    +'})()" style="background:#25D366;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">💬 Otevřít WhatsApp (vybrat skupinu)</button>'
+    +'<button onclick="(function(){'
+      +'var t=document.getElementById(\'sendmsg-text\').value;'
+      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
+      +'window.open(\'sms:\'+nums.join(\',\')+\'?&body=\'+encodeURIComponent(t));'
+    +'})()" style="background:#2563EB;border:none;color:#fff;padding:0.75rem 1rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem">📱 SMS (otevřít na mobilu)</button>'
+    +'<button onclick="(function(){'
+      +'var nums='+JSON.stringify(phones).replace(/"/g,"'")+';'
+      +'navigator.clipboard.writeText(nums.join(\', \'));'
+      +'this.textContent=\'✅ Zkopírováno!\';var b=this;setTimeout(function(){b.textContent=\'📋 Kopírovat čísla pro WhatsApp skupinu\';},2000);'
+    +'})()" style="background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:0.75rem 1rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem">📋 Kopírovat čísla pro WhatsApp skupinu</button>'
+    +'<button onclick="document.getElementById(\'sendmsg-modal\').remove()" style="background:transparent;border:1px solid var(--border);color:var(--gray2);padding:0.55rem 1rem;border-radius:8px;cursor:pointer;font-size:0.85rem">Zavřít</button>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)m.remove();});
+};
+</script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
 firebase.initializeApp({apiKey:"AIzaSyDGOUKfk1LVIaRGF85ejycLs_ffrzykErE",authDomain:"vycvik-psa-s-michalem.firebaseapp.com",projectId:"vycvik-psa-s-michalem",storageBucket:"vycvik-psa-s-michalem.firebasestorage.app",messagingSenderId:"250895543681",appId:"1:250895543681:web:54c75129c4c950cac14c80"});
@@ -1059,7 +1094,7 @@ function renderGroupRegs(){
     h+='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:0.04em">'+esc(t.name)+' <span style="font-size:0.76rem;font-weight:400;color:var(--gray2);font-family:Inter,sans-serif">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+' </span></div>';
     h+='<div style="font-size:0.82rem;color:'+(filled>=max?'var(--red)':'var(--lime)')+';font-weight:700;margin-top:0.2rem">'+filled+' / '+max+(filled>=max?' – OBSAZENO':'')+' </div>';
     h+=(t.regpw?'<div style="font-size:0.78rem;margin-top:0.28rem">🔑 <span class="pw-tag">'+esc(t.regpw)+'</span></div>':'<div style="font-size:0.74rem;color:var(--gray2);margin-top:0.24rem">bez hesla</div>');
-    h+='</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap">'+(regs.length?'<button class="btn btn-b btn-sm" onclick="exportCSV(\''+t.id+'\')">⬇ CSV</button>':'')+' <button class="btn btn-d btn-sm" onclick="clearRegs(\''+t.id+'\')">🗑</button></div></div>';
+    h+='</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap">'+(regs.length?'<button class="btn btn-b btn-sm" onclick="exportCSV(\''+t.id+'\')">⬇ CSV</button>':'')+'<button class="btn btn-s btn-sm" onclick="showSendMsg(\''+t.id+'\',\''+esc(t.name)+'\')" style="background:var(--bg3)">✉ Zpráva</button> <button class="btn btn-d btn-sm" onclick="clearRegs(\''+t.id+'\')">🗑</button></div></div>';
     if(regs.length){regs.forEach(function(r,i){h+='<div class="greg-item"><div><span style="font-weight:700">'+(i+1)+'. '+esc(r.name)+'</span>'+(r.dog?' <span style="color:var(--lime);font-size:0.78rem">🐶 '+esc(r.dog)+'</span>':'')+'<div style="font-size:0.78rem;color:var(--gray2)">📞 '+esc(r.phone)+' · '+esc(r.email)+'</div></div><button class="btn btn-d" style="padding:0.26rem 0.58rem;font-size:0.7rem" onclick="deleteReg(\''+r.id+'\')">✕</button></div>';});}
     else h+='<div style="font-size:0.86rem;color:var(--gray2);padding:0.4rem 0">Zatím žádní přihlášení</div>';
     h+='</div>';
@@ -1088,7 +1123,7 @@ function renderIndRegs(){
     h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:0.7rem"><div>';
     h+='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:1.2rem;letter-spacing:0.04em">'+esc(t.name)+' <span style="font-size:0.76rem;font-weight:400;color:var(--gray2);font-family:Inter,sans-serif">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+' </span></div>';
     h+=regs.length?'<div style="font-size:0.82rem;color:var(--red);font-weight:700;margin-top:0.2rem">OBSAZENO</div>':'<div style="font-size:0.82rem;color:var(--lime);font-weight:700;margin-top:0.2rem">Volné místo</div>';
-    h+='</div><div style="display:flex;gap:0.4rem">'+(regs.length?'<button class="btn btn-b btn-sm" onclick="exportCSV(\''+t.id+'\')">⬇ CSV</button>':'')+' <button class="btn btn-d btn-sm" onclick="clearRegs(\''+t.id+'\')">🗑</button></div></div>';
+    h+='</div><div style="display:flex;gap:0.4rem">'+(regs.length?'<button class="btn btn-b btn-sm" onclick="exportCSV(\''+t.id+'\')">⬇ CSV</button>':'')+'<button class="btn btn-s btn-sm" onclick="showSendMsg(\''+t.id+'\',\''+esc(t.name)+'\')" style="background:var(--bg3)">✉ Zpráva</button> <button class="btn btn-d btn-sm" onclick="clearRegs(\''+t.id+'\')">🗑</button></div></div>';
     if(regs.length){regs.forEach(function(r,i){h+='<div class="greg-item"><div><span style="font-weight:700">'+(i+1)+'. '+esc(r.name)+'</span>'+(r.dog?' <span style="color:var(--lime);font-size:0.78rem">🐶 '+esc(r.dog)+'</span>':'')+'<div style="font-size:0.78rem;color:var(--gray2)">📞 '+esc(r.phone)+' · '+esc(r.email)+'</div></div><button class="btn btn-d" style="padding:0.26rem 0.58rem;font-size:0.7rem" onclick="deleteReg(\''+r.id+'\')">✕</button></div>';});}
     else h+='<div style="font-size:0.86rem;color:var(--gray2);padding:0.4rem 0">Zatím nikdo přihlášen</div>';
     h+='</div>';return h;
