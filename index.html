@@ -526,15 +526,14 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
             <span style="font-size:0.78rem;color:var(--gray2)" id="r-preview"></span>
           </div>
         </div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1rem">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1rem;align-items:center">
           <button class="btn btn-p" onclick="saveTraining()">&#128190; Ulo&#382;it tr&#233;nink</button>
           <button class="btn btn-s btn-sm" onclick="clearTForm()">Zru&#353;it</button>
+          <button class="btn btn-s btn-sm" style="margin-left:auto;font-size:0.75rem;padding:0.35rem 0.8rem;opacity:0.7" onclick="document.getElementById('bulk-note-panel').scrollIntoView({behavior:'smooth',block:'start'})">&#9999;&#65039; Hromadná poznámka &#8595;</button>
         </div>
       </div>
-      <div class="tw"><table class="tt"><thead><tr><th>N&#225;zev</th><th>Typ</th><th>Datum</th><th>&#268;as</th><th>Cena</th><th>M&#237;st</th><th>P&#345;ihl.</th><th>Heslo</th><th>Akce</th></tr></thead><tbody id="train-tbody"></tbody></table></div>
-
       <!-- Hromadná poznámka -->
-      <div class="aform" style="margin-top:1.2rem;border-color:rgba(168,216,50,0.25)">
+      <div class="aform" id="bulk-note-panel" style="margin-bottom:1.2rem;border-color:rgba(168,216,50,0.35);background:rgba(168,216,50,0.04)">
         <h4 style="margin-bottom:0.5rem">&#9999;&#65039; Hromadná úprava poznámky</h4>
         <p style="font-size:0.82rem;color:var(--gray2);margin-bottom:0.8rem">Nastaví <strong style="color:var(--white)">stejnou poznámku</strong> u všech vybraných tréninků najednou — místo konání, vybavení apod.</p>
         <div class="fr2" style="align-items:center;gap:0.6rem;margin-bottom:0.7rem">
@@ -563,6 +562,8 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
           <span id="bn-preview" style="font-size:0.8rem;color:var(--gray2)"></span>
         </div>
       </div>
+
+      <div class="tw"><table class="tt"><thead><tr><th>N&#225;zev</th><th>Typ</th><th>Datum</th><th>&#268;as</th><th>Cena</th><th>M&#237;st</th><th>P&#345;ihl.</th><th>Heslo</th><th>Akce</th></tr></thead><tbody id="train-tbody"></tbody></table></div>
     </div>
     <div class="asec" id="atab-registrations">
       <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.1rem">
