@@ -532,6 +532,37 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         </div>
       </div>
       <div class="tw"><table class="tt"><thead><tr><th>N&#225;zev</th><th>Typ</th><th>Datum</th><th>&#268;as</th><th>Cena</th><th>M&#237;st</th><th>P&#345;ihl.</th><th>Heslo</th><th>Akce</th></tr></thead><tbody id="train-tbody"></tbody></table></div>
+
+      <!-- Hromadná poznámka -->
+      <div class="aform" style="margin-top:1.2rem;border-color:rgba(168,216,50,0.25)">
+        <h4 style="margin-bottom:0.5rem">&#9999;&#65039; Hromadná úprava poznámky</h4>
+        <p style="font-size:0.82rem;color:var(--gray2);margin-bottom:0.8rem">Nastaví <strong style="color:var(--white)">stejnou poznámku</strong> u všech vybraných tréninků najednou — místo konání, vybavení apod.</p>
+        <div class="fr2" style="align-items:center;gap:0.6rem;margin-bottom:0.7rem">
+          <div class="fg" style="margin:0">
+            <label>Typ tréninku</label>
+            <select id="bn-type">
+              <option value="all">Všechny typy</option>
+              <option value="group">Jen skupinové</option>
+              <option value="individual">Jen individuální</option>
+            </select>
+          </div>
+          <div class="fg" style="margin:0">
+            <label>Období</label>
+            <select id="bn-period">
+              <option value="upcoming">Jen nadcházející</option>
+              <option value="all">Všechny (i minulé)</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Nová poznámka pro klienty</label>
+          <textarea id="bn-note" placeholder="Místo konání: Rudník, parkoviště u hřiště. S sebou vodítko a pamlsky.&#10;(Ponechejte prázdné = smazat poznámku u všech vybraných)"></textarea>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-top:0.5rem">
+          <button class="btn btn-p" onclick="bulkSetNote()">&#128190; Použít na vybrané tréninky</button>
+          <span id="bn-preview" style="font-size:0.8rem;color:var(--gray2)"></span>
+        </div>
+      </div>
     </div>
     <div class="asec" id="atab-registrations">
       <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.1rem">
@@ -645,6 +676,7 @@ var DEF_HERO = 'V\u00edtejte na v\u00fdcvikov\u00fdch lekc\u00edch s Michalem. J
 var DEF_INFO = 'Pro z\u00e1jem o individu\u00e1ln\u00ed lekce mimo vyps\u00e1n\u00e9 term\u00edny klikn\u011bte na tla\u010d\u00edtko M\u00c1M Z\u00c1JEM.\nSpole\u010dn\u00e9 lekce prob\u00edh\u00e1 p\u0159i minim\u00e1ln\u00edm po\u010dtu 2 t\u00fdm\u016f (psovod + pes).\nPokud se p\u0159ihl\u00e1s\u00ed pouze jeden t\u00fdm, lekce se pova\u017euje za individu\u00e1ln\u00ed (cena 400,- K\u010d).\nLze zvolit pouze jednu hlavn\u00ed skupinu: Skupinu 1 nebo Skupinu 2.\nV\u0161e ostatn\u00ed si \u0159ekneme osobn\u011b. Budu se t\u011b\u0161it, instruktor Michal.\nWhatsApp skupina: https://chat.whatsapp.com/GFEg8duR6aM82viDCRFCsS?mode=gi_t';
 
 var S = { tr:[], rq:[], re:[], no:'', pw:'261497', heroTxt:DEF_HERO, infoTxt:DEF_INFO, texts:{} };
+function dbErr(e){toast('Chyba připojení – zkuste to znovu','err');console.error('Firebase error:',e);}
 var adminIn=false, currentDetailId=null, repeatMode='none', activeSection='spolecne';
 var selectedIds={}, myEmail='';
 var gCalY=new Date().getFullYear(), gCalM=new Date().getMonth();
@@ -690,13 +722,13 @@ function toast(msg,type){type=type||'ok';var t=document.getElementById('toast');
 function toggleInfo(){var b=document.getElementById('info-body');var a=document.getElementById('info-arrow');b.classList.toggle('open');a.textContent=b.classList.contains('open')?'\u25b2':'\u25bc';}
 function gcalUrl(title,date,time,dur,details){var ts=time||'09:00';var durMin=dur||60;var sd=new Date((date||new Date().toISOString().slice(0,10))+'T'+ts+':00');var ed=new Date(sd.getTime()+durMin*60000);function p(n){return String(n).padStart(2,'0');}function fmt(dt){return dt.getFullYear()+p(dt.getMonth()+1)+p(dt.getDate())+'T'+p(dt.getHours())+p(dt.getMinutes())+'00';}return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+fmt(sd)+'/'+fmt(ed)+'&details='+encodeURIComponent(details);}
 function addToGCal(){var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;window.open(gcalUrl('V\u00fdcvik psa \u2013 '+t.name,t.date,t.time,t.dur,'Cena: '+t.price+' K\u010d\nMichal: 601 242 160\nvychovejpsa@seznam.cz'),'_blank');}
-function clientFeedback(id,fb){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:fb}).then(function(){toast(fb==='souhlas\u00edm'?'\u2705 Potvrzeno!':'Tren\u00e9r byl upozorn\u011bn');});}
+function clientFeedback(id,fb){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:fb}).then(function(){toast(fb==='souhlas\u00edm'?'\u2705 Potvrzeno!':'Tren\u00e9r byl upozorn\u011bn');}).catch(dbErr);}
 
 // ── TEXTS ──────────────────────────────────────────────────────────────────────
 function renderHeroTxt(){var el=document.getElementById('hero-dynamic-txt');if(!el)return;var lines=(S.heroTxt||'').split('\n').map(function(l){return l.trim();}).filter(Boolean);el.innerHTML=lines.map(function(l,i){var last=i===lines.length-1;return'<p style="'+(last?'color:var(--lime);font-weight:700;margin-bottom:0':'margin-bottom:0.45rem')+'">'+esc(l)+'</p>';}).join('');}
 function renderInfoTxt(){var el=document.getElementById('info-body-content');if(!el)return;el.innerHTML=(S.infoTxt||'').split('\n').map(function(l){l=l.trim();if(!l)return'';var ur=/(https?:\/\/[^\s]+)/g;return'<p>'+l.replace(ur,function(u){return'<a href="'+esc(u)+'" target="_blank">'+esc(u)+'</a>';})+'</p>';}).join('');}
-function saveHeroText(){var v=document.getElementById('hero-text-input').value;S.heroTxt=v;renderHeroTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({heroTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Text ulo\u017een \u2713');});}
-function saveInfoText(){var v=document.getElementById('info-text-input').value;S.infoTxt=v;renderInfoTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({infoTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,texts:S.texts},{merge:true}).then(function(){toast('Informace ulo\u017eeny \u2713');});}
+function saveHeroText(){var v=document.getElementById('hero-text-input').value;S.heroTxt=v;renderHeroTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({heroTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Text ulo\u017een \u2713');}).catch(dbErr);}
+function saveInfoText(){var v=document.getElementById('info-text-input').value;S.infoTxt=v;renderInfoTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({infoTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,texts:S.texts},{merge:true}).then(function(){toast('Informace ulo\u017eeny \u2713');}).catch(dbErr);}
 
 // ── FILTER CHIPS ───────────────────────────────────────────────────────────────
 function filterCards(type,filter,btn){
@@ -877,15 +909,15 @@ function openMultiReg(){
     if(!name||!phone||!email){toast('Vyplnte jm\u00e9no, telefon a email','err');return;}
     var batch=db.batch();
     for(var i=0;i<ids.length;i++){var tid=ids[i];var regsT=S.re.filter(function(r){return r.tid===tid;});var tt=S.tr.find(function(x){return x.id===tid;});if(regsT.find(function(r){return r.email.toLowerCase()===email.toLowerCase();})){toast('Na '+fmtDate(tt?tt.date:'')+' jste ji\u017e p\u0159ihl\u00e1\u0161eni','err');return;}batch.set(db.collection('registrace').doc('reg'+Date.now()+i+Math.random().toString(36).slice(2,4)),{'\u010dasn\u00fd':tid,'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pes':'','pozn\u00e1mka':'','Kalifornie':new Date().toISOString()});}
-    batch.commit().then(function(){closeConf();clearSel();toast('\u2705 P\u0159ihl\u00e1\u0161en\u00ed na '+ids.length+' term\u00edn\u016f prob\u011bhlo!');});
+    batch.commit().then(function(){closeConf();clearSel();toast('\u2705 P\u0159ihl\u00e1\u0161en\u00ed na '+ids.length+' term\u00edn\u016f prob\u011bhlo!');}).catch(dbErr);
   });
 }
 
 // ── PAGES ──────────────────────────────────────────────────────────────────────
 function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){applyFilterG();renderGroupCal();renderNotice();renderHeroTxt();renderInfoTxt();}if(name==='interest')renderPublicReqs();if(name==='admin')renderAdminPanel();}
 function renderNotice(){var el=document.getElementById('notice-display');if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none';}
-function saveNotice(){db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':document.getElementById('notice-input').value.trim(),pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpr\u00e1va zve\u0159ejn\u011bna \u2713');});}
-function clearNotice(){document.getElementById('notice-input').value='';document.getElementById('notice-pw-wrap').style.display='none';db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':'',pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpr\u00e1va odstran\u011bna');});}
+function saveNotice(){db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':document.getElementById('notice-input').value.trim(),pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpr\u00e1va zve\u0159ejn\u011bna \u2713');}).catch(dbErr);}
+function clearNotice(){document.getElementById('notice-input').value='';document.getElementById('notice-pw-wrap').style.display='none';db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':'',pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpr\u00e1va odstran\u011bna');}).catch(dbErr);}
 function previewNotice(){var v=document.getElementById('notice-input').value.trim();var w=document.getElementById('notice-pw-wrap');if(v){document.getElementById('notice-preview').textContent=v;w.style.display='block';}else w.style.display='none';}
 
 // ── MAKE CARD ──────────────────────────────────────────────────────────────────
@@ -936,13 +968,13 @@ function openDetail(id){
 function closeDet(){document.getElementById('det-overlay').classList.remove('open');currentDetailId=null;}
 document.getElementById('det-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)closeDet();});
 function checkRegPw(){var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;if(document.getElementById('reg-pw-input').value.trim()===t.regpw){document.getElementById('det-pw-gate').style.display='none';document.getElementById('reg-pw-err').style.display='none';document.getElementById('det-reg-form').style.display='block';}else{document.getElementById('reg-pw-err').style.display='block';document.getElementById('reg-pw-input').select();}}
-function submitReg(){var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;var name=document.getElementById('reg-name').value.trim(),phone=document.getElementById('reg-phone').value.trim(),email=document.getElementById('reg-email').value.trim(),dog=document.getElementById('reg-dog').value.trim(),note=document.getElementById('reg-note').value.trim();if(!name||!phone||!email){toast('Vyplnte jm\u00e9no, telefon a email','err');return;}var regs=S.re.filter(function(r){return r.tid===currentDetailId;});if(regs.length>=(t.spots||1)){toast('Tr\u00e9nink je obsazen','err');return;}if(regs.find(function(r){return r.email.toLowerCase()===email.toLowerCase();})){toast('Ji\u017e jste p\u0159ihl\u00e1\u0161eni','err');return;}showConf('Potvrdit p\u0159ihl\u00e1\u0161en\u00ed','P\u0159ihl\u00e1sit <strong>'+esc(name)+'</strong> na <strong>'+esc(t.name)+'</strong>?','',function(){db.collection('registrace').doc('reg'+Date.now()).set({'\u010dasn\u00fd':currentDetailId,'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pes':dog,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString()}).then(function(){closeDet();closeConf();toast('\u2705 P\u0159ihl\u00e1\u0161en\u00ed prob\u011bhlo!');});});}
+function submitReg(){if(window._submitting)return;var t=S.tr.find(function(x){return x.id===currentDetailId;});if(!t)return;var name=document.getElementById('reg-name').value.trim(),phone=document.getElementById('reg-phone').value.trim(),email=document.getElementById('reg-email').value.trim(),dog=document.getElementById('reg-dog').value.trim(),note=document.getElementById('reg-note').value.trim();if(!name||!phone||!email){toast('Vyplnte jm\u00e9no, telefon a email','err');return;}var regs=S.re.filter(function(r){return r.tid===currentDetailId;});if(regs.length>=(t.spots||1)){toast('Tr\u00e9nink je obsazen','err');return;}if(regs.find(function(r){return r.email.toLowerCase()===email.toLowerCase();})){toast('Ji\u017e jste p\u0159ihl\u00e1\u0161eni','err');return;}window._submitting=true;showConf('Potvrdit p\u0159ihl\u00e1\u0161en\u00ed','P\u0159ihl\u00e1sit <strong>'+esc(name)+'</strong> na <strong>'+esc(t.name)+'</strong>?','',function(){db.collection('registrace').doc('reg'+Date.now()).set({'\u010dasn\u00fd':currentDetailId,'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pes':dog,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString()}).then(function(){window._submitting=false;closeDet();closeConf();toast('\u2705 P\u0159ihl\u00e1\u0161en\u00ed prob\u011bhlo!');}).catch(function(e){window._submitting=false;dbErr(e);});});}
 
 // ── INTEREST ───────────────────────────────────────────────────────────────────
-function submitInterest(){var name=document.getElementById('i-name').value.trim(),phone=document.getElementById('i-phone').value.trim(),email=document.getElementById('i-email').value.trim(),note=document.getElementById('i-note').value.trim();if(!name||!phone||!email){toast('Vyplnte jm\u00e9no, telefon a email','err');return;}showConf('Odeslat popt\u00e1vku','Odeslat popt\u00e1vku pro <strong>'+esc(name)+'</strong>?','',function(){db.collection('popt\u00e1vky').doc('r'+Date.now()).set({'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString(),status:'pending',clientFeedback:'',ownerEmail:email}).then(function(){['i-name','i-phone','i-email','i-note'].forEach(function(i){document.getElementById(i).value='';});myEmail=email;localStorage.setItem('vcvikEmail',email);var ef=document.getElementById('my-email-filter');if(ef)ef.value=email;toast('\u2705 Popt\u00e1vka odesl\u00e1na!');closeConf();renderPublicReqs();});});}
+function submitInterest(){if(window._submitting)return;var name=document.getElementById('i-name').value.trim(),phone=document.getElementById('i-phone').value.trim(),email=document.getElementById('i-email').value.trim(),note=document.getElementById('i-note').value.trim();if(!name||!phone||!email){toast('Vyplnte jm\u00e9no, telefon a email','err');return;}window._submitting=true;showConf('Odeslat popt\u00e1vku','Odeslat popt\u00e1vku pro <strong>'+esc(name)+'</strong>?','',function(){db.collection('popt\u00e1vky').doc('r'+Date.now()).set({'jm\u00e9no':name,'telefon':phone,'e-mail':email,'pozn\u00e1mka':note,'Kalifornie':new Date().toISOString(),status:'pending',clientFeedback:'',ownerEmail:email}).then(function(){window._submitting=false;['i-name','i-phone','i-email','i-note'].forEach(function(i){document.getElementById(i).value='';});myEmail=email;localStorage.setItem('vcvikEmail',email);var ef=document.getElementById('my-email-filter');if(ef)ef.value=email;toast('\u2705 Popt\u00e1vka odesl\u00e1na!');closeConf();renderPublicReqs();}).catch(function(e){window._submitting=false;dbErr(e);});});}
 function filterMyReqs(){var e=document.getElementById('my-email-filter').value.trim();if(!e){toast('Zadejte email','err');return;}myEmail=e;localStorage.setItem('vcvikEmail',e);renderPublicReqs();}
 function renderPublicReqs(){var el=document.getElementById('public-req-list');var em=myEmail||localStorage.getItem('vcvikEmail')||'';if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte sv\u016fj email n\u00ed\u017ee.</div>';return;}var mine=S.rq.filter(function(r){return(r.ownerEmail||r.email).toLowerCase()===em.toLowerCase();}).sort(function(a,b){return new Date(b.ca)-new Date(a.ca);});if(!mine.length){el.innerHTML='<div class="empty"><div class="ei">\ud83d\udccb</div><p style="font-size:0.86rem">\u017d\u00e1dn\u00e9 popt\u00e1vky pro '+esc(em)+'</p></div>';return;}var sl={pending:'&#268;ek\u00e1',approved:'Potvrzeno',rejected:'Odm\u00edtnuto'};el.innerHTML=mine.map(function(r){var gcalLink='',feedback='';if(r.status==='approved'){gcalLink='<a href="'+gcalUrl('Individu\u00e1ln\u00ed v\u00fdcvik \u2013 '+r.name,'','','','Michal: 601 242 160'+(r.trainerNote?'\n'+r.trainerNote:''))+'" target="_blank" style="display:inline-block;margin-top:0.45rem;font-size:0.76rem;font-weight:700;color:var(--lime);text-decoration:none;padding:0.25rem 0.6rem;border:1.5px solid var(--lime);border-radius:4px;text-transform:uppercase">\ud83d\udcc5 Google kalend\u00e1\u0159</a>';if(!r.clientFeedback){feedback='<div style="margin-top:0.6rem;padding:0.6rem;background:var(--bg2);border-radius:6px;border:1px solid var(--lime)"><div style="font-size:0.8rem;font-weight:700;color:var(--white);margin-bottom:0.4rem">V\u00e1\u0161 term\u00edn byl schv\u00e1len \u2013 potvr\u010fte:</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap"><button onclick="clientFeedback(\''+r.id+'\',\'souhlas\u00edm\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:none;background:var(--lime);color:#000;text-transform:uppercase">\u2705 SOUHLAS\u00cdM</button><button onclick="clientFeedback(\''+r.id+'\',\'jin\u00fd term\u00edn\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:1.5px solid var(--red);background:transparent;color:var(--red);text-transform:uppercase">\ud83d\udd04 JIN\u00dd TERM\u00cdN</button></div></div>';}else{feedback='<div style="margin-top:0.5rem;font-size:0.82rem;font-weight:700;color:'+(r.clientFeedback==='souhlas\u00edm'?'var(--lime)':'var(--red)')+'"> '+(r.clientFeedback==='souhlas\u00edm'?'\u2705 Potvrzeno':'\ud83d\udd04 \u017d\u00e1d\u00e1te jin\u00fd term\u00edn')+'</div>';}}var canDel=r.status==='pending';return'<div class="ri '+r.status+'"><div style="font-size:0.92rem;font-weight:700;margin-bottom:0.22rem;color:var(--white)">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--gray2)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic;margin-top:0.2rem">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.22rem;font-weight:600">\ud83d\udcac Tren\u00e9r: '+esc(r.trainerNote)+'</div>':'')+gcalLink+feedback+(canDel?'<button class="btn btn-d" style="margin-top:0.48rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="deleteMyReq(\''+r.id+'\')">&#10005; Zru\u0161it popt\u00e1vku</button>':'')+'</div>';}).join('');}
-function deleteMyReq(id){showConf('Zru\u0161it popt\u00e1vku','Opravdu zru\u0161it svou popt\u00e1vku?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Popt\u00e1vka zru\u0161ena');renderPublicReqs();});});}
+function deleteMyReq(id){showConf('Zru\u0161it popt\u00e1vku','Opravdu zru\u0161it svou popt\u00e1vku?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Popt\u00e1vka zru\u0161ena');renderPublicReqs();}).catch(dbErr);});}
 
 // ── ADMIN ──────────────────────────────────────────────────────────────────────
 function checkAdmin(){if(document.getElementById('admin-pw').value===S.pw){adminIn=true;document.getElementById('admin-gate').style.display='none';document.getElementById('admin-panel').style.display='block';renderAdminPanel();}else toast('Nespr\u00e1vn\u00e9 heslo','err');}
@@ -950,9 +982,9 @@ function logoutAdmin(){adminIn=false;document.getElementById('admin-gate').style
 function switchTab(tab,btn){document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.atab').forEach(function(b){b.classList.remove('active');});document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active');if(tab==='trainings')renderTrainTable();if(tab==='registrations'){renderGroupRegs();document.getElementById('greg-content').style.display='block';document.getElementById('ireg-content').style.display='none';document.getElementById('regtab-g').classList.add('active');document.getElementById('regtab-i').classList.remove('active');}if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';previewNotice();}if(tab==='settings'){var hti=document.getElementById('hero-text-input');if(hti)hti.value=S.heroTxt||'';var iti=document.getElementById('info-text-input');if(iti)iti.value=S.infoTxt||'';}}
 function renderAdminPanel(){if(!adminIn)return;var pend=S.rq.filter(function(r){return r.status==='pending';}).length;document.getElementById('admin-stats').innerHTML='<div class="stat"><div class="sn">'+S.rq.length+'</div><div class="sl">Popt\u00e1vky</div></div><div class="stat"><div class="sn" style="color:var(--red)">'+pend+'</div><div class="sl">&#268;ek\u00e1</div></div><div class="stat"><div class="sn">'+S.tr.length+'</div><div class="sl">Tr\u00e9ninky</div></div><div class="stat"><div class="sn" style="color:#60A5FA">'+S.re.length+'</div><div class="sl">P\u0159ihl\u00e1\u0161en\u00ed</div></div>';renderAdminReqs();}
 function renderAdminReqs(){var el=document.getElementById('admin-req-list');if(!S.rq.length){el.innerHTML='<div class="empty"><div class="ei">\ud83d\udccb</div><p>\u017d\u00e1dn\u00e9 popt\u00e1vky</p></div>';return;}var sl={pending:'&#268;ek\u00e1',approved:'Potvrzeno',rejected:'Odm\u00edtnuto'};var fbL={'souhlas\u00edm':'\u2705 Souhlas\u00edm','jin\u00fd term\u00edn':'\ud83d\udd04 Jin\u00fd term\u00edn'};el.innerHTML=S.rq.slice().sort(function(a,b){return new Date(b.ca)-new Date(a.ca);}).map(function(r){var fb=r.clientFeedback?'<span style="display:inline-block;margin-left:0.4rem;font-size:0.66rem;font-weight:700;padding:0.14rem 0.44rem;border-radius:3px;background:'+(r.clientFeedback==='souhlas\u00edm'?'rgba(168,216,50,0.15);color:var(--lime)':'rgba(224,51,51,0.15);color:var(--red)')+'">Klient: '+(fbL[r.clientFeedback]||r.clientFeedback)+'</span>':'';return'<div class="areq '+r.status+'"><div class="areq-info"><h4>'+esc(r.name)+' <span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span>'+fb+'</h4><p>\ud83d\udcde <a href="tel:'+esc(r.phone)+'" style="color:var(--lime)">'+esc(r.phone)+'</a> \u00b7 <a href="mailto:'+esc(r.email)+'" style="color:var(--lime)">'+esc(r.email)+'</a></p>'+(r.note?'<p style="font-style:italic;color:var(--gray2)">"'+esc(r.note)+'"</p>':'')+(r.trainerNote?'<p style="color:var(--lime);font-weight:600">\ud83d\udcac '+esc(r.trainerNote)+'</p>':'')+'<div class="areq-meta">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div></div><div class="areq-acts">'+(r.status==='pending'?'<button class="btn btn-g btn-sm" onclick="respondReq(\''+r.id+'\',\'approved\')">&#10003; Potvrdit</button><button class="btn btn-d btn-sm" onclick="respondReq(\''+r.id+'\',\'rejected\')">&#10005;</button>':'<button class="btn btn-s btn-sm" onclick="reopenReq(\''+r.id+'\')">&#8617;</button>')+'<button class="btn btn-d btn-sm" onclick="deleteReq(\''+r.id+'\')">\ud83d\uddd1</button></div></div>';}).join('');}
-function respondReq(id,status){var r=S.rq.find(function(x){return x.id===id;});if(!r)return;var extra='<div style="margin-top:0.5rem"><label style="font-size:0.7rem;font-weight:700;color:var(--gray2);display:block;margin-bottom:0.3rem;text-transform:uppercase">Pozn\u00e1mka pro klienta</label><input type="text" id="tnote" placeholder="'+(status==='approved'?'T\u011b\u0161\u00edm se na v\u00e1s!':'Navrhnu jin\u00fd term\u00edn\u2026')+'" style="display:block;width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg3);color:var(--white);outline:none"></div>';showConf(status==='approved'?'Potvrdit term\u00edn':'Odm\u00edtnout',(status==='approved'?'Potvrdit popt\u00e1vku od ':'Odm\u00edtnout od ')+'<strong>'+esc(r.name)+'</strong>?',extra,function(){var n=document.getElementById('tnote');var upd={status:status};if(n&&n.value.trim())upd.trainerNote=n.value.trim();db.collection('popt\u00e1vky').doc(id).update(upd).then(function(){closeConf();toast(status==='approved'?'Potvrzeno \u2713':'Odm\u00edtnuto');});});}
-function reopenReq(id){db.collection('popt\u00e1vky').doc(id).update({status:'pending',trainerNote:'',clientFeedback:''}).then(function(){toast('Znovu otev\u0159eno');});}
-function deleteReq(id){showConf('Smazat popt\u00e1vku','Opravdu smazat?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Smaz\u00e1no');});});}
+function respondReq(id,status){var r=S.rq.find(function(x){return x.id===id;});if(!r)return;var extra='<div style="margin-top:0.5rem"><label style="font-size:0.7rem;font-weight:700;color:var(--gray2);display:block;margin-bottom:0.3rem;text-transform:uppercase">Pozn\u00e1mka pro klienta</label><input type="text" id="tnote" placeholder="'+(status==='approved'?'T\u011b\u0161\u00edm se na v\u00e1s!':'Navrhnu jin\u00fd term\u00edn\u2026')+'" style="display:block;width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg3);color:var(--white);outline:none"></div>';showConf(status==='approved'?'Potvrdit term\u00edn':'Odm\u00edtnout',(status==='approved'?'Potvrdit popt\u00e1vku od ':'Odm\u00edtnout od ')+'<strong>'+esc(r.name)+'</strong>?',extra,function(){var n=document.getElementById('tnote');var upd={status:status};if(n&&n.value.trim())upd.trainerNote=n.value.trim();db.collection('popt\u00e1vky').doc(id).update(upd).then(function(){closeConf();toast(status==='approved'?'Potvrzeno \u2713':'Odm\u00edtnuto');}).catch(dbErr);});}
+function reopenReq(id){db.collection('popt\u00e1vky').doc(id).update({status:'pending',trainerNote:'',clientFeedback:''}).then(function(){toast('Znovu otev\u0159eno');}).catch(dbErr);}
+function deleteReq(id){showConf('Smazat popt\u00e1vku','Opravdu smazat?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Smaz\u00e1no');}).catch(dbErr);});}
 function applyPreset(val){if(!val)return;var p=val.split('|');document.getElementById('t-type').value=p[0];document.getElementById('t-name').value=p[1];document.getElementById('t-preset').value='';}
 
 // ── 3. CANCEL TRAINING ─────────────────────────────────────────────────────────
@@ -1014,6 +1046,56 @@ function renderTrainTable(){
   }
   document.getElementById('train-tbody').innerHTML=upHtml+archHtml;
 }
+// --- Hromadná úprava poznámky ---
+function getBulkTargets(){
+  var typ=document.getElementById('bn-type').value;
+  var period=document.getElementById('bn-period').value;
+  var now=new Date(); now.setHours(0,0,0,0);
+  return S.tr.filter(function(t){
+    if(typ!=='all' && t.type!==typ) return false;
+    if(period==='upcoming'){var td=new Date(t.date);td.setHours(0,0,0,0);return td>=now;}
+    return true;
+  });
+}
+function updateBnPreview(){
+  var count=getBulkTargets().length;
+  var el=document.getElementById('bn-preview');
+  if(el) el.textContent=count>0?'Ovlivní '+count+' trénink'+(count===1?'':'ů/y'):'Žádný trénink nevyhovuje filtru';
+}
+// Attach live preview listeners after DOM ready
+(function(){
+  var ready=setInterval(function(){
+    var bt=document.getElementById('bn-type');
+    var bp=document.getElementById('bn-period');
+    if(bt&&bp){
+      clearInterval(ready);
+      bt.addEventListener('change',updateBnPreview);
+      bp.addEventListener('change',updateBnPreview);
+      // initial
+      updateBnPreview();
+    }
+  },400);
+})();
+window.bulkSetNote=function(){
+  var targets=getBulkTargets();
+  if(!targets.length){toast('Žádný trénink nevyhovuje filtru','err');return;}
+  var note=document.getElementById('bn-note').value.trim();
+  var msg=note
+    ?'Nastavit poznámku u <strong>'+targets.length+' tréninků</strong>?'
+    :'<span style="color:var(--red)">Smazat poznámku</span> u <strong>'+targets.length+' tréninků</strong>?';
+  showConf('Hromadná úprava poznámky',msg,'',function(){
+    var batch=db.batch();
+    targets.forEach(function(t){
+      batch.update(db.collection('školení').doc(t.id),{'poznámka':note});
+    });
+    batch.commit().then(function(){
+      closeConf();
+      toast('✅ Poznámka aktualizována u '+targets.length+' tréninků');
+      updateBnPreview();
+    }).catch(function(e){toast('Chyba: '+e.message,'err');});
+  });
+};
+
 window.toggleArchive=function(){
   var tr=document.getElementById('arch-tr');
   var lbl=document.getElementById('arch-toggle-label');
@@ -1032,7 +1114,8 @@ document.getElementById('t-rcount').addEventListener('input',updateRPreview);
 document.getElementById('t-date').addEventListener('input',updateRPreview);
 function addDays(s,d){var dt=new Date(s);dt.setDate(dt.getDate()+d);return dt.toISOString().slice(0,10);}
 function addMonths(s,m){var dt=new Date(s);dt.setMonth(dt.getMonth()+m);return dt.toISOString().slice(0,10);}
-function saveTraining(){var name=document.getElementById('t-name').value.trim(),typ=document.getElementById('t-type').value,date=document.getElementById('t-date').value,time=document.getElementById('t-time').value,price=parseInt(document.getElementById('t-price').value),dur=parseInt(document.getElementById('t-dur').value)||0,spots=parseInt(document.getElementById('t-spots').value)||1,note=document.getElementById('t-note').value.trim(),regpw=document.getElementById('t-regpw').value.trim(),editId=document.getElementById('t-edit-id').value;if(!name||!date||!price){toast('Vyplnte n\u00e1zev, datum a cenu','err');return;}var data={'jm\u00e9no':name,typ:typ,datum:date,'\u010das':time,cena:price,'trv\u00e1n\u00ed':dur,skvrny:spots,'pozn\u00e1mka':note,regpw:regpw};if(editId){db.collection('\u0161kolen\u00ed').doc(editId).update(data).then(function(){clearTForm();toast('Tr\u00e9nink upraven \u2713');});return;}var cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1),cur=date,batch=db.batch();for(var i=0;i<cnt;i++){batch.set(db.collection('\u0161kolen\u00ed').doc(uid()),Object.assign({},data,{datum:cur}));if(i<cnt-1){if(repeatMode==='weekly')cur=addDays(cur,7);else if(repeatMode==='biweekly')cur=addDays(cur,14);else cur=addMonths(cur,1);}}batch.commit().then(function(){
+function saveTraining(){if(window._savingTraining)return;window._savingTraining=true;var name=document.getElementById('t-name').value.trim(),typ=document.getElementById('t-type').value,date=document.getElementById('t-date').value,time=document.getElementById('t-time').value,price=parseInt(document.getElementById('t-price').value),dur=parseInt(document.getElementById('t-dur').value)||0,spots=parseInt(document.getElementById('t-spots').value)||1,note=document.getElementById('t-note').value.trim(),regpw=document.getElementById('t-regpw').value.trim(),editId=document.getElementById('t-edit-id').value;if(!name||!date||!price){window._savingTraining=false;toast('Vyplnte n\u00e1zev, datum a cenu','err');return;}var data={'jm\u00e9no':name,typ:typ,datum:date,'\u010das':time,cena:price,'trv\u00e1n\u00ed':dur,skvrny:spots,'pozn\u00e1mka':note,regpw:regpw};if(editId){db.collection('\u0161kolen\u00ed').doc(editId).update(data).then(function(){window._savingTraining=false;clearTForm();toast('Tr\u00e9nink upraven \u2713');}).catch(function(e){window._savingTraining=false;dbErr(e);});return;}var cnt=repeatMode==='none'?1:(parseInt(document.getElementById('t-rcount').value)||1),cur=date,batch=db.batch();for(var i=0;i<cnt;i++){batch.set(db.collection('\u0161kolen\u00ed').doc(uid()),Object.assign({},data,{datum:cur}));if(i<cnt-1){if(repeatMode==='weekly')cur=addDays(cur,7);else if(repeatMode==='biweekly')cur=addDays(cur,14);else cur=addMonths(cur,1);}}batch.commit().then(function(){
+  window._savingTraining=false;
   clearTForm();
   toast(cnt>1?'Vytvořeno '+cnt+' tréninků ✓':'Trénink uložen ✓');
   // GKal link for first training
@@ -1047,8 +1130,8 @@ function saveTraining(){var name=document.getElementById('t-name').value.trim(),
     var gurl='https://calendar.google.com/calendar/r/eventedit?text='+encodeURIComponent('🐾 '+name)+'&dates='+gstart+'/'+gend+'&details='+encodeURIComponent('Výcvik psů s Michalem\nCena: '+price+' Kč'+(note?'\nPoznámka: '+note:''))+'&location='+encodeURIComponent('Rudník, Krkonoše')+'&ctz=Europe%2FPrague';
     showGCalModal(gurl,date,time,name);
   }
-});}
-function delTraining(id){showConf('Smazat tr\u00e9nink','Opravdu smazat? Vymažou se i p\u0159ihl\u00e1\u0161en\u00ed.','',function(){var batch=db.batch();batch.delete(db.collection('\u0161kolen\u00ed').doc(id));S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Smaz\u00e1no');});});}
+}).catch(function(e){window._savingTraining=false;dbErr(e);});}
+function delTraining(id){showConf('Smazat tr\u00e9nink','Opravdu smazat? Vymažou se i p\u0159ihl\u00e1\u0161en\u00ed.','',function(){var batch=db.batch();batch.delete(db.collection('\u0161kolen\u00ed').doc(id));S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Smaz\u00e1no');}).catch(dbErr);});}
 function switchRegTab(tab,btn){document.getElementById('greg-content').style.display=tab==='g'?'block':'none';document.getElementById('ireg-content').style.display=tab==='i'?'block':'none';document.querySelectorAll('#atab-registrations .atab').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');if(tab==='i')renderIndRegs();else renderGroupRegs();}
 function renderGroupRegs(){
   var el=document.getElementById('greg-content');
@@ -1110,10 +1193,10 @@ function renderIndRegs(){
   el.innerHTML=html;
 }
 
-function deleteReg(id){showConf('Odhl\u00e1sit \u00fa\u010dastn\u00edka','Opravdu odhl\u00e1sit?','',function(){db.collection('registrace').doc(id).delete().then(function(){closeConf();toast('Odhl\u00e1\u0161eno');});});}
-function clearRegs(tid){showConf('Smazat p\u0159ihl\u00e1\u0161en\u00ed','Smazat v\u0161e?','',function(){var batch=db.batch();S.re.filter(function(r){return r.tid===tid;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('P\u0159ihl\u00e1\u0161en\u00ed smaz\u00e1na');});});}
+function deleteReg(id){showConf('Odhl\u00e1sit \u00fa\u010dastn\u00edka','Opravdu odhl\u00e1sit?','',function(){db.collection('registrace').doc(id).delete().then(function(){closeConf();toast('Odhl\u00e1\u0161eno');}).catch(dbErr);});}
+function clearRegs(tid){showConf('Smazat p\u0159ihl\u00e1\u0161en\u00ed','Smazat v\u0161e?','',function(){var batch=db.batch();S.re.filter(function(r){return r.tid===tid;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('P\u0159ihl\u00e1\u0161en\u00ed smaz\u00e1na');}).catch(dbErr);});}
 function exportCSV(tid){var t=S.tr.find(function(x){return x.id===tid;}),regs=S.re.filter(function(r){return r.tid===tid;});if(!regs.length){toast('\u017d\u00e1dn\u00ed p\u0159ihl\u00e1\u0161en\u00ed','err');return;}var rows=regs.map(function(r,i){return[i+1,r.name,r.phone,r.email,r.dog||'',r.note||'',fmtDate(t?t.date:'')].join(';');});var blob=new Blob(['\uFEFF'+'Po\u0159ad\u00ed;Jm\u00e9no;Telefon;Email;Pes;Pozn\u00e1mka;Datum\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='prihlasenI_'+(t?t.name:'').replace(/\s/g,'_')+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('CSV sta\u017eeno \u2713');}
-function changePw(){var o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;if(o!==S.pw){toast('St\u00e1vaj\u00edc\u00ed heslo nen\u00ed spr\u00e1vn\u00e9','err');return;}if(!n1||n1.length<4){toast('Min. 4 znaky','err');return;}if(n1!==n2){toast('Hesla se neshoduj\u00ed','err');return;}db.collection('konfigurace').doc('hlavn\u00ed').set({pw:n1,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){['pw-old','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';});toast('Heslo zm\u011bn\u011bno \u2713');});}
+function changePw(){var o=document.getElementById('pw-old').value,n1=document.getElementById('pw-new').value,n2=document.getElementById('pw-new2').value;if(o!==S.pw){toast('St\u00e1vaj\u00edc\u00ed heslo nen\u00ed spr\u00e1vn\u00e9','err');return;}if(!n1||n1.length<4){toast('Min. 4 znaky','err');return;}if(n1!==n2){toast('Hesla se neshoduj\u00ed','err');return;}db.collection('konfigurace').doc('hlavn\u00ed').set({pw:n1,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){['pw-old','pw-new','pw-new2'].forEach(function(i){document.getElementById(i).value='';});toast('Heslo zm\u011bn\u011bno \u2713');}).catch(dbErr);}
 
 // ── CONFIRM OVERLAY ─────────────────────────────────────────────────────────────
 var confCb=null;
