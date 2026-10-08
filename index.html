@@ -119,7 +119,14 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .dr-v{font-weight:600;text-align:right;color:var(--white);}
 /* FORMS */
 .int-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;align-items:start;}
-@media(max-width:680px){.int-layout{grid-template-columns:1fr;}}
+@media(max-width:680px){
+.int-layout{grid-template-columns:1fr;}
+/* Admin tabs scroll horizontally on small screens */
+#admin-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:4px;}
+#admin-tabs .atab{white-space:nowrap;flex-shrink:0;}
+/* Admin section padding */
+.asec{padding-top:0.5rem;}
+}
 .fcard,.reqcard{background:var(--bg2);border-radius:10px;padding:1.4rem;border:1px solid var(--border);}
 .fcard h3,.reqcard h3{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;letter-spacing:0.04em;margin-bottom:1rem;color:var(--white);}
 .fg{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.8rem;}
@@ -202,6 +209,95 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 .hero-txt{font-size:1.05rem;}.hero h1{font-size:2.6rem;}
 .hsec-btn{font-size:0.86rem;padding:0.58rem 1rem;}
 .info-box-body{font-size:0.98rem;}.tbadge{font-size:0.72rem;padding:0.22rem 0.65rem;}
+
+/* ── ADMIN MOBILE ── */
+.tw{overflow:visible;}
+.tt thead{display:none;}
+.tt,
+.tt tbody,
+.tt tr,
+.tt td{display:block;width:100%;}
+.tt tr{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:0.85rem 1rem;
+  margin-bottom:0.75rem;
+  position:relative;
+}
+.tt tr[style*="opacity:0.55"]{opacity:0.55;}
+.tt tr[style*="rgba(168,216,50"]{border-color:var(--lime);}
+.tt td{
+  display:flex;
+  align-items:flex-start;
+  gap:0.5rem;
+  padding:0.18rem 0;
+  font-size:0.88rem;
+  border:none;
+}
+.tt td:empty{display:none;}
+.tt td::before{
+  content:attr(data-label);
+  font-size:0.68rem;
+  font-weight:700;
+  color:var(--gray2);
+  text-transform:uppercase;
+  letter-spacing:0.07em;
+  min-width:68px;
+  padding-top:0.05rem;
+  flex-shrink:0;
+}
+.tt td[data-label="Akce"]{
+  margin-top:0.5rem;
+  padding-top:0.5rem;
+  border-top:1px solid var(--border);
+  justify-content:flex-end;
+}
+.tt td[data-label="Akce"]::before{display:none;}
+
+/* arch toggle as block */
+.tt tr#arch-toggle-row td{justify-content:center;}
+.tt tr#arch-toggle-row td::before{display:none;}
+
+/* Poptávky / Registrace tabulky */
+.rt thead{display:none;}
+.rt,.rt tbody,.rt tr,.rt td{display:block;width:100%;}
+.rt tr{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;}
+.rt td{display:flex;align-items:flex-start;gap:0.5rem;padding:0.15rem 0;font-size:0.86rem;border:none;}
+.rt td::before{content:attr(data-label);font-size:0.68rem;font-weight:700;color:var(--gray2);text-transform:uppercase;letter-spacing:0.07em;min-width:68px;flex-shrink:0;padding-top:0.05rem;}
+.rt td[data-label="Akce"],.rt td[data-label=""]{padding-top:0.5rem;border-top:1px solid var(--border);margin-top:0.4rem;}
+.rt td[data-label="Akce"]::before,.rt td[data-label=""]::before{display:none;}
+
+/* Form grid 2col → 1col on mobile */
+.fr2{grid-template-columns:1fr;}
+/* ── KLIENTSKÝ BOTTOM SHEET ── */
+.overlay{padding:0;align-items:flex-end;}
+.obox{
+  max-width:100% !important;
+  width:100%;
+  border-radius:18px 18px 0 0 !important;
+  max-height:88vh;
+  transform:translateY(100%);
+  transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  padding:1rem 1.2rem 2rem;
+  position:relative;
+}
+.overlay.open .obox{transform:translateY(0);}
+.obox::before{
+  content:'';
+  display:block;
+  width:40px;height:4px;
+  background:var(--border);
+  border-radius:2px;
+  margin:0 auto 1rem;
+}
+.oclose{float:none;position:absolute;top:1.2rem;right:1.2rem;}
+.t-card{padding:1.1rem;min-height:0;}
+.t-card h3{font-size:1.35rem;}
+.t-price{font-size:1.25rem;}
+.t-more{font-size:0.75rem;}
+.t-grid{gap:0.65rem;}
+
 }
 </style>
 </head>
@@ -790,8 +886,8 @@ function makeCard(t,showChk){
   var td=new Date(t.date);td.setHours(0,0,0,0);
   var isToday=td.getTime()===now.getTime();
   var h='';
-  if(showChk)h+='<div class="t-wrap"><input type="checkbox" class="t-chk"'+(isSel?' checked':'')+' id="chk-'+t.id+'" onclick="toggleSel(''+t.id+'',event)">';
-  h+='<div class="t-card'+(isSel?' sel':'')+(isToday?' today-card':'')+'" id="tc-'+t.id+'" onclick="openDetail(''+t.id+'')">';
+  if(showChk)h+='<div class="t-wrap"><input type="checkbox" class="t-chk"'+(isSel?' checked':'')+' id="chk-'+t.id+'" onclick="toggleSel(\''+t.id+'\',event)">';
+  h+='<div class="t-card'+(isSel?' sel':'')+(isToday?' today-card':'')+'" id="tc-'+t.id+'" onclick="openDetail(\''+t.id+'\')">';
   if(isToday)h+='<div class="today-banner">★ DNES ★</div>';
   h+='<span class="tbadge '+(t.type==='group'?'group':'individual')+'">'+(t.type==='group'?'Skupinový':'Individuální')+'</span>';
   h+='<h3>'+esc(t.name)+'</h3>';
@@ -885,15 +981,15 @@ function renderTrainTable(){
     var isToday=(td.getTime()===now.getTime());
     var rowStyle=isPast?'opacity:0.55':(isToday?'background:rgba(168,216,50,0.08);border-left:3px solid var(--lime)':'');
     return '<tr style="'+rowStyle+'">'
-      +(isToday?'<td><strong style="color:var(--lime)">★ '+esc(t.name)+'</strong></td>':'<td>'+esc(t.name)+'</td>')
-      +'<td><span class="tbadge '+(t.type==='group'?'group':'individual')+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinový':'Individuální')+'</span></td>'
-      +'<td style="white-space:nowrap">'+(isToday?'<strong style="color:var(--lime)">DNES</strong> ':'')+fmtDate(t.date)+'</td>'
-      +'<td>'+(t.time||'—')+'</td>'
-      +'<td style="color:var(--lime);font-weight:700">'+t.price+' Kč</td>'
-      +'<td>'+(t.spots||1)+'</td>'
-      +'<td><strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--lime)')+'">'+cnt+'</strong></td>'
-      +'<td>'+(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:var(--gray2)">—</span>')+'</td>'
-      +'<td style="white-space:nowrap"><button class="btn btn-s btn-sm" onclick="editTraining(\''+t.id+'\')">✏️</button> <button class="btn btn-s btn-sm" title="Zrušit lekci" onclick="cancelTraining(\''+t.id+'\')">📢</button> <button class="btn btn-d" onclick="delTraining(\''+t.id+'\')">✕</button></td></tr>';
+      +(isToday?'<td data-label="Název"><strong style="color:var(--lime)">★ '+esc(t.name)+'</strong></td>':'<td data-label="Název">'+esc(t.name)+'</td>')
+      +'<td data-label="Typ"><span class="tbadge '+(t.type==='group'?'group':'individual')+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinový':'Individuální')+'</span></td>'
+      +'<td data-label="Datum" style="white-space:nowrap">'+(isToday?'<strong style="color:var(--lime)">DNES</strong> ':'')+fmtDate(t.date)+'</td>'
+      +'<td data-label="Čas">'+(t.time||'—')+'</td>'
+      +'<td data-label="Cena" style="color:var(--lime);font-weight:700">'+t.price+' Kč</td>'
+      +'<td data-label="Míst">'+(t.spots||1)+'</td>'
+      +'<td data-label="Přihl."><strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--lime)')+'">'+cnt+'</strong></td>'
+      +'<td data-label="Heslo">'+(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:var(--gray2)">—</span>')+'</td>'
+      +'<td data-label="Akce"><button class="btn btn-s btn-sm" onclick="editTraining(\''+ t.id +'\')">✏️ Upravit</button> <button class="btn btn-s btn-sm" title="Zrušit lekci" onclick="cancelTraining(\''+ t.id +'\')">📢</button> <button class="btn btn-d" onclick="delTraining(\''+ t.id +'\')">✕</button></td></tr>';
   }
   var upHtml=upcoming.map(function(t){return rowHtml(t,false);}).join('');
   if(!upHtml)upHtml='<tr><td colspan="9" style="text-align:center;color:var(--gray2);padding:1.4rem">Žádné nadcházející tréninky</td></tr>';
@@ -939,9 +1035,7 @@ function saveTraining(){var name=document.getElementById('t-name').value.trim(),
     var endDate=new Date(date+'T'+(time||'16:00')+':00');
     endDate.setMinutes(endDate.getMinutes()+durMin);
     var gend=endDate.toISOString().replace(/[-:]/g,'').slice(0,15);
-    var gurl='https://calendar.google.com/calendar/r/eventedit?text='+encodeURIComponent('🐾 '+name)+'&dates='+gstart+'/'+gend+'&details='+encodeURIComponent('Výcvik psů s Michalem
-Cena: '+price+' Kč'+(note?'
-Poznámka: '+note:''))+'&location='+encodeURIComponent('Rudník, Krkonoše')+'&ctz=Europe%2FPrague';
+    var gurl='https://calendar.google.com/calendar/r/eventedit?text='+encodeURIComponent('🐾 '+name)+'&dates='+gstart+'/'+gend+'&details='+encodeURIComponent('Výcvik psů s Michalem\nCena: '+price+' Kč'+(note?'\nPoznámka: '+note:''))+'&location='+encodeURIComponent('Rudník, Krkonoše')+'&ctz=Europe%2FPrague';
     showGCalModal(gurl,date,time,name);
   }
 });}
@@ -979,7 +1073,7 @@ window.showGCalModal=function(url,date,time,name){
     +'<p style="color:var(--gray);margin:0 0 1.2rem;font-size:0.9rem">Přidat <strong style="color:#fff">'+esc(name)+'</strong><br>do Google Kalendáře trenéra?</p>'
     +'<a href="'+url+'" target="_blank" style="display:inline-block;background:var(--lime);color:#000;font-weight:700;padding:0.75rem 1.5rem;border-radius:8px;text-decoration:none;margin-bottom:0.8rem;width:100%;box-sizing:border-box">'
     +'📅 Přidat do Google Kalendáře</a>'
-    +'<div style="margin-top:0.5rem"><button onclick="document.getElementById('gcal-modal').remove()" style="background:transparent;border:1px solid var(--gray2);color:var(--gray);padding:0.5rem 1.5rem;border-radius:6px;cursor:pointer;font-size:0.85rem">Přeskočit</button></div>'
+    +'<div style="margin-top:0.5rem"><button onclick="document.getElementById(\'gcal-modal\').remove()" style="background:transparent;border:1px solid var(--gray2);color:var(--gray);padding:0.5rem 1.5rem;border-radius:6px;cursor:pointer;font-size:0.85rem">Přeskočit</button></div>'
     +'</div>';
   document.body.appendChild(m);
   m.addEventListener('click',function(e){if(e.target===m)m.remove();});
