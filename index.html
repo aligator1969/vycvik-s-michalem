@@ -352,6 +352,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
     <button class="hsec-btn active" id="btn-s-spolecne" onclick="setSection('spolecne',this)">&#128101; Spole&#269;n&#233; tr&#233;ninky</button>
     <button class="hsec-btn" id="btn-s-individualni" onclick="setSection('individualni',this)">&#128021; Individu&#225;ln&#237; tr&#233;ninky</button>
     <button class="hsec-btn" id="btn-s-schvalene" onclick="setSection('schvalene',this)">&#9989; Schv&#225;len&#233; popt&#225;vky</button>
+    <button class="hsec-btn" id="btn-s-moje" onclick="setSection('moje',this)">&#128203; Moje p&#345;ihl&#225;&#353;en&#237;</button>
     <button class="hsec-btn" onclick="showPage('interest')">&#128021; M&#225;m z&#225;jem</button>
   </div>
 
@@ -379,15 +380,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       <button class="filter-chip" onclick="filterCards('g','volne',this)">Jen voln&#233;</button>
     </div>
     <div class="t-grid" id="home-trainings"></div>
-    <div style="margin-top:1.5rem;padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px">
-      <div class="sec-title-sm" style="margin-bottom:0.5rem">&#128203; Moje přihlášení</div>
-      <div style="font-size:0.84rem;color:var(--gray2);margin-bottom:0.7rem">Zadejte email, který jste použili při přihlášení, a zobrazte svá přihlášení. Odhlásit se lze pouze u budoucích tréninků.</div>
-      <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem">
-        <input type="email" id="my-reg-email" placeholder="vas@email.cz" style="flex:1;padding:0.42rem 0.65rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.86rem;background:var(--bg3);color:var(--white);outline:none" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
-        <button class="btn btn-s btn-sm" onclick="filterMyRegsAction()">Zobrazit</button>
-      </div>
-      <div id="my-reg-list"><div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div></div>
-    </div>
   </div>
 
   <div id="sec-individualni" style="display:none">
@@ -426,6 +418,15 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
     <div class="help-tip">&#9989; <strong>Vaše potvrzené tréninky.</strong> Zde vidíte individuální termíny schválené trenérem. Termín je závazný — stačí jen přijít!</div>
     <div class="sec-sub">Individu&#225;ln&#237; tr&#233;ninky schv&#225;len&#233; tren&#233;rem i klientem</div>
     <div class="t-grid" id="home-approved-reqs"></div>
+  </div>
+
+  <div id="sec-moje" style="display:none">
+    <div class="help-tip">&#128203; <strong>Moje přihlášení na skupinové tréninky.</strong> Zadejte email, který jste použili při přihlášení. U budoucích tréninků se můžete odhlásit.</div>
+    <div style="display:flex;gap:0.4rem;margin-bottom:0.9rem">
+      <input type="email" id="my-reg-email" placeholder="vas@email.cz" style="flex:1;padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg2);color:var(--white);outline:none" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
+      <button class="btn btn-s" onclick="filterMyRegsAction()">Zobrazit</button>
+    </div>
+    <div id="my-reg-list"><div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div></div>
   </div>
 
   <div class="multi-bar" id="multi-bar">
@@ -902,9 +903,11 @@ function setSection(sec,btn){
   document.getElementById('sec-spolecne').style.display=sec==='spolecne'?'block':'none';
   document.getElementById('sec-individualni').style.display=sec==='individualni'?'block':'none';
   document.getElementById('sec-schvalene').style.display=sec==='schvalene'?'block':'none';
+  document.getElementById('sec-moje').style.display=sec==='moje'?'block':'none';
   if(sec==='spolecne'){applyFilterG();renderGroupCal();}
   if(sec==='individualni'){applyFilterI();renderIndCal();}
   if(sec==='schvalene')renderApprovedReqs();
+  if(sec==='moje'){var em=myEmail||localStorage.getItem('vcvikEmail')||'';var inp=document.getElementById('my-reg-email');if(inp&&em&&!inp.value)inp.value=em;if(em)renderMyRegs();}
 }
 
 // ── MULTI SELECT ───────────────────────────────────────────────────────────────
