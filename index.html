@@ -107,10 +107,11 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .int-box{background:var(--bg2);border:1px solid var(--lime);border-radius:10px;padding:1.4rem 1.6rem;margin-top:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 .int-box h3{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;letter-spacing:0.04em;color:var(--white);margin-bottom:0.25rem;}
 /* OVERLAY */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.22s;}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.82);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.22s;}
 .overlay.open{opacity:1;pointer-events:all;}
-.obox{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.8rem;max-width:500px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.7);transform:scale(0.94);transition:transform 0.22s;max-height:92vh;overflow-y:auto;}
+.obox{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.8rem;max-width:500px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.7);transform:scale(0.94);transition:transform 0.22s;max-height:88vh;overflow-y:auto;word-break:break-word;}
 .overlay.open .obox{transform:scale(1);}
+@media(max-width:520px){.obox{padding:1.1rem 0.9rem;border-radius:8px;}}
 .obox h2{font-family:"Bebas Neue",sans-serif;font-size:1.7rem;letter-spacing:0.04em;margin-bottom:0.3rem;color:var(--white);}
 .oclose{float:right;background:var(--bg3);border:1px solid var(--border);font-size:1rem;cursor:pointer;color:var(--gray);line-height:1;padding:0.3rem 0.6rem;border-radius:4px;margin-top:-0.2rem;}
 .drow{display:flex;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid var(--border);font-size:0.92rem;gap:1rem;}
@@ -420,7 +421,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div id="sec-moje" style="display:none">
-    <div class="help-tip">&#128203; <strong>Moje přihlášení na skupinové tréninky.</strong> Zadejte email, který jste použili při přihlášení. U budoucích tréninků se můžete odhlásit.</div>
+    <div class="help-tip">&#128203; <strong>Moje přihlášení.</strong> Zadejte email pro zobrazení skupinových i individuálních přihlášení. U budoucích tréninků se můžete odhlásit.</div>
     <div style="display:flex;gap:0.4rem;margin-bottom:0.9rem">
       <input type="email" id="my-reg-email" placeholder="vas@email.cz" style="flex:1;padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg2);color:var(--white);outline:none" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
       <button class="btn btn-s" onclick="filterMyRegsAction()">Zobrazit</button>
@@ -572,7 +573,13 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         </div>
       </div>
 
-      <div class="tw"><table class="tt"><thead><tr><th>N&#225;zev</th><th>Typ</th><th>Datum</th><th>&#268;as</th><th>Cena</th><th>M&#237;st</th><th>P&#345;ihl.</th><th>Heslo</th><th>Akce</th></tr></thead><tbody id="train-tbody"></tbody></table></div>
+      <!-- Admin bulk-cancel bar -->
+      <div id="adm-multi-bar" style="display:none;align-items:center;gap:0.7rem;flex-wrap:wrap;margin-bottom:0.7rem;padding:0.7rem 1rem;background:rgba(224,51,51,0.1);border:1px solid var(--red);border-radius:8px">
+        <span id="adm-multi-count" style="font-weight:700;font-size:0.88rem;color:var(--red)">0 vybráno</span>
+        <button class="btn btn-d btn-sm" onclick="bulkCancelTrainings()">🗑️ Zrušit vybrané</button>
+        <button class="btn btn-s btn-sm" onclick="clearAdminSel()">✕ Odznačit vše</button>
+      </div>
+      <div class="tw"><table class="tt"><thead><tr><th style="width:36px"><input type="checkbox" id="chk-all-tr" title="Vybrat vše" style="cursor:pointer;accent-color:var(--lime)" onclick="toggleAllAdminSel()"></th><th>N&#225;zev</th><th>Typ</th><th>Datum</th><th>&#268;as</th><th>Cena</th><th>M&#237;st</th><th>P&#345;ihl.</th><th>Heslo</th><th>Akce</th></tr></thead><tbody id="train-tbody"></tbody></table></div>
     </div>
     <div class="asec" id="atab-registrations">
       <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.1rem">
@@ -688,7 +695,7 @@ var DEF_INFO = 'Pro z\u00e1jem o individu\u00e1ln\u00ed lekce mimo vyps\u00e1n\u
 var S = { tr:[], rq:[], re:[], no:'', pw:'261497', heroTxt:DEF_HERO, infoTxt:DEF_INFO, texts:{} };
 function dbErr(e){toast('Chyba připojení – zkuste to znovu','err');console.error('Firebase error:',e);}
 var adminIn=false, currentDetailId=null, repeatMode='none', activeSection='spolecne';
-var selectedIds={}, myEmail='';
+var selectedIds={}, myEmail='', adminSelIds={};
 var gCalY=new Date().getFullYear(), gCalM=new Date().getMonth();
 var iCalY=new Date().getFullYear(), iCalM=new Date().getMonth();
 var CAL_DOW=['Po','&#218;t','St','&#268;t','P&#225;','So','Ne'];
@@ -987,10 +994,58 @@ function submitInterest(){if(window._submitting)return;var name=document.getElem
 function filterMyReqs(){var e=document.getElementById('my-email-filter').value.trim();if(!e){toast('Zadejte email','err');return;}myEmail=e;localStorage.setItem('vcvikEmail',e);renderPublicReqs();}
 function renderPublicReqs(){var el=document.getElementById('public-req-list');var em=myEmail||localStorage.getItem('vcvikEmail')||'';if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte sv\u016fj email n\u00ed\u017ee.</div>';return;}var mine=S.rq.filter(function(r){return(r.ownerEmail||r.email).toLowerCase()===em.toLowerCase();}).sort(function(a,b){return new Date(b.ca)-new Date(a.ca);});if(!mine.length){el.innerHTML='<div class="empty"><div class="ei">\ud83d\udccb</div><p style="font-size:0.86rem">\u017d\u00e1dn\u00e9 popt\u00e1vky pro '+esc(em)+'</p></div>';return;}var sl={pending:'&#268;ek\u00e1',approved:'Potvrzeno',rejected:'Odm\u00edtnuto'};el.innerHTML=mine.map(function(r){var gcalLink='',feedback='';if(r.status==='approved'){gcalLink='<a href="'+gcalUrl('Individu\u00e1ln\u00ed v\u00fdcvik \u2013 '+r.name,'','','','Michal: 601 242 160'+(r.trainerNote?'\n'+r.trainerNote:''))+'" target="_blank" style="display:inline-block;margin-top:0.45rem;font-size:0.76rem;font-weight:700;color:var(--lime);text-decoration:none;padding:0.25rem 0.6rem;border:1.5px solid var(--lime);border-radius:4px;text-transform:uppercase">\ud83d\udcc5 Google kalend\u00e1\u0159</a>';if(!r.clientFeedback){feedback='<div style="margin-top:0.6rem;padding:0.6rem;background:var(--bg2);border-radius:6px;border:1px solid var(--lime)"><div style="font-size:0.8rem;font-weight:700;color:var(--white);margin-bottom:0.4rem">V\u00e1\u0161 term\u00edn byl schv\u00e1len \u2013 potvr\u010fte:</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap"><button onclick="clientFeedback(\''+r.id+'\',\'souhlas\u00edm\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:none;background:var(--lime);color:#000;text-transform:uppercase">\u2705 SOUHLAS\u00cdM</button><button onclick="clientFeedback(\''+r.id+'\',\'jin\u00fd term\u00edn\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:1.5px solid var(--red);background:transparent;color:var(--red);text-transform:uppercase">\ud83d\udd04 JIN\u00dd TERM\u00cdN</button></div></div>';}else{feedback='<div style="margin-top:0.5rem;font-size:0.82rem;font-weight:700;color:'+(r.clientFeedback==='souhlas\u00edm'?'var(--lime)':'var(--red)')+'"> '+(r.clientFeedback==='souhlas\u00edm'?'\u2705 Potvrzeno':'\ud83d\udd04 \u017d\u00e1d\u00e1te jin\u00fd term\u00edn')+'</div>';}}var canDel=r.status==='pending';var canCancel=r.status==='approved'&&r.clientFeedback!=='zru\u0161eno';return'<div class="ri '+r.status+'"><div style="font-size:0.92rem;font-weight:700;margin-bottom:0.22rem;color:var(--white)">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--gray2)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic;margin-top:0.2rem">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.22rem;font-weight:600">\ud83d\udcac Tren\u00e9r: '+esc(r.trainerNote)+'</div>':'')+gcalLink+feedback+(canDel?'<button class="btn btn-d" style="margin-top:0.48rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="deleteMyReq(\''+r.id+'\')">&#10005; Zru\u0161it popt\u00e1vku</button>':'')+(canCancel?'<button class="btn btn-d" style="margin-top:0.48rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(\''+r.id+'\')">&#10005; Zru\u0161it schv\u00e1len\u00fd term\u00edn</button>':'')+'</div>';}).join('');}
 function deleteMyReq(id){showConf('Zru\u0161it popt\u00e1vku','Opravdu zru\u0161it svou popt\u00e1vku?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Popt\u00e1vka zru\u0161ena');renderPublicReqs();}).catch(dbErr);});}
-window.cancelApprovedReq=function(id){showConf('Zru\u0161it schv\u00e1len\u00fd term\u00edn','Opravdu chcete zru\u0161it schv\u00e1len\u00fd individu\u00e1ln\u00ed term\u00edn? Tren\u00e9r bude informov\u00e1n.','',function(){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:'zru\u0161eno'}).then(function(){closeConf();toast('\u26a0\ufe0f Term\u00edn zru\u0161en \u2013 tren\u00e9r bude informov\u00e1n');renderPublicReqs();renderApprovedReqs&&renderApprovedReqs();}).catch(dbErr);});};
+window.cancelApprovedReq=function(id){showConf('Zru\u0161it schv\u00e1len\u00fd term\u00edn','Opravdu chcete zru\u0161it schv\u00e1len\u00fd individu\u00e1ln\u00ed term\u00edn? Tren\u00e9r bude informov\u00e1n.','',function(){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:'zru\u0161eno'}).then(function(){closeConf();toast('\u26a0\ufe0f Term\u00edn zru\u0161en \u2013 tren\u00e9r bude informov\u00e1n');renderPublicReqs();renderMyRegs&&renderMyRegs();renderApprovedReqs&&renderApprovedReqs();}).catch(dbErr);});};
 window.cancelMyReg=function(id){showConf('Odhl\u00e1sit se','Opravdu se chcete odhl\u00e1sit z tohoto tr\u00e9ninku?','',function(){db.collection('registrace').doc(id).delete().then(function(){closeConf();toast('Odhl\u00e1\u0161en\u00ed prob\u011bhlo');renderMyRegs();}).catch(dbErr);});};
 
-function renderMyRegs(){var el=document.getElementById('my-reg-list');if(!el)return;var em=(document.getElementById('my-reg-email')||{}).value||(myEmail||localStorage.getItem('vcvikEmail')||'');em=em.trim();if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte email níže pro zobrazení vašich přihlášení.</div>';return;}var mine=S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).sort(function(a,b){var ta=S.tr.find(function(x){return x.id===r.tid;});var tb=S.tr.find(function(x){return x.id===b.tid;});return new Date((ta&&ta.date)||0)-new Date((tb&&tb.date)||0);});if(!mine.length){el.innerHTML='<div style="font-size:0.86rem;color:var(--gray2)">Žádná přihlášení pro '+esc(em)+'.</div>';return;}var now=new Date();now.setHours(0,0,0,0);el.innerHTML=mine.map(function(r){var t=S.tr.find(function(x){return x.id===r.tid;});if(!t)return'';var td=new Date(t.date);td.setHours(0,0,0,0);var past=td<now;return'<div class="ri" style="opacity:'+(past?'0.55':'1')+'">'+'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.2rem">'+esc(t.name)+(past?'<span style="margin-left:0.5rem;font-size:0.68rem;color:var(--gray2);font-weight:400">proběhlo</span>':'')+'</div>'+'<div style="font-size:0.8rem;color:var(--gray2)">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</div>'+(t.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic;margin-top:0.15rem">'+esc(t.note)+'</div>':'')+(!past?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(\''+r.id+'\')">&#10005; Odhlásit se</button>':'')+'</div>';}).join('');}
+function renderMyRegs(){
+  var el=document.getElementById('my-reg-list');if(!el)return;
+  var em=(document.getElementById('my-reg-email')||{}).value||(myEmail||localStorage.getItem('vcvikEmail')||'');
+  em=em.trim();
+  if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div>';return;}
+  var now=new Date();now.setHours(0,0,0,0);
+  var items=[];
+  S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).forEach(function(r){
+    var t=S.tr.find(function(x){return x.id===r.tid;});
+    if(!t)return;
+    items.push({kind:'group',r:r,t:t,dateVal:t.date});
+  });
+  S.rq.filter(function(r){return(r.ownerEmail||r.email||'').toLowerCase()===em.toLowerCase()&&r.status!=='rejected';}).forEach(function(r){
+    items.push({kind:'individual',r:r,dateVal:r.ca});
+  });
+  if(!items.length){el.innerHTML='<div style="font-size:0.86rem;color:var(--gray2)">Žádná přihlášení pro '+esc(em)+'.</div>';return;}
+  items.sort(function(a,b){return new Date(a.dateVal)-new Date(b.dateVal);});
+  var sl={pending:'Čeká na schválení',approved:'Schváleno'};
+  el.innerHTML=items.map(function(item){
+    if(item.kind==='group'){
+      var r=item.r,t=item.t;
+      var td=new Date(t.date);td.setHours(0,0,0,0);var past=td<now;
+      return'<div class="ri" style="opacity:'+(past?'0.55':'1')+';margin-bottom:0.5rem">'
+        +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
+        +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(100,180,255,0.15);color:#60A5FA;text-transform:uppercase">Skupinový</span>'
+        +(past?'<span style="font-size:0.68rem;color:var(--gray2)">proběhlo</span>':'')
+        +'</div>'
+        +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(t.name)+'</div>'
+        +'<div style="font-size:0.8rem;color:var(--gray2)">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</div>'
+        +(!past?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(''+r.id+'')">&#10005; Odhlásit se</button>':'')
+        +'</div>';
+    } else {
+      var r=item.r;
+      var isApproved=r.status==='approved';
+      var isCancelled=r.clientFeedback==='žrušeno';
+      var canCancel=isApproved&&!isCancelled;
+      return'<div class="ri" style="margin-bottom:0.5rem">'
+        +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
+        +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(168,216,50,0.12);color:var(--lime);text-transform:uppercase">Individuální</span>'
+        +'<span style="font-size:0.68rem;color:var(--gray2)">'+(sl[r.status]||r.status)+'</span>'
+        +(isCancelled?'<span style="font-size:0.68rem;color:var(--red);font-weight:700">❌ Zrušeno</span>':'')
+        +'</div>'
+        +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(r.name)+'</div>'
+        +(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic">'+esc(r.note)+'</div>':'')
+        +(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.2rem;font-weight:600">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')
+        +(canCancel?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(''+r.id+'')">&#10005; Zrušit termín</button>':'')
+        +'</div>';
+    }
+  }).join('');}
 function filterMyRegsAction(){var e=(document.getElementById('my-reg-email')||{}).value;if(e){myEmail=e.trim();localStorage.setItem('vcvikEmail',e.trim());}renderMyRegs();}
 
 // ── ADMIN ──────────────────────────────────────────────────────────────────────
@@ -1008,24 +1063,16 @@ function applyPreset(val){if(!val)return;var p=val.split('|');document.getElemen
 function cancelTraining(id){
   var t=S.tr.find(function(x){return x.id===id;});if(!t)return;
   var regs=S.re.filter(function(r){return r.tid===id;});
-  var clientsHtml='';
-  if(regs.length){
-    clientsHtml='<div style="margin-top:0.7rem;padding:0.8rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">'
-      +'<div style="font-size:0.72rem;font-weight:700;color:var(--amber);text-transform:uppercase;margin-bottom:0.5rem">\u26a0\ufe0f P\u0159ihl\u00e1\u0161en\u00ed klienti ('+regs.length+') &#8211; kontaktujte je!</div>'
-      +regs.map(function(r){return'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;padding:0.4rem 0;border-bottom:1px solid var(--border)"><strong>'+esc(r.name)+'</strong><div style="display:flex;gap:0.5rem;flex-wrap:wrap"><a href="tel:'+esc(r.phone)+'" style="color:var(--lime);font-size:0.82rem;font-weight:700;text-decoration:none">\ud83d\udcde '+esc(r.phone)+'</a><a href="mailto:'+esc(r.email)+'" style="color:var(--lime);font-size:0.82rem;font-weight:700;text-decoration:none">\u2709 '+esc(r.email)+'</a></div></div>';}).join('')
-      +'<div style="margin-top:0.6rem;font-size:0.75rem;color:var(--gray2)">Klikn\u011bte na telefonn\u00ed \u010d\u00edslo nebo email pro kontakt. Potom vyberte akci n\u00ed\u017ee.</div>'
-      +'</div>';
-  }else{
-    clientsHtml='<div style="margin-top:0.5rem;font-size:0.86rem;color:var(--gray2)">\u2139\ufe0f Na tuto lekci nen\u00ed nikdo p\u0159ihl\u00e1\u0161en.</div>';
-  }
-  var actionsHtml='<div style="margin-top:0.9rem;padding-top:0.7rem;border-top:1px solid var(--border)">'
-    +'<div style="font-size:0.72rem;font-weight:700;color:var(--gray2);text-transform:uppercase;margin-bottom:0.5rem">Akce s lekc\u00ed:</div>'
-    +'<div style="display:flex;gap:0.5rem;flex-wrap:wrap">'
-    +'<button class="btn btn-d btn-sm" onclick="closeConf();delTraining(\''+id+'\')">Smazat lekci</button>'
-    +'<button class="btn btn-s btn-sm" onclick="closeConf()">Ponechat v syst\u00e9mu</button>'
-    +'</div></div>';
-  document.getElementById('conf-ok').style.display='none';
-  showConf('\ud83d\udce2 Zru\u0161it lekci: '+t.name,'\ud83d\udcc5 '+fmtDate(t.date)+(t.time?' \u00b7 '+t.time:''),clientsHtml+actionsHtml,null);
+  var extra=regs.length
+    ?'<div style="margin-top:0.7rem;padding:0.65rem 0.8rem;background:rgba(240,168,78,0.1);border:1px solid rgba(240,168,78,0.35);border-radius:7px;font-size:0.86rem;color:var(--amber)">⚠️ Bude smazáno <strong>'+regs.length+'</strong> přihlášení. Kontaktujte klienty!'
+    +'<div style="margin-top:0.5rem">'+regs.map(function(r){return'<a href="tel:'+esc(r.phone)+'" style="display:inline-block;color:var(--lime);font-size:0.8rem;font-weight:700;text-decoration:none;margin-right:0.6rem">📞 '+esc(r.name)+'</a>';}).join('')+'</div></div>'
+    :'<div style="margin-top:0.5rem;font-size:0.84rem;color:var(--gray2)">ℹ️ Žádní přihlášení klienti.</div>';
+  showConf('🗑️ Zrušit lekci','<strong>'+esc(t.name)+'</strong><br><span style="font-size:0.85rem;color:var(--gray2)">📅 '+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</span>',extra,function(){
+    var batch=db.batch();
+    batch.delete(db.collection('školení').doc(id));
+    regs.forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});
+    batch.commit().then(function(){closeConf();toast('Lekce zrušena a smazána');}).catch(dbErr);
+  });
 }
 
 function renderTrainTable(){
@@ -1037,8 +1084,11 @@ function renderTrainTable(){
     var cnt=S.re.filter(function(r){return r.tid===t.id;}).length,hasPw=t.type==='group'&&t.regpw;
     var td=new Date(t.date);td.setHours(0,0,0,0);
     var isToday=(td.getTime()===now.getTime());
-    var rowStyle=isPast?'opacity:0.55':(isToday?'background:rgba(168,216,50,0.08);border-left:3px solid var(--lime)':'');
-    return '<tr style="'+rowStyle+'">'
+    var isSel=!!adminSelIds[t.id];
+    var rowStyle=isPast?'opacity:0.55':(isSel?'background:rgba(224,51,51,0.08);border-left:3px solid var(--red)':isToday?'background:rgba(168,216,50,0.08);border-left:3px solid var(--lime)':'');
+    var chkCell=isPast?'<td data-label=""></td>':'<td data-label=""><input type="checkbox" '+(isSel?'checked':'')+' style="cursor:pointer;accent-color:var(--red)" onclick="toggleAdminSel(\''+t.id+'\',event)"></td>';
+    return '<tr style="'+rowStyle+'" id="atr-'+t.id+'">'
+      +chkCell
       +(isToday?'<td data-label="Název"><strong style="color:var(--lime)">★ '+esc(t.name)+'</strong></td>':'<td data-label="Název">'+esc(t.name)+'</td>')
       +'<td data-label="Typ"><span class="tbadge '+(t.type==='group'?'group':'individual')+'" style="margin-bottom:0">'+(t.type==='group'?'Skupinový':'Individuální')+'</span></td>'
       +'<td data-label="Datum" style="white-space:nowrap">'+(isToday?'<strong style="color:var(--lime)">DNES</strong> ':'')+fmtDate(t.date)+'</td>'
@@ -1047,7 +1097,7 @@ function renderTrainTable(){
       +'<td data-label="Míst">'+(t.spots||1)+'</td>'
       +'<td data-label="Přihl."><strong style="color:'+(cnt>=(t.spots||1)?'var(--red)':'var(--lime)')+'">'+cnt+'</strong></td>'
       +'<td data-label="Heslo">'+(hasPw?'<span class="pw-tag">'+esc(t.regpw)+'</span>':'<span style="color:var(--gray2)">—</span>')+'</td>'
-      +'<td data-label="Akce"><button class="btn btn-s btn-sm" onclick="editTraining(\''+ t.id +'\')">✏️ Upravit</button> <button class="btn btn-s btn-sm" title="Zrušit lekci" onclick="cancelTraining(\''+ t.id +'\')">📢</button> <button class="btn btn-d" onclick="delTraining(\''+ t.id +'\')">✕</button></td></tr>';
+      +'<td data-label="Akce"><button class="btn btn-s btn-sm" onclick="editTraining(\''+t.id+'\')">✏️</button> <button class="btn btn-d btn-sm" title="Zrušit lekci" onclick="cancelTraining(\''+t.id+'\')">🗑️ Zrušit</button></td></tr>';
   }
   var upHtml=upcoming.map(function(t){return rowHtml(t,false);}).join('');
   if(!upHtml)upHtml='<tr><td colspan="9" style="text-align:center;color:var(--gray2);padding:1.4rem">Žádné nadcházející tréninky</td></tr>';
@@ -1149,6 +1199,39 @@ function saveTraining(){if(window._savingTraining)return;window._savingTraining=
   }
 }).catch(function(e){window._savingTraining=false;dbErr(e);});}
 function delTraining(id){showConf('Smazat tr\u00e9nink','Opravdu smazat? Vymažou se i p\u0159ihl\u00e1\u0161en\u00ed.','',function(){var batch=db.batch();batch.delete(db.collection('\u0161kolen\u00ed').doc(id));S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});batch.commit().then(function(){closeConf();toast('Smaz\u00e1no');}).catch(dbErr);});}
+
+// ── ADMIN BULK SELECT ───────────────────────────────────────────────────────────
+function _updateAdmBar(){
+  var ids=Object.keys(adminSelIds);var n=ids.length;
+  var bar=document.getElementById('adm-multi-bar');
+  if(!bar)return;
+  bar.style.display=n>0?'flex':'none';
+  var cnt=document.getElementById('adm-multi-count');
+  if(cnt)cnt.textContent=n+' vybrán'+(n===1?'a':'o/y')+' (lekcí)';
+}
+window.toggleAdminSel=function(id,e){if(e)e.stopPropagation();if(adminSelIds[id])delete adminSelIds[id];else adminSelIds[id]=true;_updateAdmBar();};
+window.clearAdminSel=function(){adminSelIds={};_updateAdmBar();renderTrainTable();};
+window.toggleAllAdminSel=function(){
+  var now=new Date();now.setHours(0,0,0,0);
+  var upcoming=S.tr.filter(function(t){var td=new Date(t.date);td.setHours(0,0,0,0);return td>=now;});
+  var allSel=upcoming.length>0&&upcoming.every(function(t){return adminSelIds[t.id];});
+  adminSelIds={};
+  if(!allSel)upcoming.forEach(function(t){adminSelIds[t.id]=true;});
+  _updateAdmBar();renderTrainTable();
+};
+window.bulkCancelTrainings=function(){
+  var ids=Object.keys(adminSelIds);if(!ids.length)return;
+  var totalRegs=ids.reduce(function(sum,id){return sum+S.re.filter(function(r){return r.tid===id;}).length;},0);
+  var warn=totalRegs?'<div style="margin-top:0.6rem;padding:0.55rem 0.7rem;background:rgba(240,168,78,0.1);border:1px solid rgba(240,168,78,0.3);border-radius:6px;font-size:0.84rem;color:var(--amber)">⚠️ Bude smazáno '+totalRegs+' přihlášení. Předem kontaktujte klienty!</div>':'';
+  showConf('🗑️ Zrušit '+ids.length+' lekcí',ids.length+' vybraných lekcí bude trvale smazáno.',warn,function(){
+    var batch=db.batch();
+    ids.forEach(function(id){
+      batch.delete(db.collection('školení').doc(id));
+      S.re.filter(function(r){return r.tid===id;}).forEach(function(r){batch.delete(db.collection('registrace').doc(r.id));});
+    });
+    batch.commit().then(function(){closeConf();adminSelIds={};_updateAdmBar();toast('Zrušeno '+ids.length+' lekcí');}).catch(dbErr);
+  });
+};
 function switchRegTab(tab,btn){document.getElementById('greg-content').style.display=tab==='g'?'block':'none';document.getElementById('ireg-content').style.display=tab==='i'?'block':'none';document.querySelectorAll('#atab-registrations .atab').forEach(function(b){b.classList.remove('active');});if(btn)btn.classList.add('active');if(tab==='i')renderIndRegs();else renderGroupRegs();}
 function renderGroupRegs(){
   var el=document.getElementById('greg-content');
