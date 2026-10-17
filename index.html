@@ -82,17 +82,17 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 .cday.empty{background:transparent;color:transparent;}
 .cday.past{color:var(--gray2);background:transparent;}
 .cday.normal{color:var(--gray2);background:var(--bg3);}
-.cday.gfree{background:rgba(240,192,48,0.22);color:#F0C030;border:1.5px solid rgba(240,192,48,0.65);cursor:pointer;font-weight:800;}
-.cday.gfree:hover{background:rgba(240,192,48,0.38);}
+.cday.gfree{background:rgba(255,224,0,0.22);color:#FFE000;border:1.5px solid rgba(255,224,0,0.65);cursor:pointer;font-weight:800;}
+.cday.gfree:hover{background:rgba(255,224,0,0.38);}
 .cday.gfull{background:rgba(224,51,51,0.25);color:#FF5555;border:2px solid rgba(224,51,51,0.7);font-weight:800;}
 .cday.ifree{background:rgba(74,158,255,0.22);color:#4A9EFF;border:1.5px solid rgba(74,158,255,0.65);cursor:pointer;font-weight:800;}
 .cday.ifree:hover{background:rgba(74,158,255,0.38);}
 .cday.ifull{background:rgba(224,51,51,0.25);color:#FF5555;border:2px solid rgba(224,51,51,0.7);font-weight:800;}
 .cday.mixed-i{background:linear-gradient(90deg,rgba(74,158,255,0.28) 50%,rgba(224,51,51,0.25) 50%);border:1.5px solid rgba(74,158,255,0.55);cursor:pointer;font-weight:800;color:var(--white);}
 .cday.mixed-i:hover{filter:brightness(1.18);}
-.cday.cday.mixed-g{background:linear-gradient(90deg,rgba(240,192,48,0.28) 50%,rgba(224,51,51,0.25) 50%);border:1.5px solid rgba(240,192,48,0.55);cursor:pointer;font-weight:800;color:var(--white);}
+.cday.cday.mixed-g{background:linear-gradient(90deg,rgba(255,224,0,0.28) 50%,rgba(224,51,51,0.25) 50%);border:1.5px solid rgba(255,224,0,0.55);cursor:pointer;font-weight:800;color:var(--white);}
 .cday.mixed-g:hover{filter:brightness(1.18);}
-.cday.cday.both{background:linear-gradient(135deg,rgba(240,192,48,0.28) 50%,rgba(74,158,255,0.28) 50%);border:1.5px solid rgba(240,192,48,0.6);cursor:pointer;font-weight:800;color:var(--white);}
+.cday.cday.both{background:linear-gradient(135deg,rgba(255,224,0,0.28) 50%,rgba(74,158,255,0.28) 50%);border:1.5px solid rgba(255,224,0,0.6);cursor:pointer;font-weight:800;color:var(--white);}
 .cday.both:hover{filter:brightness(1.2);}
 .cday.today-mark{outline:2px solid var(--gray2);outline-offset:1px;}
 .cal-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border);}
@@ -408,9 +408,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       </div>
       <div class="cal-grid" id="gcal-grid"></div>
       <div class="cal-legend">
-        <div class="cal-leg"><div class="cal-dot" style="background:rgba(240,192,48,0.3);border:1.5px solid #F0C030"></div><span style="color:#F0C030;font-weight:600">Skupinov&#233; &#8211; voln&#233;</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:rgba(255,224,0,0.3);border:1.5px solid #FFE000"></div><span style="color:#FFE000;font-weight:600">Skupinov&#233; &#8211; voln&#233;</span></div>
         <div class="cal-leg"><div class="cal-dot" style="background:rgba(74,158,255,0.3);border:1.5px solid #4A9EFF"></div><span style="color:#4A9EFF;font-weight:600">Individu&#225;ln&#237; &#8211; voln&#233;</span></div>
-        <div class="cal-leg"><div class="cal-dot" style="background:linear-gradient(90deg,rgba(240,192,48,0.4) 50%,rgba(224,51,51,0.3) 50%);border:1px solid #F0C030"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:linear-gradient(90deg,rgba(255,224,0,0.4) 50%,rgba(224,51,51,0.3) 50%);border:1px solid #FFE000"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
         <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.35);border:2px solid #FF5555"></div><span style="color:#FF5555;font-weight:700">Obsazeno</span></div>
       </div>
     </div>
@@ -936,7 +936,7 @@ function openDayPicker(ids){
     var regs=S.re.filter(function(r){return r.tid===t.id;});
     var full=regs.length>=(t.spots||1);
     var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.9rem;background:var(--bg3);border-radius:8px;border:1.5px solid '+(full?'#E03333':t.type==='group'?'#F0C030':'#4A9EFF')+';margin-bottom:0.5rem;'+(full?'':'cursor:pointer;');
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.9rem;background:var(--bg3);border-radius:8px;border:1.5px solid '+(full?'#E03333':t.type==='group'?'#FFE000':'#4A9EFF')+';margin-bottom:0.5rem;'+(full?'':'cursor:pointer;');
     row.innerHTML='<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.25rem;letter-spacing:0.04em">'+esc(t.time||'\u2014')+'</div><div style="font-size:0.82rem;color:#999">'+esc(t.name)+' \u00b7 '+t.price+' K\u010d'+(full?' \u00b7 <span style=\"color:#E03333;font-weight:700\">OBSAZENO</span>':'')+'</div></div><div style="font-size:0.88rem;font-weight:700;color:'+(full?'#E03333':'#A8D832')+'">'+(full?'&#10060;':'Voln\u00e9 \u2192')+'</div>';
     if(!full){
       row.setAttribute('data-open-id',t.id);
