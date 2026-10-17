@@ -404,6 +404,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div id="sec-individualni" style="display:none">
+    <button class="btn btn-s btn-sm" style="margin-bottom:0.9rem;font-size:0.8rem" onclick="setSection('spolecne',document.getElementById('btn-s-spolecne'))">&#8592; Zpět na tréninky</button>
     <div class="help-tip">&#128021; <strong>Individuální lekce na míru.</strong> Klikněte na zelený den v kalendáři nebo na kartu níže — přihlásíte se na soukromý trénink jen pro vás a vašeho psa.</div>
     <div class="cal-wrap">
       <div class="cal-header">
@@ -429,12 +430,14 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div id="sec-schvalene" style="display:none">
+    <button class="btn btn-s btn-sm" style="margin-bottom:0.9rem;font-size:0.8rem" onclick="setSection('spolecne',document.getElementById('btn-s-spolecne'))">&#8592; Zpět na tréninky</button>
     <div class="help-tip">&#9989; <strong>Vaše potvrzené tréninky.</strong> Zde vidíte individuální termíny schválené trenérem. Termín je závazný — stačí jen přijít!</div>
     <div class="sec-sub">Individu&#225;ln&#237; tr&#233;ninky schv&#225;len&#233; tren&#233;rem i klientem</div>
     <div class="t-grid" id="home-approved-reqs"></div>
   </div>
 
   <div id="sec-moje" style="display:none">
+    <button class="btn btn-s btn-sm" style="margin-bottom:0.9rem;font-size:0.8rem" onclick="setSection('spolecne',document.getElementById('btn-s-spolecne'))">&#8592; Zpět na tréninky</button>
     <div class="help-tip">&#128203; <strong>Moje přihlášení.</strong> Zadejte email pro zobrazení skupinových i individuálních přihlášení. U budoucích tréninků se můžete odhlásit.</div>
     <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.9rem">
       <input type="email" id="my-reg-email" placeholder="vas@email.cz" style="flex:1;min-width:0;padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg2);color:var(--white);outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
@@ -444,6 +447,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div id="sec-eshopy" style="display:none">
+    <button class="btn btn-s btn-sm" style="margin-bottom:0.9rem;font-size:0.8rem" onclick="setSection('spolecne',document.getElementById('btn-s-spolecne'))">&#8592; Zpět na tréninky</button>
     <div class="help-tip">&#128717; <strong>Kynologick&#233; e-shopy.</strong> Doporu&#269;en&#233; obchody s pom&#367;ckami pro v&#253;cvik, psy i p&#225;n&#237;&#269;ky. Kliknut&#237;m p&#345;ejdete p&#345;&#237;mo na web.</div>
     <div id="sec-eshopy-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.8rem;margin-top:0.5rem"></div>
   </div>
@@ -952,7 +956,7 @@ function setSection(sec,btn){
   if(sec==='individualni'){applyFilterI();renderIndCal();}
   if(sec==='schvalene')renderApprovedReqs();
   if(sec==='moje'){var em=myEmail||localStorage.getItem('vcvikEmail')||'';var inp=document.getElementById('my-reg-email');if(inp&&em&&!inp.value)inp.value=em;if(em)renderMyRegs();}
-  setTimeout(function(){var secEl=document.getElementById('sec-'+sec);if(secEl){var cal=secEl.querySelector('.cal-wrap');(cal||secEl).scrollIntoView({behavior:'smooth',block:'start'});}},80);
+  var _t=document.getElementById('sec-'+sec);if(_t){setTimeout(function(){var _y=_t.getBoundingClientRect().top+window.pageYOffset-70;window.scrollTo({top:_y,behavior:'smooth'});},60);}
 }
 
 // ── MULTI SELECT ───────────────────────────────────────────────────────────────
@@ -1041,7 +1045,7 @@ function renderEshopyAdmin(){
   var el=document.getElementById('eshopy-admin-list');if(!el)return;
   db.collection('eshopy').orderBy('order').get().then(function(snap){
     if(snap.empty){el.innerHTML='<div style="color:var(--gray2);font-size:0.85rem">Žádné záznamy. Přidejte první e-shop výše.</div>';return;}
-    el.innerHTML=snap.docs.map(function(d){var r=d.data();return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editEshop(''+d.id+'')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteEshop(''+d.id+'')">✕</button></div>';}).join('');
+    el.innerHTML=snap.docs.map(function(d){var r=d.data();var did=d.id;return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editEshop(\'' +did+ '\')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteEshop(\'' +did+ '\')">✕</button></div>';}).join('');
   }).catch(function(e){el.innerHTML='<div style="color:#f87171">Chyba: '+e.message+'</div>';});
 }
 
@@ -1100,7 +1104,7 @@ function renderTilesAdmin(){
   var el=document.getElementById('tiles-admin-list');if(!el)return;
   db.collection('custom_tiles').orderBy('order').get().then(function(snap){
     if(snap.empty){el.innerHTML='<div style="color:var(--gray2);font-size:0.85rem">Žádné vlastní dlaždice. Přidejte první výše.</div>';return;}
-    el.innerHTML=snap.docs.map(function(d){var r=d.data();return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editTile(''+d.id+'')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteTile(''+d.id+'')">✕</button></div>';}).join('');
+    el.innerHTML=snap.docs.map(function(d){var r=d.data();var did=d.id;return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editTile(\'' +did+ '\')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteTile(\'' +did+ '\')">✕</button></div>';}).join('');
   }).catch(function(e){el.innerHTML='<div style="color:#f87171">Chyba: '+e.message+'</div>';});
 }
 
