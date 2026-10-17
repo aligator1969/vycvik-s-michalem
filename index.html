@@ -445,15 +445,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 
   <div id="sec-eshopy" style="display:none">
     <div class="help-tip">&#128717; <strong>Kynologick&#233; e-shopy.</strong> Doporu&#269;en&#233; obchody s pom&#367;ckami pro v&#253;cvik, psy i p&#225;n&#237;&#269;ky. Kliknut&#237;m p&#345;ejdete p&#345;&#237;mo na web.</div>
-    <div id="sec-eshopy-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.8rem;margin-top:0.5rem">
-      <a href="https://www.bafpet.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128021;</span><span class="eshop-name">BafPet</span><span class="eshop-desc">Krmivo, pamlsky a doplňky pro psy</span></a>
-      <a href="https://www.hst-eshop.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#127944;</span><span class="eshop-name">HST e-shop</span><span class="eshop-desc">Sportovní a výcvikové pomůcky pro psy</span></a>
-      <a href="https://www.gappay.cz/cz" target="_blank" class="eshop-card"><span class="eshop-icon">&#127919;</span><span class="eshop-name">Gappay</span><span class="eshop-desc">Výcvikové pomůcky, obojky a postroje</span></a>
-      <a href="https://www.eshopscucka.com/" target="_blank" class="eshop-card"><span class="eshop-icon">&#129527;</span><span class="eshop-name">E-shop Sučka</span><span class="eshop-desc">Oblečení a doplňky pro psy i majitele</span></a>
-      <a href="https://www.4dox.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128062;</span><span class="eshop-name">4DOX</span><span class="eshop-desc">Krmivo, hračky a veterinární přípravky</span></a>
-      <a href="https://www.odevyhotovy.cz/eshop/21-kynologie" target="_blank" class="eshop-card"><span class="eshop-icon">&#128085;</span><span class="eshop-name">Oděvy Hotový – Kynologie</span><span class="eshop-desc">Pracovní oděvy a ochranné pomůcky pro kynology</span></a>
-      <a href="https://www.dogtrace.com/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128225;</span><span class="eshop-name">Dogtrace</span><span class="eshop-desc">GPS obojky a elektronické výcvikové pomůcky</span></a>
-    </div>
+    <div id="sec-eshopy-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.8rem;margin-top:0.5rem"></div>
   </div>
 
   <div class="multi-bar" id="multi-bar">
@@ -517,6 +509,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       <button class="atab" onclick="switchTab('registrations',this)">P&#345;ihl&#225;&#353;en&#237;</button>
       <button class="atab" onclick="switchTab('notice',this)">&#128226; Info</button>
       <button class="atab" onclick="switchTab('settings',this)">&#9881; Nastaven&#237;</button>
+      <button class="atab" onclick="switchTab('odkazy',this)">&#128279; Odkazy</button>
     </div>
     <div class="asec active" id="atab-requests"><div class="areq-list" id="admin-req-list"></div></div>
     <div class="asec" id="atab-trainings">
@@ -630,6 +623,39 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         <div class="notice-wrap" style="display:block"><div class="nb-label">&#128226; N&#225;hled</div><div class="nb-text" id="notice-preview"></div></div>
       </div>
     </div>
+    <div class="asec" id="atab-odkazy">
+      <div class="sbox">
+        <h4>&#128717; E-shopy a kynologick&#233; pot&#345;eby</h4>
+        <p style="font-size:0.8rem;color:var(--gray2);margin-bottom:0.8rem">P&#345;idejte nebo upravte karty v sekci Kynologick&#233; pot&#345;eby.</p>
+        <div class="fr2" style="margin-bottom:0.5rem">
+          <div class="fg"><label>Emoji ikona</label><input id="es-icon" type="text" placeholder="&#128021;" maxlength="4" style="font-size:1.3rem"></div>
+          <div class="fg"><label>N&#225;zev e-shopu *</label><input id="es-name" type="text" placeholder="N&#225;zev obchodu"></div>
+        </div>
+        <div class="fg" style="margin-bottom:0.5rem"><label>Popis (kr&#225;tk&#253;)</label><input id="es-desc" type="text" placeholder="Kr&#225;tk&#253; popis co obchod nab&#237;z&#237;"></div>
+        <div class="fg" style="margin-bottom:0.8rem"><label>URL odkaz *</label><input id="es-url" type="url" placeholder="https://www.example.cz"></div>
+        <button class="btn btn-p" onclick="saveEshop()">&#128190; Ulo&#382;it</button>
+        <button class="btn btn-s btn-sm" onclick="resetEshopForm()" style="margin-left:0.4rem">Zru&#353;it</button>
+        <input type="hidden" id="es-edit-id">
+      </div>
+      <div id="eshopy-admin-list" style="margin-top:1rem"></div>
+    </div>
+    <div class="asec" id="atab-tiles">
+      <div class="sbox">
+        <h4>&#128268; Vlastn&#237; navigační dla&#382;dice</h4>
+        <p style="font-size:0.8rem;color:var(--gray2);margin-bottom:0.8rem">Vlastn&#237; dla&#382;dice se zobraz&#237; v navigaci pod st&#225;vaj&#237;c&#237;mi sekcemi.</p>
+        <div class="fr2" style="margin-bottom:0.5rem">
+          <div class="fg"><label>Emoji ikona</label><input id="ti-icon" type="text" placeholder="&#128279;" maxlength="4" style="font-size:1.3rem"></div>
+          <div class="fg"><label>N&#225;zev dla&#382;dice *</label><input id="ti-name" type="text" placeholder="N&#225;zev sekce"></div>
+        </div>
+        <div class="fg" style="margin-bottom:0.5rem"><label>Popis pod n&#225;zvem</label><input id="ti-desc" type="text" placeholder="Kr&#225;tk&#253; popis co sekce obsahuje"></div>
+        <div class="fg" style="margin-bottom:0.8rem"><label>URL odkaz (otev&#345;e v nov&#233; z&#225;lo&#382;ce)</label><input id="ti-url" type="url" placeholder="https://www.example.cz"></div>
+        <button class="btn btn-p" onclick="saveTile()">&#128190; Ulo&#382;it</button>
+        <button class="btn btn-s btn-sm" onclick="resetTileForm()" style="margin-left:0.4rem">Zru&#353;it</button>
+        <input type="hidden" id="ti-edit-id">
+      </div>
+      <div id="tiles-admin-list" style="margin-top:1rem"></div>
+    </div>
+
     <div class="asec" id="atab-settings">
       <div class="sbox">
         <h4>&#9999;&#65039; Text v hero sekci</h4>
@@ -740,7 +766,7 @@ db.collection('\u0161kolen\u00ed').onSnapshot(function(snap){
 },function(){setSyncDot('err');});
 db.collection('popt\u00e1vky').onSnapshot(function(snap){
   S.rq=snap.docs.map(function(d){return normR(d.id,d.data());});
-  renderPublicReqs();renderApprovedReqs();
+  renderPublicReqs();renderApprovedReqs();loadEshopy();loadCustomTiles();
   if(adminIn){renderAdminReqs();renderAdminPanel();}
 });
 db.collection('registrace').onSnapshot(function(snap){
@@ -1007,6 +1033,128 @@ function submitInterest(){if(window._submitting)return;var name=document.getElem
 function filterMyReqs(){var e=document.getElementById('my-email-filter').value.trim();if(!e){toast('Zadejte email','err');return;}myEmail=e;localStorage.setItem('vcvikEmail',e);renderPublicReqs();}
 function renderPublicReqs(){var el=document.getElementById('public-req-list');var em=myEmail||localStorage.getItem('vcvikEmail')||'';if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte sv\u016fj email n\u00ed\u017ee.</div>';return;}var mine=S.rq.filter(function(r){return(r.ownerEmail||r.email).toLowerCase()===em.toLowerCase();}).sort(function(a,b){return new Date(b.ca)-new Date(a.ca);});if(!mine.length){el.innerHTML='<div class="empty"><div class="ei">\ud83d\udccb</div><p style="font-size:0.86rem">\u017d\u00e1dn\u00e9 popt\u00e1vky pro '+esc(em)+'</p></div>';return;}var sl={pending:'&#268;ek\u00e1',approved:'Potvrzeno',rejected:'Odm\u00edtnuto'};el.innerHTML=mine.map(function(r){var gcalLink='',feedback='';if(r.status==='approved'){gcalLink='<a href="'+gcalUrl('Individu\u00e1ln\u00ed v\u00fdcvik \u2013 '+r.name,'','','','Michal: 601 242 160'+(r.trainerNote?'\n'+r.trainerNote:''))+'" target="_blank" style="display:inline-block;margin-top:0.45rem;font-size:0.76rem;font-weight:700;color:var(--lime);text-decoration:none;padding:0.25rem 0.6rem;border:1.5px solid var(--lime);border-radius:4px;text-transform:uppercase">\ud83d\udcc5 Google kalend\u00e1\u0159</a>';if(!r.clientFeedback){feedback='<div style="margin-top:0.6rem;padding:0.6rem;background:var(--bg2);border-radius:6px;border:1px solid var(--lime)"><div style="font-size:0.8rem;font-weight:700;color:var(--white);margin-bottom:0.4rem">V\u00e1\u0161 term\u00edn byl schv\u00e1len \u2013 potvr\u010fte:</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap"><button onclick="clientFeedback(\''+r.id+'\',\'souhlas\u00edm\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:none;background:var(--lime);color:#000;text-transform:uppercase">\u2705 SOUHLAS\u00cdM</button><button onclick="clientFeedback(\''+r.id+'\',\'jin\u00fd term\u00edn\')" style="padding:0.35rem 0.8rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;border:1.5px solid var(--red);background:transparent;color:var(--red);text-transform:uppercase">\ud83d\udd04 JIN\u00dd TERM\u00cdN</button></div></div>';}else{feedback='<div style="margin-top:0.5rem;font-size:0.82rem;font-weight:700;color:'+(r.clientFeedback==='souhlas\u00edm'?'var(--lime)':'var(--red)')+'"> '+(r.clientFeedback==='souhlas\u00edm'?'\u2705 Potvrzeno':'\ud83d\udd04 \u017d\u00e1d\u00e1te jin\u00fd term\u00edn')+'</div>';}}var canDel=r.status==='pending';var canCancel=r.status==='approved'&&r.clientFeedback!=='zru\u0161eno';return'<div class="ri '+r.status+'"><div style="font-size:0.92rem;font-weight:700;margin-bottom:0.22rem;color:var(--white)">'+esc(r.name)+'<span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span></div><div style="font-size:0.8rem;color:var(--gray2)">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div>'+(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic;margin-top:0.2rem">'+esc(r.note)+'</div>':'')+(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.22rem;font-weight:600">\ud83d\udcac Tren\u00e9r: '+esc(r.trainerNote)+'</div>':'')+gcalLink+feedback+(canDel?'<button class="btn btn-d" style="margin-top:0.48rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="deleteMyReq(\''+r.id+'\')">&#10005; Zru\u0161it popt\u00e1vku</button>':'')+(canCancel?'<button class="btn btn-d" style="margin-top:0.48rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(\''+r.id+'\')">&#10005; Zru\u0161it schv\u00e1len\u00fd term\u00edn</button>':'')+'</div>';}).join('');}
 function deleteMyReq(id){showConf('Zru\u0161it popt\u00e1vku','Opravdu zru\u0161it svou popt\u00e1vku?','',function(){db.collection('popt\u00e1vky').doc(id).delete().then(function(){closeConf();toast('Popt\u00e1vka zru\u0161ena');renderPublicReqs();}).catch(dbErr);});}
+// ── ESHOPY & TILES ADMIN ─────────────────────────────────────────────────────
+var editingEshopId=null;
+var editingTileId=null;
+
+function renderEshopyAdmin(){
+  var el=document.getElementById('eshopy-admin-list');if(!el)return;
+  db.collection('eshopy').orderBy('order').get().then(function(snap){
+    if(snap.empty){el.innerHTML='<div style="color:var(--gray2);font-size:0.85rem">Žádné záznamy. Přidejte první e-shop výše.</div>';return;}
+    el.innerHTML=snap.docs.map(function(d){var r=d.data();return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editEshop(''+d.id+'')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteEshop(''+d.id+'')">✕</button></div>';}).join('');
+  }).catch(function(e){el.innerHTML='<div style="color:#f87171">Chyba: '+e.message+'</div>';});
+}
+
+function saveEshop(){
+  var name=(document.getElementById('es-name').value||'').trim();
+  var url=(document.getElementById('es-url').value||'').trim();
+  if(!name||!url){toast('Vyplňte název a URL');return;}
+  var data={name:name,url:url,icon:(document.getElementById('es-icon').value||'🔗').trim(),desc:(document.getElementById('es-desc').value||'').trim(),order:Date.now()};
+  var id=document.getElementById('es-edit-id').value;
+  var prom=id?db.collection('eshopy').doc(id).update(data):db.collection('eshopy').add(data);
+  prom.then(function(){toast('✅ Uloženo');resetEshopForm();renderEshopyAdmin();loadEshopy();}).catch(dbErr);
+}
+
+function editEshop(id){
+  db.collection('eshopy').doc(id).get().then(function(d){
+    if(!d.exists)return;var r=d.data();
+    document.getElementById('es-icon').value=r.icon||'';
+    document.getElementById('es-name').value=r.name||'';
+    document.getElementById('es-desc').value=r.desc||'';
+    document.getElementById('es-url').value=r.url||'';
+    document.getElementById('es-edit-id').value=id;
+    document.querySelector('#atab-odkazy .sbox').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function deleteEshop(id){
+  showConf('Smazat e-shop','Opravdu smazat tento e-shop?','',function(){
+    db.collection('eshopy').doc(id).delete().then(function(){closeConf();toast('Smazáno');renderEshopyAdmin();loadEshopy();}).catch(dbErr);
+  });
+}
+
+function resetEshopForm(){
+  ['es-icon','es-name','es-desc','es-url','es-edit-id'].forEach(function(id){document.getElementById(id).value='';});
+}
+
+function loadEshopy(){
+  db.collection('eshopy').orderBy('order').get().then(function(snap){
+    var el=document.getElementById('sec-eshopy-list');if(!el)return;
+    var hardcoded=[
+      {icon:'🐕',name:'BafPet',desc:'Krmivo, pamlsky a doplňky pro psy',url:'https://www.bafpet.cz/'},
+      {icon:'🎾',name:'HST e-shop',desc:'Sportovní a výcvikové pomůcky pro psy',url:'https://www.hst-eshop.cz/'},
+      {icon:'🎯',name:'Gappay',desc:'Výcvikové pomůcky, obojky a postroje',url:'https://www.gappay.cz/cz'},
+      {icon:'🧷',name:'E-shop Sučka',desc:'Oblečení a doplňky pro psy i majitele',url:'https://www.eshopscucka.com/'},
+      {icon:'🐾',name:'4DOX',desc:'Krmivo, hračky a veterinární přípravky',url:'https://www.4dox.cz/'},
+      {icon:'👕',name:'Oděvy Hotový – Kynologie',desc:'Pracovní oděvy a ochranné pomůcky pro kynology',url:'https://www.odevyhotovy.cz/eshop/21-kynologie'},
+      {icon:'📡',name:'Dogtrace',desc:'GPS obojky a elektronické výcvikové pomůcky',url:'https://www.dogtrace.com/'}
+    ];
+    var extra=snap.docs.map(function(d){return d.data();});
+    var all=hardcoded.concat(extra);
+    el.innerHTML=all.map(function(r){return'<a href="'+esc(r.url)+'" target="_blank" class="eshop-card"><span class="eshop-icon">'+esc(r.icon||'🔗')+'</span><span class="eshop-name">'+esc(r.name)+'</span><span class="eshop-desc">'+esc(r.desc||'')+'</span></a>';}).join('');
+  }).catch(function(){});
+}
+
+// ── TILES ADMIN ───────────────────────────────────────────────────────────────
+function renderTilesAdmin(){
+  var el=document.getElementById('tiles-admin-list');if(!el)return;
+  db.collection('custom_tiles').orderBy('order').get().then(function(snap){
+    if(snap.empty){el.innerHTML='<div style="color:var(--gray2);font-size:0.85rem">Žádné vlastní dlaždice. Přidejte první výše.</div>';return;}
+    el.innerHTML=snap.docs.map(function(d){var r=d.data();return'<div class="sbox" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;margin-bottom:0.5rem"><span style="font-size:1.3rem">'+esc(r.icon||'🔗')+'</span><div style="flex:1;min-width:0"><div style="font-weight:700;color:var(--lime)">'+esc(r.name)+'</div><div style="font-size:0.75rem;color:var(--gray2)">'+esc(r.desc||'')+'</div><div style="font-size:0.72rem;color:var(--gray2)">'+esc(r.url||'')+'</div></div><button class="btn btn-s btn-sm" onclick="editTile(''+d.id+'')">✏️</button><button class="btn btn-d btn-sm" onclick="deleteTile(''+d.id+'')">✕</button></div>';}).join('');
+  }).catch(function(e){el.innerHTML='<div style="color:#f87171">Chyba: '+e.message+'</div>';});
+}
+
+function saveTile(){
+  var name=(document.getElementById('ti-name').value||'').trim();
+  var url=(document.getElementById('ti-url').value||'').trim();
+  if(!name){toast('Vyplňte název dlaždice');return;}
+  var data={name:name,url:url,icon:(document.getElementById('ti-icon').value||'🔗').trim(),desc:(document.getElementById('ti-desc').value||'').trim(),order:Date.now()};
+  var id=document.getElementById('ti-edit-id').value;
+  var prom=id?db.collection('custom_tiles').doc(id).update(data):db.collection('custom_tiles').add(data);
+  prom.then(function(){toast('✅ Uloženo');resetTileForm();renderTilesAdmin();loadCustomTiles();}).catch(dbErr);
+}
+
+function editTile(id){
+  db.collection('custom_tiles').doc(id).get().then(function(d){
+    if(!d.exists)return;var r=d.data();
+    document.getElementById('ti-icon').value=r.icon||'';
+    document.getElementById('ti-name').value=r.name||'';
+    document.getElementById('ti-desc').value=r.desc||'';
+    document.getElementById('ti-url').value=r.url||'';
+    document.getElementById('ti-edit-id').value=id;
+    document.querySelector('#atab-tiles .sbox').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function deleteTile(id){
+  showConf('Smazat dlaždici','Opravdu smazat tuto dlaždici?','',function(){
+    db.collection('custom_tiles').doc(id).delete().then(function(){closeConf();toast('Smazáno');renderTilesAdmin();loadCustomTiles();}).catch(dbErr);
+  });
+}
+
+function resetTileForm(){
+  ['ti-icon','ti-name','ti-desc','ti-url','ti-edit-id'].forEach(function(id){document.getElementById(id).value='';});
+}
+
+function loadCustomTiles(){
+  var wrap=document.querySelector('.home-sections');if(!wrap)return;
+  document.querySelectorAll('.custom-tile').forEach(function(el){el.remove();});
+  db.collection('custom_tiles').orderBy('order').get().then(function(snap){
+    snap.docs.forEach(function(d){
+      var r=d.data();
+      var btn=document.createElement('button');
+      btn.className='hsec-btn custom-tile';
+      btn.innerHTML='<span class="hst">'+esc(r.icon||'')+(r.icon?' ':'')+esc(r.name)+'</span>'+(r.desc?'<span class="hsd">'+esc(r.desc)+'</span>':'');
+      if(r.url)btn.onclick=function(){window.open(r.url,'_blank');};
+      var eshopyBtn=document.getElementById('btn-s-eshopy');
+      if(eshopyBtn&&eshopyBtn.nextSibling){wrap.insertBefore(btn,eshopyBtn.nextSibling);}else{wrap.appendChild(btn);}
+    });
+  }).catch(function(){});
+}
+
+window.editEshop=editEshop;window.deleteEshop=deleteEshop;
+window.editTile=editTile;window.deleteTile=deleteTile;
+
 window.cancelApprovedReq=function(id){showConf('Zru\u0161it schv\u00e1len\u00fd term\u00edn','Opravdu chcete zru\u0161it schv\u00e1len\u00fd individu\u00e1ln\u00ed term\u00edn? Tren\u00e9r bude informov\u00e1n.','',function(){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:'zru\u0161eno'}).then(function(){closeConf();toast('\u26a0\ufe0f Term\u00edn zru\u0161en \u2013 tren\u00e9r bude informov\u00e1n');renderPublicReqs();renderMyRegs&&renderMyRegs();renderApprovedReqs&&renderApprovedReqs();}).catch(dbErr);});};
 window.cancelMyReg=function(id){showConf('Odhl\u00e1sit se','Opravdu se chcete odhl\u00e1sit z tohoto tr\u00e9ninku?','',function(){db.collection('registrace').doc(id).delete().then(function(){closeConf();toast('Odhl\u00e1\u0161en\u00ed prob\u011bhlo');renderMyRegs();}).catch(dbErr);});};
 
@@ -1065,7 +1213,7 @@ function filterMyRegsAction(){var e=(document.getElementById('my-reg-email')||{}
 // ── ADMIN ──────────────────────────────────────────────────────────────────────
 function checkAdmin(){if(document.getElementById('admin-pw').value===S.pw){adminIn=true;document.getElementById('admin-gate').style.display='none';document.getElementById('admin-panel').style.display='block';renderAdminPanel();}else toast('Nespr\u00e1vn\u00e9 heslo','err');}
 function logoutAdmin(){adminIn=false;document.getElementById('admin-gate').style.display='block';document.getElementById('admin-panel').style.display='none';document.getElementById('admin-pw').value='';}
-function switchTab(tab,btn){document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.atab').forEach(function(b){b.classList.remove('active');});document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active');if(tab==='trainings')renderTrainTable();if(tab==='registrations'){renderGroupRegs();document.getElementById('greg-content').style.display='block';document.getElementById('ireg-content').style.display='none';document.getElementById('regtab-g').classList.add('active');document.getElementById('regtab-i').classList.remove('active');}if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';previewNotice();}if(tab==='settings'){var hti=document.getElementById('hero-text-input');if(hti)hti.value=S.heroTxt||'';var iti=document.getElementById('info-text-input');if(iti)iti.value=S.infoTxt||'';}}
+function switchTab(tab,btn){document.querySelectorAll('.asec').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.atab').forEach(function(b){b.classList.remove('active');});document.getElementById('atab-'+tab).classList.add('active');if(btn)btn.classList.add('active');if(tab==='trainings')renderTrainTable();if(tab==='registrations'){renderGroupRegs();document.getElementById('greg-content').style.display='block';document.getElementById('ireg-content').style.display='none';document.getElementById('regtab-g').classList.add('active');document.getElementById('regtab-i').classList.remove('active');}if(tab==='notice'){document.getElementById('notice-input').value=S.no||'';previewNotice();}if(tab==='odkazy'){renderEshopyAdmin();renderTilesAdmin();}if(tab==='settings'){var hti=document.getElementById('hero-text-input');if(hti)hti.value=S.heroTxt||'';var iti=document.getElementById('info-text-input');if(iti)iti.value=S.infoTxt||'';}}
 function renderAdminPanel(){if(!adminIn)return;var pend=S.rq.filter(function(r){return r.status==='pending';}).length;document.getElementById('admin-stats').innerHTML='<div class="stat"><div class="sn">'+S.rq.length+'</div><div class="sl">Popt\u00e1vky</div></div><div class="stat"><div class="sn" style="color:var(--red)">'+pend+'</div><div class="sl">&#268;ek\u00e1</div></div><div class="stat"><div class="sn">'+S.tr.length+'</div><div class="sl">Tr\u00e9ninky</div></div><div class="stat"><div class="sn" style="color:#60A5FA">'+S.re.length+'</div><div class="sl">P\u0159ihl\u00e1\u0161en\u00ed</div></div>';renderAdminReqs();}
 function renderAdminReqs(){var el=document.getElementById('admin-req-list');if(!S.rq.length){el.innerHTML='<div class="empty"><div class="ei">\ud83d\udccb</div><p>\u017d\u00e1dn\u00e9 popt\u00e1vky</p></div>';return;}var sl={pending:'&#268;ek\u00e1',approved:'Potvrzeno',rejected:'Odm\u00edtnuto'};var fbL={'souhlas\u00edm':'\u2705 Souhlas\u00edm','jin\u00fd term\u00edn':'\ud83d\udd04 Jin\u00fd term\u00edn','zru\u0161eno':'\u274c ZRU\u0160IL KLIENT'};el.innerHTML=S.rq.slice().sort(function(a,b){return new Date(b.ca)-new Date(a.ca);}).map(function(r){var fb=r.clientFeedback?'<span style="display:inline-block;margin-left:0.4rem;font-size:0.66rem;font-weight:700;padding:0.14rem 0.44rem;border-radius:3px;background:'+(r.clientFeedback==='souhlas\u00edm'?'rgba(168,216,50,0.15);color:var(--lime)':'rgba(224,51,51,0.15);color:var(--red)')+'">Klient: '+(fbL[r.clientFeedback]||r.clientFeedback)+'</span>':'';return'<div class="areq '+r.status+'"><div class="areq-info"><h4>'+esc(r.name)+' <span class="sbadge '+r.status+'">'+(sl[r.status]||'?')+'</span>'+fb+'</h4><p>\ud83d\udcde <a href="tel:'+esc(r.phone)+'" style="color:var(--lime)">'+esc(r.phone)+'</a> \u00b7 <a href="mailto:'+esc(r.email)+'" style="color:var(--lime)">'+esc(r.email)+'</a></p>'+(r.note?'<p style="font-style:italic;color:var(--gray2)">"'+esc(r.note)+'"</p>':'')+(r.trainerNote?'<p style="color:var(--lime);font-weight:600">\ud83d\udcac '+esc(r.trainerNote)+'</p>':'')+'<div class="areq-meta">'+new Date(r.ca).toLocaleDateString('cs-CZ')+'</div></div><div class="areq-acts">'+(r.status==='pending'?'<button class="btn btn-g btn-sm" onclick="respondReq(\''+r.id+'\',\'approved\')">&#10003; Potvrdit</button><button class="btn btn-d btn-sm" onclick="respondReq(\''+r.id+'\',\'rejected\')">&#10005;</button>':'<button class="btn btn-s btn-sm" onclick="reopenReq(\''+r.id+'\')">&#8617;</button>')+'<button class="btn btn-d btn-sm" onclick="deleteReq(\''+r.id+'\')">\ud83d\uddd1</button></div></div>';}).join('');}
 function respondReq(id,status){var r=S.rq.find(function(x){return x.id===id;});if(!r)return;var extra='<div style="margin-top:0.5rem"><label style="font-size:0.7rem;font-weight:700;color:var(--gray2);display:block;margin-bottom:0.3rem;text-transform:uppercase">Pozn\u00e1mka pro klienta</label><input type="text" id="tnote" placeholder="'+(status==='approved'?'T\u011b\u0161\u00edm se na v\u00e1s!':'Navrhnu jin\u00fd term\u00edn\u2026')+'" style="display:block;width:100%;padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg3);color:var(--white);outline:none"></div>';showConf(status==='approved'?'Potvrdit term\u00edn':'Odm\u00edtnout',(status==='approved'?'Potvrdit popt\u00e1vku od ':'Odm\u00edtnout od ')+'<strong>'+esc(r.name)+'</strong>?',extra,function(){var n=document.getElementById('tnote');var upd={status:status};if(n&&n.value.trim())upd.trainerNote=n.value.trim();db.collection('popt\u00e1vky').doc(id).update(upd).then(function(){closeConf();toast(status==='approved'?'Potvrzeno \u2713':'Odm\u00edtnuto');}).catch(dbErr);});}
