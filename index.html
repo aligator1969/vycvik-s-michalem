@@ -9,29 +9,37 @@
 :root{--bg:#0D0D0D;--bg2:#181818;--bg3:#222222;--lime:#A8D832;--lime2:#C5F01A;--white:#FFFFFF;--gray:#DDDDDD;--gray2:#999;--border:#333333;--red:#E03333;--amber:#F0A84E;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
 body{font-family:Inter,sans-serif;background:var(--bg);color:var(--white);min-height:100vh;-webkit-font-smoothing:antialiased;}
-header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:0.5rem;flex-wrap:wrap;}
-.logo{font-family:"Bebas Neue",sans-serif;font-size:1.4rem;letter-spacing:0.05em;color:var(--lime);cursor:pointer;white-space:nowrap;}
-.logo span{color:var(--white);}
-.hact{display:flex;gap:0.3rem;align-items:center;flex-wrap:wrap;}
-.nb{background:transparent;border:none;color:var(--gray2);font-family:Inter,sans-serif;font-size:0.8rem;font-weight:600;padding:0.42rem 0.9rem;cursor:pointer;border-radius:4px;transition:all 0.18s;white-space:nowrap;text-transform:uppercase;letter-spacing:0.04em;}
-.nb:hover{color:var(--lime);}.nb.active{background:var(--lime);color:#000;}
-.nb.outline{border:1.5px solid var(--border);}.nb.outline.active{background:var(--lime);border-color:var(--lime);color:#000;}
+header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.2);padding:0 1.4rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:0.5rem;flex-wrap:wrap;height:56px;backdrop-filter:blur(12px);}
+.logo{font-family:"Bebas Neue",sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:var(--white);cursor:pointer;white-space:nowrap;}
+.logo em{color:var(--lime);font-style:normal;}
+.hact{display:flex;gap:0.2rem;align-items:center;flex-wrap:wrap;}
+.nb{background:transparent;border:none;color:var(--gray2);font-family:Inter,sans-serif;font-size:0.78rem;font-weight:600;padding:0.4rem 0.85rem;cursor:pointer;border-radius:4px;transition:all 0.18s;white-space:nowrap;text-transform:uppercase;letter-spacing:0.06em;}
+.nb:hover{color:var(--white);}.nb.active{color:var(--lime);}
+.nb.outline{border:1px solid rgba(168,216,50,0.35);color:var(--lime);}.nb.outline:hover{background:rgba(168,216,50,0.08);border-color:var(--lime);}.nb.outline.active{background:var(--lime);border-color:var(--lime);color:#000;}
 .sync{width:7px;height:7px;border-radius:50%;display:inline-block;margin-left:4px;background:var(--gray2);}
 .sync.ok{background:var(--lime);}.sync.err{background:var(--red);}.sync.loading{background:var(--lime);animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
 .page{display:none;padding:1.5rem 1rem;max-width:1080px;margin:0 auto;}
 .page.active{display:block;animation:fadeUp 0.22s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.hero{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:2rem 1.8rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
-.hero::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--lime2),var(--lime));}
-.hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);letter-spacing:0.04em;line-height:1;margin-bottom:0.7rem;}
-.hero h1 em{color:var(--lime);font-style:normal;}
-.hero-txt{font-size:1rem;color:var(--gray);line-height:1.75;margin-bottom:1.1rem;}
-.hero-txt p{margin-bottom:0.45rem;}
-.hero-txt p:last-child{color:var(--lime);font-weight:700;margin-bottom:0;}
-.hero-c{display:flex;gap:0.6rem;flex-wrap:wrap;}
-.hero-c a{color:#000;text-decoration:none;font-size:0.84rem;font-weight:700;display:inline-flex;align-items:center;gap:0.3rem;padding:0.5rem 1.1rem;background:var(--lime);border-radius:4px;transition:background 0.18s;text-transform:uppercase;}
-.hero-c a:hover{background:var(--lime2);}
+.hero{position:relative;overflow:hidden;margin-bottom:0;padding:3.5rem 1.8rem 2.8rem;background:linear-gradient(160deg,#0D0D0D 0%,#111 60%,#141a0a 100%);}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(168,216,50,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--lime);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+.hero-eyebrow::before{content:"";display:block;width:28px;height:1.5px;background:var(--lime);}
+.hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,9vw,5.5rem);letter-spacing:0.03em;line-height:0.95;margin-bottom:1.2rem;position:relative;}
+.hero h1 em{color:var(--lime);font-style:normal;display:block;}
+.hero-sub{font-size:1.05rem;color:var(--gray2);line-height:1.7;margin-bottom:0.5rem;max-width:460px;}
+.hero-exp{font-size:0.82rem;color:rgba(168,216,50,0.7);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2rem;}
+.hero-actions{display:flex;gap:0.7rem;flex-wrap:wrap;align-items:center;margin-bottom:2rem;}
+.hero-btn-primary{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:0.1em;color:#000;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.8rem;background:var(--lime);border:none;border-radius:4px;cursor:pointer;transition:background 0.18s,transform 0.15s;}
+.hero-btn-primary:hover{background:var(--lime2);transform:translateY(-1px);}
+.hero-btn-secondary{font-family:Inter,sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--white);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;padding:0.75rem 1.4rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:4px;cursor:pointer;transition:border-color 0.18s,color 0.18s;}
+.hero-btn-secondary:hover{border-color:var(--lime);color:var(--lime);}
+.hero-contacts{display:flex;gap:1.2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.07);}
+.hero-contact-link{color:var(--gray2);text-decoration:none;font-size:0.82rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;transition:color 0.18s;}
+.hero-contact-link:hover{color:var(--lime);}
+.hero-txt{font-size:0.9rem;color:var(--gray2);line-height:1.7;margin-top:1rem;}
+.hero-c{display:none;}
 .info-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:1.5rem;overflow:hidden;}
 .info-box-header{background:var(--bg3);color:var(--lime);padding:0.7rem 1rem;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
 .info-box-body{padding:1.1rem 1.2rem;font-size:0.95rem;line-height:1.8;color:var(--gray);display:none;}
@@ -318,7 +326,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 </head>
 <body>
 <header>
-  <div class="logo" onclick="showPage('home')">&#128062; Vychovej psa <span>s Michalem</span></div>
+  <div class="logo" onclick="showPage('home')">&#128062; Vychovej psa <em>s Michalem</em></div>
   <div class="hact">
     <button class="nb active" onclick="showPage('home')">&#218;vod</button>
     <button class="nb" onclick="showPage('interest')">M&#225;m z&#225;jem</button>
@@ -329,14 +337,19 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 
 <div class="page active" id="page-home">
   <div class="hero">
-    <h1>Ps&#237; &#353;kola<br><em>&#8222;Vychovej psa&#8220;</em><br>s Michalem</h1>
-    <div class="hero-txt" id="hero-dynamic-txt"></div>
-    <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.08em;color:#000;text-decoration:none;padding:0.6rem 1.3rem;background:var(--lime);border-radius:6px;margin-bottom:1rem;transition:background 0.18s;" onmouseover="this.style.background='var(--lime2)'" onmouseout="this.style.background='var(--lime)'">&#129517; NAVIGOVAT NA CVI&#268;&#193;K</a>
-    <div class="hero-c">
-      <a href="tel:601242160">&#128222; 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz">&#9993; vychovejpsa@seznam.cz</a>
+    <div class="hero-eyebrow">Krkonoše a okolí</div>
+    <h1>Psí škola<em>&#8222;Vychovej psa&#8220;</em>s Michalem</h1>
+    <p class="hero-sub">Profesionální výcvik psů ve všech disciplínách &#8212; od základní poslušnosti až po pokročilé kurzy.</p>
+    <p class="hero-exp">Skupinové i individuální lekce &nbsp;&#183;&nbsp; Flexibilní termíny &nbsp;&#183;&nbsp; Prověřené metody</p>
+    <div class="hero-actions">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" class="hero-btn-primary">&#129517; Navigovat na cvičák</a>
+      <a href="https://vycvikpsuprokazdeho.webnode.cz/" target="_blank" class="hero-btn-secondary">&#128100; Více o Michalovi &rarr;</a>
     </div>
-    <a href="https://vycvikpsuprokazdeho.webnode.cz/" target="_blank" style="display:inline-block;margin-top:0.9rem;font-size:0.8rem;font-weight:600;color:var(--gray2);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1px;transition:color 0.18s;" onmouseover="this.style.color='var(--lime)'" onmouseout="this.style.color='var(--gray2)'">&#128100; V&#237;ce o mn&#283; &rarr;</a>
+    <div class="hero-contacts">
+      <a href="tel:601242160" class="hero-contact-link">&#128222; 601 242 160</a>
+      <a href="mailto:vychovejpsa@seznam.cz" class="hero-contact-link">&#9993; vychovejpsa@seznam.cz</a>
+    </div>
+    <div class="hero-txt" id="hero-dynamic-txt"></div>
   </div>
 
   <div class="info-box">
