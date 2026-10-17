@@ -1007,6 +1007,8 @@ function renderMyRegs(){
   S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).forEach(function(r){
     var t=S.tr.find(function(x){return x.id===r.tid;});
     if(!t)return;
+    var td=new Date(t.date);td.setHours(0,0,0,0);
+    if(td<now)return; // skrýt proběhlé
     items.push({kind:'group',r:r,t:t,dateVal:t.date});
   });
   S.rq.filter(function(r){return(r.ownerEmail||r.email||'').toLowerCase()===em.toLowerCase()&&r.status!=='rejected';}).forEach(function(r){
@@ -1018,16 +1020,14 @@ function renderMyRegs(){
   el.innerHTML=items.map(function(item){
     if(item.kind==='group'){
       var r=item.r,t=item.t;
-      var td=new Date(t.date);td.setHours(0,0,0,0);var past=td<now;
       var isIndT=t.type==='individual';
-      return '<div class="ri" style="opacity:'+(past?'0.55':'1')+';margin-bottom:0.5rem">'
+      return '<div class="ri" style="margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
         +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:'+(isIndT?'rgba(168,216,50,0.12);color:var(--lime)':'rgba(100,180,255,0.15);color:#60A5FA')+';text-transform:uppercase">'+(isIndT?'Individuální':'Skupinový')+'</span>'
-        +(past?'<span style="font-size:0.68rem;color:var(--gray2)">proběhlo</span>':'')
         +'</div>'
         +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(t.name)+'</div>'
         +'<div style="font-size:0.8rem;color:var(--gray2)">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</div>'
-        +(!past?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(\''+r.id+'\')">&#10005; Odhlásit se</button>':'')
+        +'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(\''+r.id+'\')">&#10005; Odhlásit se</button>'
         +'</div>';
     } else {
       var r=item.r;
