@@ -902,6 +902,7 @@ function setSection(sec,btn){
   if(sec==='individualni'){applyFilterI();renderIndCal();}
   if(sec==='schvalene')renderApprovedReqs();
   if(sec==='moje'){var em=myEmail||localStorage.getItem('vcvikEmail')||'';var inp=document.getElementById('my-reg-email');if(inp&&em&&!inp.value)inp.value=em;if(em)renderMyRegs();}
+  setTimeout(function(){var secEl=document.getElementById('sec-'+sec);if(secEl){var cal=secEl.querySelector('.cal-wrap');(cal||secEl).scrollIntoView({behavior:'smooth',block:'start'});}},80);
 }
 
 // ── MULTI SELECT ───────────────────────────────────────────────────────────────
