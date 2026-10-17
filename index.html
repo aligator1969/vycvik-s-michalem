@@ -1019,21 +1019,21 @@ function renderMyRegs(){
     if(item.kind==='group'){
       var r=item.r,t=item.t;
       var td=new Date(t.date);td.setHours(0,0,0,0);var past=td<now;
-      return'<div class="ri" style="opacity:'+(past?'0.55':'1')+';margin-bottom:0.5rem">'
+      return '<div class="ri" style="opacity:'+(past?'0.55':'1')+';margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
         +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(100,180,255,0.15);color:#60A5FA;text-transform:uppercase">Skupinový</span>'
         +(past?'<span style="font-size:0.68rem;color:var(--gray2)">proběhlo</span>':'')
         +'</div>'
         +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(t.name)+'</div>'
         +'<div style="font-size:0.8rem;color:var(--gray2)">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</div>'
-        +(!past?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(''+r.id+'')">&#10005; Odhlásit se</button>':'')
+        +(!past?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(\''+r.id+'\')">&#10005; Odhlásit se</button>':'')
         +'</div>';
     } else {
       var r=item.r;
       var isApproved=r.status==='approved';
       var isCancelled=r.clientFeedback==='žrušeno';
       var canCancel=isApproved&&!isCancelled;
-      return'<div class="ri" style="margin-bottom:0.5rem">'
+      return '<div class="ri" style="margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
         +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(168,216,50,0.12);color:var(--lime);text-transform:uppercase">Individuální</span>'
         +'<span style="font-size:0.68rem;color:var(--gray2)">'+(sl[r.status]||r.status)+'</span>'
@@ -1042,7 +1042,7 @@ function renderMyRegs(){
         +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(r.name)+'</div>'
         +(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic">'+esc(r.note)+'</div>':'')
         +(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.2rem;font-weight:600">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')
-        +(canCancel?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(''+r.id+'')">&#10005; Zrušit termín</button>':'')
+        +(canCancel?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(\''+r.id+'\')">&#10005; Zrušit termín</button>':'')
         +'</div>';
     }
   }).join('');}
