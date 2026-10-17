@@ -82,18 +82,17 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 .cday.empty{background:transparent;color:transparent;}
 .cday.past{color:var(--gray2);background:transparent;}
 .cday.normal{color:var(--gray2);background:var(--bg3);}
-.cday.gfree{background:rgba(255,224,0,0.18);color:#FFE000;border:2px solid #FFE000;cursor:pointer;font-weight:800;text-shadow:0 0 8px rgba(255,224,0,0.5);}
-.cday.gfree:hover{background:rgba(255,224,0,0.32);}
-.cday.gfull{background:rgba(224,51,51,0.2);color:#FF5555;border:2px solid #FF5555;font-weight:800;}
-.cday.ifree{background:rgba(74,158,255,0.18);color:#4A9EFF;border:2px solid #4A9EFF;cursor:pointer;font-weight:800;text-shadow:0 0 8px rgba(74,158,255,0.5);}
-.cday.ifree:hover{background:rgba(74,158,255,0.32);}
-.cday.ifull{background:rgba(224,51,51,0.2);color:#FF5555;border:2px solid #FF5555;font-weight:800;}
-.cday.mixed-i{background:rgba(74,158,255,0.15);border:2px solid #4A9EFF;border-right:2px solid #FF5555;cursor:pointer;font-weight:800;color:#4A9EFF;}
+.cday.gfree{background:var(--bg2);color:#FFE000;border:2px solid #FFE000;cursor:pointer;font-weight:800;}
+.cday.gfree:hover{background:rgba(255,224,0,0.15);}
+.cday.gfull{background:rgba(224,51,51,0.15);color:#FF5555;border:2px solid #FF5555;font-weight:800;}
+.cday.ifree{background:var(--bg2);color:#4A9EFF;border:2px solid #4A9EFF;cursor:pointer;font-weight:800;}
+.cday.ifree:hover{background:rgba(74,158,255,0.15);}
+.cday.ifull{background:rgba(224,51,51,0.15);color:#FF5555;border:2px solid #FF5555;font-weight:800;}
+.cday.mixed-i{background:var(--bg2);border:2px solid #4A9EFF;border-right:3px solid #FF5555;cursor:pointer;font-weight:800;color:#4A9EFF;}
 .cday.mixed-i:hover{filter:brightness(1.18);}
-.cday.cday.mixed-g{background:rgba(255,224,0,0.15);border:2px solid #FFE000;border-right:2px solid #FF5555;cursor:pointer;font-weight:800;color:#FFE000;}
+.cday.cday.mixed-g{background:var(--bg2);border:2px solid #FFE000;border-right:3px solid #FF5555;cursor:pointer;font-weight:800;color:#FFE000;}
 .cday.mixed-g:hover{filter:brightness(1.18);}
-.cday.cday.both{background:rgba(255,224,0,0.15);border:2px solid #FFE000;cursor:pointer;font-weight:800;color:#FFE000;position:relative;}
-.cday.both::after{content:"";position:absolute;bottom:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#4A9EFF;}
+.cday.cday.both{background:var(--bg2);border:2px solid #FFE000;border-right:3px solid #4A9EFF;cursor:pointer;font-weight:800;color:#FFE000;}
 .cday.both:hover{filter:brightness(1.2);}
 .cday.today-mark{outline:2px solid var(--gray2);outline-offset:1px;}
 .cal-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border);}
@@ -409,10 +408,10 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       </div>
       <div class="cal-grid" id="gcal-grid"></div>
       <div class="cal-legend">
-        <div class="cal-leg"><div class="cal-dot" style="background:rgba(255,224,0,0.3);border:1.5px solid #FFE000"></div><span style="color:#FFE000;font-weight:600">Skupinov&#233; &#8211; voln&#233;</span></div>
-        <div class="cal-leg"><div class="cal-dot" style="background:rgba(74,158,255,0.3);border:1.5px solid #4A9EFF"></div><span style="color:#4A9EFF;font-weight:600">Individu&#225;ln&#237; &#8211; voln&#233;</span></div>
-        <div class="cal-leg"><div class="cal-dot" style="background:linear-gradient(90deg,rgba(255,224,0,0.4) 50%,rgba(224,51,51,0.3) 50%);border:1px solid #FFE000"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
-        <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.35);border:2px solid #FF5555"></div><span style="color:#FF5555;font-weight:700">Obsazeno</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border:2px solid #FFE000"></div><span style="color:#FFE000;font-weight:600">Skupinov&#233; &#8211; voln&#233;</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border:2px solid #4A9EFF"></div><span style="color:#4A9EFF;font-weight:600">Individu&#225;ln&#237; &#8211; voln&#233;</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border-top:2px solid #FFE000;border-bottom:2px solid #FFE000;border-left:2px solid #FFE000;border-right:3px solid #FF5555"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.2);border:2px solid #FF5555"></div><span style="color:#FF5555;font-weight:700">Obsazeno</span></div>
       </div>
     </div>
   </div>
