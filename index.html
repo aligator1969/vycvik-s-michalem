@@ -88,11 +88,11 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 .cday.ifree{background:var(--bg2);color:#4A9EFF;border:2px solid #4A9EFF;cursor:pointer;font-weight:800;}
 .cday.ifree:hover{background:rgba(74,158,255,0.15);}
 .cday.ifull{background:rgba(224,51,51,0.15);color:#FF5555;border:2px solid #FF5555;font-weight:800;}
-.cday.mixed-i{background:var(--bg2);border:2px solid #4A9EFF;border-right:3px solid #FF5555;cursor:pointer;font-weight:800;color:#4A9EFF;}
-.cday.mixed-i:hover{filter:brightness(1.18);}
-.cday.cday.mixed-g{background:var(--bg2);border:2px solid #FFE000;border-right:3px solid #FF5555;cursor:pointer;font-weight:800;color:#FFE000;}
-.cday.mixed-g:hover{filter:brightness(1.18);}
-.cday.cday.both{background:var(--bg2);border:2px solid #FFE000;border-right:3px solid #4A9EFF;cursor:pointer;font-weight:800;color:#FFE000;}
+.cday.mixed-i{background:linear-gradient(90deg,rgba(74,158,255,0.35) 50%,rgba(224,51,51,0.35) 50%);border:1.5px solid rgba(74,158,255,0.6);cursor:pointer;font-weight:800;color:var(--white);}
+.cday.mixed-i:hover{filter:brightness(1.25);}
+.cday.cday.mixed-g{background:linear-gradient(90deg,rgba(255,224,0,0.35) 50%,rgba(224,51,51,0.35) 50%);border:1.5px solid rgba(255,224,0,0.6);cursor:pointer;font-weight:800;color:var(--white);}
+.cday.mixed-g:hover{filter:brightness(1.25);}
+.cday.cday.both{background:linear-gradient(90deg,rgba(255,224,0,0.3) 50%,rgba(74,158,255,0.3) 50%);border:1.5px solid rgba(255,224,0,0.6);cursor:pointer;font-weight:800;color:var(--white);}
 .cday.both:hover{filter:brightness(1.2);}
 .cday.today-mark{outline:2px solid var(--gray2);outline-offset:1px;}
 .cal-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border);}
@@ -410,7 +410,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       <div class="cal-legend">
         <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border:2px solid #FFE000"></div><span style="color:#FFE000;font-weight:600">Skupinov&#233; &#8211; voln&#233;</span></div>
         <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border:2px solid #4A9EFF"></div><span style="color:#4A9EFF;font-weight:600">Individu&#225;ln&#237; &#8211; voln&#233;</span></div>
-        <div class="cal-leg"><div class="cal-dot" style="background:var(--bg2);border-top:2px solid #FFE000;border-bottom:2px solid #FFE000;border-left:2px solid #FFE000;border-right:3px solid #FF5555"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
+        <div class="cal-leg"><div class="cal-dot" style="background:linear-gradient(90deg,rgba(255,224,0,0.5) 50%,rgba(224,51,51,0.5) 50%);border:1px solid rgba(255,224,0,0.5)"></div><span style="color:var(--gray);font-weight:600">&#268;&#225;ste&#269;n&#283; obsazeno</span></div>
         <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.2);border:2px solid #FF5555"></div><span style="color:#FF5555;font-weight:700">Obsazeno</span></div>
       </div>
     </div>
