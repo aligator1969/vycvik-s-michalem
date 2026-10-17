@@ -1019,9 +1019,10 @@ function renderMyRegs(){
     if(item.kind==='group'){
       var r=item.r,t=item.t;
       var td=new Date(t.date);td.setHours(0,0,0,0);var past=td<now;
+      var isIndT=t.type==='individual';
       return '<div class="ri" style="opacity:'+(past?'0.55':'1')+';margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
-        +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(100,180,255,0.15);color:#60A5FA;text-transform:uppercase">Skupinový</span>'
+        +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:'+(isIndT?'rgba(168,216,50,0.12);color:var(--lime)':'rgba(100,180,255,0.15);color:#60A5FA')+';text-transform:uppercase">'+(isIndT?'Individuální':'Skupinový')+'</span>'
         +(past?'<span style="font-size:0.68rem;color:var(--gray2)">proběhlo</span>':'')
         +'</div>'
         +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(t.name)+'</div>'
@@ -1031,7 +1032,7 @@ function renderMyRegs(){
     } else {
       var r=item.r;
       var isApproved=r.status==='approved';
-      var isCancelled=r.clientFeedback==='žrušeno';
+      var isCancelled=r.clientFeedback==='zrušeno';
       var canCancel=isApproved&&!isCancelled;
       return '<div class="ri" style="margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
