@@ -49,6 +49,12 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .hsec-btn.active .hst{color:var(--lime);}
 .hsec-btn .hsd{font-size:0.78rem;color:var(--gray2);line-height:1.4;font-weight:400;}
 .hsec-btn:hover .hsd{color:var(--gray);}
+.eshop-card{display:flex;flex-direction:column;gap:0.3rem;padding:1rem 1.1rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;text-decoration:none;color:var(--white);transition:all 0.18s;cursor:pointer;}
+.eshop-card:hover{border-color:var(--lime);background:var(--bg3);}
+.eshop-icon{font-size:1.5rem;line-height:1;}
+.eshop-name{font-family:"Bebas Neue",sans-serif;font-size:1.15rem;letter-spacing:0.05em;color:var(--lime);}
+.eshop-desc{font-size:0.78rem;color:var(--gray2);line-height:1.4;}
+.eshop-card:hover .eshop-desc{color:var(--gray);}
 .sec-title-sm{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:0.05em;margin-bottom:0.7rem;color:var(--white);}
 .sec-sub{color:var(--gray);font-size:0.93rem;margin-bottom:1rem;}
 /* FILTER CHIPS */
@@ -373,6 +379,10 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       <span class="hst">&#9989; Schv&#225;len&#233; popt&#225;vky</span>
       <span class="hsd">Va&#353;e potvrzen&#233; individu&#225;ln&#237; term&#237;ny schv&#225;len&#233; tren&#233;rem ze sekce <strong style="color:var(--lime)">M&#225;m z&#225;jem</strong>.</span>
     </button>
+    <button class="hsec-btn" id="btn-s-eshopy" onclick="setSection('eshopy',this)">
+      <span class="hst">&#128717; Kynologick&#233; pot&#345;eby</span>
+      <span class="hsd">E-shopy s pom&#367;ckami pro v&#253;cvik, psy i p&#225;n&#237;&#269;ky &#8211; v&#353;e na jednom m&#237;st&#283;.</span>
+    </button>
   </div>
 
   <div id="sec-spolecne">
@@ -431,6 +441,19 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
       <button class="btn btn-s" onclick="filterMyRegsAction()" style="white-space:nowrap;flex-shrink:0">Zobrazit</button>
     </div>
     <div id="my-reg-list"><div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div></div>
+  </div>
+
+  <div id="sec-eshopy" style="display:none">
+    <div class="help-tip">&#128717; <strong>Kynologick&#233; e-shopy.</strong> Doporu&#269;en&#233; obchody s pom&#367;ckami pro v&#253;cvik, psy i p&#225;n&#237;&#269;ky. Kliknut&#237;m p&#345;ejdete p&#345;&#237;mo na web.</div>
+    <div id="sec-eshopy-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:0.8rem;margin-top:0.5rem">
+      <a href="https://www.bafpet.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128021;</span><span class="eshop-name">BafPet</span><span class="eshop-desc">Krmivo, pamlsky a doplňky pro psy</span></a>
+      <a href="https://www.hst-eshop.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#127944;</span><span class="eshop-name">HST e-shop</span><span class="eshop-desc">Sportovní a výcvikové pomůcky pro psy</span></a>
+      <a href="https://www.gappay.cz/cz" target="_blank" class="eshop-card"><span class="eshop-icon">&#127919;</span><span class="eshop-name">Gappay</span><span class="eshop-desc">Výcvikové pomůcky, obojky a postroje</span></a>
+      <a href="https://www.eshopscucka.com/" target="_blank" class="eshop-card"><span class="eshop-icon">&#129527;</span><span class="eshop-name">E-shop Sučka</span><span class="eshop-desc">Oblečení a doplňky pro psy i majitele</span></a>
+      <a href="https://www.4dox.cz/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128062;</span><span class="eshop-name">4DOX</span><span class="eshop-desc">Krmivo, hračky a veterinární přípravky</span></a>
+      <a href="https://www.odevyhotovy.cz/eshop/21-kynologie" target="_blank" class="eshop-card"><span class="eshop-icon">&#128085;</span><span class="eshop-name">Oděvy Hotový – Kynologie</span><span class="eshop-desc">Pracovní oděvy a ochranné pomůcky pro kynology</span></a>
+      <a href="https://www.dogtrace.com/" target="_blank" class="eshop-card"><span class="eshop-icon">&#128225;</span><span class="eshop-name">Dogtrace</span><span class="eshop-desc">GPS obojky a elektronické výcvikové pomůcky</span></a>
+    </div>
   </div>
 
   <div class="multi-bar" id="multi-bar">
@@ -897,6 +920,7 @@ function setSection(sec,btn){
   document.getElementById('sec-spolecne').style.display=sec==='spolecne'?'block':'none';
   document.getElementById('sec-individualni').style.display=sec==='individualni'?'block':'none';
   document.getElementById('sec-schvalene').style.display=sec==='schvalene'?'block':'none';
+  document.getElementById('sec-eshopy').style.display=sec==='eshopy'?'block':'none';
   document.getElementById('sec-moje').style.display=sec==='moje'?'block':'none';
   if(sec==='spolecne'){applyFilterG();renderGroupCal();}
   if(sec==='individualni'){applyFilterI();renderIndCal();}
