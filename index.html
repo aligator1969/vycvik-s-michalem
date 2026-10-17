@@ -41,10 +41,14 @@ header{background:var(--bg2);border-bottom:2px solid var(--lime);padding:0.7rem 
 .notice-wrap{display:none;background:var(--bg2);border:2px solid var(--lime);border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:1.5rem;}
 .nb-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--lime);margin-bottom:0.3rem;}
 .nb-text{font-size:1.05rem;font-weight:600;color:var(--white);line-height:1.65;}
-.home-sections{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.3rem;}
-.hsec-btn{padding:0.55rem 1.1rem;border-radius:4px;font-family:Inter,sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--bg2);color:var(--gray2);transition:all 0.18s;text-transform:uppercase;letter-spacing:0.04em;}
-.hsec-btn:hover{border-color:var(--lime);color:var(--lime);}
-.hsec-btn.active{background:var(--lime);border-color:var(--lime);color:#000;}
+.home-sections{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.3rem;}
+.hsec-btn{display:block;width:100%;padding:1rem 1.2rem;border-radius:10px;font-family:Inter,sans-serif;cursor:pointer;border:1.5px solid var(--border);background:var(--bg2);color:var(--white);transition:all 0.18s;text-align:left;}
+.hsec-btn:hover{border-color:var(--lime);background:var(--bg3);}
+.hsec-btn.active{border-color:var(--lime);border-width:2px;background:var(--bg3);}
+.hsec-btn .hst{font-family:"Bebas Neue",sans-serif;font-size:1.35rem;letter-spacing:0.06em;color:var(--lime);display:block;margin-bottom:0.15rem;}
+.hsec-btn.active .hst{color:var(--lime);}
+.hsec-btn .hsd{font-size:0.78rem;color:var(--gray2);line-height:1.4;font-weight:400;}
+.hsec-btn:hover .hsd{color:var(--gray);}
 .sec-title-sm{font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:0.05em;margin-bottom:0.7rem;color:var(--white);}
 .sec-sub{color:var(--gray);font-size:0.93rem;margin-bottom:1rem;}
 /* FILTER CHIPS */
@@ -208,7 +212,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 .nb{font-size:0.74rem;padding:0.35rem 0.6rem;}.int-box{flex-direction:column;}.obox{padding:1.3rem;}
 .t-card h3{font-size:1.7rem;}.t-price{font-size:1.45rem;}.t-meta{font-size:0.92rem;}
 .hero-txt{font-size:1.05rem;}.hero h1{font-size:2.6rem;}
-.hsec-btn{font-size:0.86rem;padding:0.58rem 1rem;}
+
 .info-box-body{font-size:0.98rem;}.tbadge{font-size:0.72rem;padding:0.22rem 0.65rem;}
 
 /* ── HELP TIP ── */
@@ -349,11 +353,26 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   </div>
 
   <div class="home-sections">
-    <button class="hsec-btn active" id="btn-s-spolecne" onclick="setSection('spolecne',this)">&#128101; Spole&#269;n&#233; tr&#233;ninky</button>
-    <button class="hsec-btn" id="btn-s-individualni" onclick="setSection('individualni',this)">&#128021; Individu&#225;ln&#237; tr&#233;ninky</button>
-    <button class="hsec-btn" id="btn-s-schvalene" onclick="setSection('schvalene',this)">&#9989; Schv&#225;len&#233; popt&#225;vky</button>
-    <button class="hsec-btn" id="btn-s-moje" onclick="setSection('moje',this)">&#128203; Moje p&#345;ihl&#225;&#353;en&#237;</button>
-    <button class="hsec-btn" onclick="showPage('interest')">&#128021; M&#225;m z&#225;jem</button>
+    <button class="hsec-btn active" id="btn-s-spolecne" onclick="setSection('spolecne',this)">
+      <span class="hst">&#128101; Spole&#269;n&#233; tr&#233;ninky</span>
+      <span class="hsd">Skupinov&#233; lekce pro v&#353;echny. Klikn&#283;te na zv&#253;razn&#283;n&#253; den v kalend&#225;&#345;i a p&#345;ihla&#353;te se.</span>
+    </button>
+    <button class="hsec-btn" id="btn-s-individualni" onclick="setSection('individualni',this)">
+      <span class="hst">&#128021; Individu&#225;ln&#237; tr&#233;ninky</span>
+      <span class="hsd">Soukrom&#225; lekce jen pro v&#225;s a va&#353;eho psa. Vyberte voln&#253; term&#237;n v kalend&#225;&#345;i.</span>
+    </button>
+    <button class="hsec-btn" id="btn-s-schvalene" onclick="setSection('schvalene',this)">
+      <span class="hst">&#9989; Schv&#225;len&#233; popt&#225;vky</span>
+      <span class="hsd">Va&#353;e potvrzen&#233; individu&#225;ln&#237; term&#237;ny schv&#225;len&#233; tren&#233;rem.</span>
+    </button>
+    <button class="hsec-btn" id="btn-s-moje" onclick="setSection('moje',this)">
+      <span class="hst">&#128203; Moje p&#345;ihl&#225;&#353;en&#237;</span>
+      <span class="hsd">Zobrazte v&#353;echna va&#353;e p&#345;ihl&#225;&#353;en&#237; podle emailu. U budouc&#237;ch lekcí se m&#367;&#382;ete odhl&#225;sit.</span>
+    </button>
+    <button class="hsec-btn" onclick="showPage('interest')">
+      <span class="hst">&#128395; M&#225;m z&#225;jem o tr&#233;nink</span>
+      <span class="hsd">Navrhni vlastn&#237; term&#237;n &#8211; tren&#233;r t&#283; kontaktuje do 24 hodin.</span>
+    </button>
   </div>
 
   <div id="sec-spolecne">
@@ -372,14 +391,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.2);border:1px solid #FF7777"></div><span style="color:#FF7777;font-weight:600">Obsazeno</span></div>
       </div>
     </div>
-    <div class="sec-title-sm">Vyps&#225;n&#233; spole&#269;n&#233; tr&#233;ninky</div>
-    <div class="filter-bar" id="filter-bar-g">
-      <button class="filter-chip active" onclick="filterCards('g','vse',this)">V&#353;e</button>
-      <button class="filter-chip" onclick="filterCards('g','tento',this)">Tento m&#283;s&#237;c</button>
-      <button class="filter-chip" onclick="filterCards('g','pristi',this)">P&#345;&#237;&#353;t&#237; m&#283;s&#237;c</button>
-      <button class="filter-chip" onclick="filterCards('g','volne',this)">Jen voln&#233;</button>
-    </div>
-    <div class="t-grid" id="home-trainings"></div>
   </div>
 
   <div id="sec-individualni" style="display:none">
@@ -397,14 +408,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         <div class="cal-leg"><div class="cal-dot" style="background:rgba(224,51,51,0.2);border:1px solid #FF7777"></div><span style="color:#FF7777;font-weight:600">Obsazeno</span></div>
       </div>
     </div>
-    <div class="sec-title-sm">Vyps&#225;n&#233; individu&#225;ln&#237; lekce</div>
-    <div class="filter-bar" id="filter-bar-i">
-      <button class="filter-chip active" onclick="filterCards('i','vse',this)">V&#353;e</button>
-      <button class="filter-chip" onclick="filterCards('i','tento',this)">Tento m&#283;s&#237;c</button>
-      <button class="filter-chip" onclick="filterCards('i','pristi',this)">P&#345;&#237;&#353;t&#237; m&#283;s&#237;c</button>
-      <button class="filter-chip" onclick="filterCards('i','volne',this)">Jen voln&#233;</button>
-    </div>
-    <div class="t-grid" id="home-ind-trainings"></div>
+    <div class="t-grid" id="home-ind-trainings" style="display:none"></div>
     <div class="int-box" id="int-home-box" style="margin-top:1rem">
       <div>
         <h3>&#128021; M&#225;m z&#225;jem o individu&#225;ln&#237; tr&#233;nink</h3>
@@ -769,24 +773,8 @@ function applyFilter(trainings,filter){
     return true;
   });
 }
-function applyFilterG(){
-  var now=new Date();now.setHours(0,0,0,0);
-  var up=S.tr.filter(function(t){return t.type==='group'&&new Date(t.date)>=now;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
-  var filtered=applyFilter(up,activeFilterG);
-  var el=document.getElementById('home-trainings');
-  if(!filtered.length){el.innerHTML='<div class="empty"><div class="ei">&#128269;</div><p>Ž\u00e1dn\u00e9 tr\u00e9ninky v tomto filtru</p></div>';return;}
-  el.innerHTML=filtered.map(function(t){return makeCard(t,true);}).join('');
-}
-function applyFilterI(){
-  var now=new Date();now.setHours(0,0,0,0);
-  var up=S.tr.filter(function(t){return t.type==='individual'&&new Date(t.date)>=now;}).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
-  var filtered=applyFilter(up,activeFilterI);
-  var el=document.getElementById('home-ind-trainings');
-  var ibox=document.getElementById('int-home-box');
-  if(!filtered.length){el.innerHTML='<div class="empty"><div class="ei">&#128269;</div><p>Ž\u00e1dn\u00e9 tr\u00e9ninky v tomto filtru</p></div>';if(ibox)ibox.style.display='none';return;}
-  if(ibox)ibox.style.display='none';
-  el.innerHTML=filtered.map(function(t){return makeCard(t,false);}).join('');
-}
+function applyFilterG(){}
+function applyFilterI(){}
 
 // ── CALENDAR ───────────────────────────────────────────────────────────────────
 function buildCal(gridId,titleId,year,month,filterType){
