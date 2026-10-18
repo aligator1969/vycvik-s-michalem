@@ -672,7 +672,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
         <h4>&#9999;&#65039; Text v hero sekci</h4>
         <p style="font-size:0.8rem;color:var(--gray2);margin-bottom:0.6rem">Ka&#382;d&#253; &#345;&#225;dek = nov&#253; odstavec. Posledn&#237; &#345;&#225;dek limetkov&#283;.</p>
         <div class="fg"><textarea id="hero-text-input" rows="5"></textarea></div>
-        <button class="btn btn-p" onclick="saveHeroText()">&#128190; Ulo&#382;it</button>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap"><button class="btn btn-p" onclick="saveHeroText()">&#128190; Ulo&#382;it</button><button class="btn btn-s" onclick="clearHeroText()" style="background:transparent;border:1px solid rgba(255,80,80,0.4);color:rgba(255,120,120,0.9)">&#128465; Vymazat text</button></div>
       </div>
       <div class="sbox">
         <h4>&#9999;&#65039; Text Registrace &#8211; Informace</h4>
@@ -809,6 +809,14 @@ function clientFeedback(id,fb){db.collection('popt\u00e1vky').doc(id).update({cl
 // ── TEXTS ──────────────────────────────────────────────────────────────────────
 function renderHeroTxt(){var el=document.getElementById('hero-dynamic-txt');if(!el)return;var lines=(S.heroTxt||'').split('\n').map(function(l){return l.trim();}).filter(Boolean);el.innerHTML=lines.map(function(l,i){var last=i===lines.length-1;return'<p style="'+(last?'color:var(--lime);font-weight:700;margin-bottom:0':'margin-bottom:0.45rem')+'">'+esc(l)+'</p>';}).join('');}
 function renderInfoTxt(){var el=document.getElementById('info-body-content');if(!el)return;el.innerHTML=(S.infoTxt||'').split('\n').map(function(l){l=l.trim();if(!l)return'';var ur=/(https?:\/\/[^\s]+)/g;return'<p>'+l.replace(ur,function(u){return'<a href="'+esc(u)+'" target="_blank">'+esc(u)+'</a>';})+'</p>';}).join('');}
+function clearHeroText(){
+  if(!confirm('Smazat text v hero sekci?'))return;
+  S.heroTxt='';
+  document.getElementById('hero-text-input').value='';
+  renderHeroTxt();
+  db.collection('konfigurace').doc('hlavní').set({heroTxt:'',pw:S.pw,'oznámení':S.no,infoTxt:S.infoTxt,texts:S.texts},{merge:true})
+    .then(function(){toast('Text vymazán ✓');}).catch(function(){toast('Chyba uložení');});
+}
 function saveHeroText(){var v=document.getElementById('hero-text-input').value;S.heroTxt=v;renderHeroTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({heroTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Text ulo\u017een \u2713');}).catch(dbErr);}
 function saveInfoText(){var v=document.getElementById('info-text-input').value;S.infoTxt=v;renderInfoTxt();db.collection('konfigurace').doc('hlavn\u00ed').set({infoTxt:v,pw:S.pw,'ozn\u00e1men\u00ed':S.no,heroTxt:S.heroTxt,texts:S.texts},{merge:true}).then(function(){toast('Informace ulo\u017eeny \u2713');}).catch(dbErr);}
 
