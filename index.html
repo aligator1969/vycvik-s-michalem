@@ -14,7 +14,7 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 .logo em{color:var(--lime);font-style:normal;}
 .hact{display:flex;gap:0.2rem;align-items:center;flex-wrap:wrap;}
 .nb{background:transparent;border:none;color:var(--gray2);font-family:Inter,sans-serif;font-size:0.78rem;font-weight:600;padding:0.4rem 0.85rem;cursor:pointer;border-radius:4px;transition:all 0.18s;white-space:nowrap;text-transform:uppercase;letter-spacing:0.06em;}
-.nb:hover{color:var(--white);}.nb.active{color:var(--lime);}
+.nb:hover{color:var(--white);}.nb.active{color:var(--lime);}.hcontact{color:var(--gray2);text-decoration:none;}.hcontact:hover{color:var(--white);}
 .nb.outline{border:1px solid rgba(168,216,50,0.35);color:var(--lime);}.nb.outline:hover{background:rgba(168,216,50,0.08);border-color:var(--lime);}.nb.outline.active{background:var(--lime);border-color:var(--lime);color:#000;}
 .sync{width:7px;height:7px;border-radius:50%;display:inline-block;margin-left:4px;background:var(--gray2);}
 .sync.ok{background:var(--lime);}.sync.err{background:var(--red);}.sync.loading{background:var(--lime);animation:blink 1s infinite;}
@@ -22,22 +22,22 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 .page{display:none;padding:1.5rem 1rem;max-width:1080px;margin:0 auto;}
 .page.active{display:block;animation:fadeUp 0.22s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.hero{position:relative;overflow:hidden;margin-bottom:0;padding:3.5rem 1.8rem 2.8rem;background:linear-gradient(160deg,#0D0D0D 0%,#111 60%,#141a0a 100%);}
+.hero{position:relative;overflow:hidden;margin-bottom:0;padding:2.2rem 1.4rem 2rem;background:linear-gradient(160deg,#0D0D0D 0%,#111 60%,#141a0a 100%);}
 .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(168,216,50,0.07) 0%,transparent 70%);pointer-events:none;}
 .hero-eyebrow{font-size:0.72rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--lime);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
 .hero-eyebrow::before{content:"";display:block;width:28px;height:1.5px;background:var(--lime);}
-.hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,9vw,5.5rem);letter-spacing:0.03em;line-height:0.95;margin-bottom:1.2rem;position:relative;}
+.hero h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.4rem,8vw,5rem);letter-spacing:0.03em;line-height:0.95;margin-bottom:1rem;position:relative;}
 .hero h1 em{color:var(--lime);font-style:normal;display:block;}
-.hero-sub{font-size:1.05rem;color:var(--gray2);line-height:1.7;margin-bottom:0.5rem;max-width:460px;}
-.hero-exp{font-size:0.82rem;color:rgba(168,216,50,0.7);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2rem;}
-.hero-actions{display:flex;gap:0.7rem;flex-wrap:wrap;align-items:center;margin-bottom:2rem;}
-.hero-btn-primary{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:0.1em;color:#000;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.8rem;background:var(--lime);border:none;border-radius:4px;cursor:pointer;transition:background 0.18s,transform 0.15s;}
+
+
+
+.hero-btn-primary{font-family:"Bebas Neue",sans-serif;font-size:1.1rem;letter-spacing:0.1em;color:#000;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.8rem;background:var(--lime);border:none;border-radius:4px;cursor:pointer;transition:background 0.18s,transform 0.15s;margin-top:1rem;}
 .hero-btn-primary:hover{background:var(--lime2);transform:translateY(-1px);}
-.hero-btn-secondary{font-family:Inter,sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--white);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;padding:0.75rem 1.4rem;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:4px;cursor:pointer;transition:border-color 0.18s,color 0.18s;}
-.hero-btn-secondary:hover{border-color:var(--lime);color:var(--lime);}
-.hero-contacts{display:flex;gap:1.2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.07);}
-.hero-contact-link{color:var(--gray2);text-decoration:none;font-size:0.82rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;transition:color 0.18s;}
-.hero-contact-link:hover{color:var(--lime);}
+
+
+
+
+
 .hero-txt{font-size:0.9rem;color:var(--gray2);line-height:1.7;margin-top:1rem;}
 .hero-c{display:none;}
 .info-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:1.5rem;overflow:hidden;}
@@ -322,6 +322,8 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 .t-grid{gap:0.65rem;}
 
 }
+
+@media(max-width:520px){.hcontact{display:none;}}
 </style>
 </head>
 <body>
@@ -330,7 +332,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   <div class="hact">
     <button class="nb active" onclick="showPage('home')">&#218;vod</button>
     <button class="nb" onclick="showPage('interest')">M&#225;m z&#225;jem</button>
-    <button class="nb outline" onclick="showPage('admin')">&#9881; Spr&#225;va</button>
+    <a href="tel:601242160" class="nb hcontact">&#128222; 601&nbsp;242&nbsp;160</a>
+    <a href="https://vycvikpsuprokazdeho.webnode.cz/" target="_blank" class="nb hcontact">&#128100; O Michalovi</a>
+    <button class="nb outline" onclick="showPage('admin')">&#9881;</button>
     <span class="sync loading" id="sync-dot"></span>
   </div>
 </header>
@@ -339,16 +343,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   <div class="hero">
     <div class="hero-eyebrow">Krkonoše a okolí</div>
     <h1>Psí škola<em>&#8222;Vychovej psa&#8220;</em>s Michalem</h1>
-    <p class="hero-sub">Profesionální výcvik psů ve všech disciplínách &#8212; od základní poslušnosti až po pokročilé kurzy.</p>
-    <p class="hero-exp">Skupinové i individuální lekce &nbsp;&#183;&nbsp; Flexibilní termíny &nbsp;&#183;&nbsp; Prověřené metody</p>
-    <div class="hero-actions">
-      <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" class="hero-btn-primary">&#129517; Navigovat na cvičák</a>
-      <a href="https://vycvikpsuprokazdeho.webnode.cz/" target="_blank" class="hero-btn-secondary">&#128100; Více o Michalovi &rarr;</a>
-    </div>
-    <div class="hero-contacts">
-      <a href="tel:601242160" class="hero-contact-link">&#128222; 601 242 160</a>
-      <a href="mailto:vychovejpsa@seznam.cz" class="hero-contact-link">&#9993; vychovejpsa@seznam.cz</a>
-    </div>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" class="hero-btn-primary">&#129517; Navigovat na cvičák</a>
     <div class="hero-txt" id="hero-dynamic-txt"></div>
   </div>
 
