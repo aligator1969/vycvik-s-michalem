@@ -779,7 +779,7 @@ db.collection('\u0161kolen\u00ed').onSnapshot(function(snap){
   S.tr=snap.docs.map(function(d){return normT(d.id,d.data());});
   applyFilterG(); applyFilterI();
   if(activeSection==='spolecne'){renderGroupCal();renderGroupCards();}
-  if(activeSection==='individualni') renderIndCal();
+  if(activeSection==='individualni'){renderIndCal();renderIndCards();}
   if(adminIn){renderTrainTable();renderAdminPanel();}
   setSyncDot('ok');
 },function(){setSyncDot('err');});
@@ -792,7 +792,7 @@ db.collection('registrace').onSnapshot(function(snap){
   S.re=snap.docs.map(function(d){return normR(d.id,d.data());});
   applyFilterG();applyFilterI();
   if(activeSection==='spolecne'){renderGroupCal();renderGroupCards();}
-  if(activeSection==='individualni') renderIndCal();
+  if(activeSection==='individualni'){renderIndCal();renderIndCards();}
   if(adminIn){renderGroupRegs();renderAdminPanel();}
 });
 db.collection('konfigurace').doc('hlavn\u00ed').onSnapshot(function(snap){
@@ -841,8 +841,19 @@ function applyFilter(trainings,filter){
     return true;
   });
 }
-function applyFilterG(){}
-function applyFilterI(){}
+function applyFilterG(){renderGroupCards();}
+function applyFilterI(){renderIndCards();}
+function renderIndCards(){
+  var el=document.getElementById('home-ind-trainings');if(!el)return;
+  var now=new Date();now.setHours(0,0,0,0);
+  var upcoming=S.tr.filter(function(t){
+    if(t.type!=='individual')return false;
+    var td=new Date(t.date);td.setHours(0,0,0,0);return td>=now;
+  }).sort(function(a,b){return new Date(a.date+' '+(a.time||'00:00'))-new Date(b.date+' '+(b.time||'00:00'));});
+  if(!upcoming.length){el.style.display='none';return;}
+  el.innerHTML=upcoming.map(function(t){return makeCard(t,false);}).join('');
+  el.style.display='block';
+}
 
 // ── CALENDAR ───────────────────────────────────────────────────────────────────
 function buildCal(gridId,titleId,year,month,filterType){
@@ -968,7 +979,7 @@ function setSection(sec,btn){
   document.getElementById('sec-eshopy').style.display=sec==='eshopy'?'block':'none';
   document.getElementById('sec-moje').style.display=sec==='moje'?'block':'none';
   if(sec==='spolecne'){applyFilterG();renderGroupCal();renderGroupCards();}
-  if(sec==='individualni'){applyFilterI();renderIndCal();}
+  if(sec==='individualni'){applyFilterI();renderIndCal();renderIndCards();}
   if(sec==='schvalene')renderApprovedReqs();
   if(sec==='moje'){var em=myEmail||localStorage.getItem('vcvikEmail')||'';var inp=document.getElementById('my-reg-email');if(inp&&em&&!inp.value)inp.value=em;if(em)renderMyRegs();}
   var _t=document.getElementById('sec-'+sec);if(_t){setTimeout(function(){var _y=_t.getBoundingClientRect().top+window.pageYOffset-70;window.scrollTo({top:_y,behavior:'smooth'});},60);}
