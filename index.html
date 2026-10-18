@@ -38,7 +38,7 @@ header{background:rgba(13,13,13,0.96);border-bottom:1px solid rgba(168,216,50,0.
 
 
 
-.hero-txt{font-size:0.9rem;color:var(--gray2);line-height:1.7;margin-top:1rem;}
+.hero-txt{font-size:0.9rem;color:var(--gray2);line-height:1.7;margin-top:1rem;}.hero-loc{font-size:0.75rem;color:rgba(168,216,50,0.65);font-weight:600;letter-spacing:0.05em;margin-top:0.5rem;}
 .hero-c{display:none;}
 .info-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:1.5rem;overflow:hidden;}
 .info-box-header{background:var(--bg3);color:var(--lime);padding:0.7rem 1rem;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
@@ -331,7 +331,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
   <div class="logo" onclick="showPage('home')">&#128062; Vychovej psa <em>s Michalem</em></div>
   <div class="hact">
     <button class="nb active" onclick="showPage('home')">&#218;vod</button>
-    <button class="nb" onclick="showPage('interest')">M&#225;m z&#225;jem</button>
+    <button class="nb" onclick="showCalendar()">&#128197; Kalend&#225;&#345;</button>
     <a href="tel:601242160" class="nb hcontact">&#128222; 601&nbsp;242&nbsp;160</a>
     <a href="https://vycvikpsuprokazdeho.webnode.cz/" target="_blank" class="nb hcontact">&#128100; O Michalovi</a>
     <button class="nb outline" onclick="showPage('admin')">&#9881;</button>
@@ -344,6 +344,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
     <div class="hero-eyebrow">Krkonoše a okolí</div>
     <h1>Psí škola<em>&#8222;Vychovej psa&#8220;</em>s Michalem</h1>
     <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" class="hero-btn-primary">&#129517; Navigovat na cvičák</a>
+    <div class="hero-loc">&#128205; Cvi&#269;i&#353;t&#283; Rudn&#237;k &ndash; u fabriky</div>
     <div class="hero-txt" id="hero-dynamic-txt"></div>
   </div>
 
@@ -354,10 +355,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
     </div>
     <div class="info-box-body" id="info-body">
       <div id="info-body-content"></div>
-      <div style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.9rem">
-        <div style="font-size:0.74rem;font-weight:700;color:var(--lime);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem">&#128205; Cvi&#269;i&#353;t&#283; Rudn&#237;k</div>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=50.5780589676,15.7104206748" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:0.6rem;width:100%;padding:1rem;background:var(--lime);border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:#000;text-decoration:none;margin-top:0.3rem;transition:background 0.18s;" onmouseover="this.style.background='var(--lime2)'" onmouseout="this.style.background='var(--lime)'">&#129517; NAVIGOVAT NA CVI&#268;&#193;K</a>
-      </div>
+
     </div>
   </div>
 
@@ -756,7 +754,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 firebase.initializeApp({apiKey:"AIzaSyDGOUKfk1LVIaRGF85ejycLs_ffrzykErE",authDomain:"vycvik-psa-s-michalem.firebaseapp.com",projectId:"vycvik-psa-s-michalem",storageBucket:"vycvik-psa-s-michalem.firebasestorage.app",messagingSenderId:"250895543681",appId:"1:250895543681:web:54c75129c4c950cac14c80"});
 var db = firebase.firestore();
 
-var DEF_HERO = 'V\u00edtejte na v\u00fdcvikov\u00fdch lekc\u00edch s Michalem. Jsem profesion\u00e1ln\u00ed psovod s v\u00edce ne\u017e 30letou prax\u00ed jako psovod specialista a metodik v\u00fdcviku ps\u016f u Policie \u010cR.\nLekce jsou rozd\u011bleny na spole\u010dn\u00e9 v\u00edkendovky (5x) \u2013 skupina 1, spole\u010dn\u00e9 v\u0161edn\u00ed (5x) \u2013 skupina 2 a spole\u010dn\u00e9 opakovac\u00ed.\nT\u011b\u0161\u00edm se na v\u00e1s. Instruktor Michal \ud83d\udc3e';
+var DEF_HERO = 'V\u00edtejte na v\u00fdcvikov\u00fdch lekc\u00edch s Michalem. Jsem profesion\u00e1ln\u00ed psovod s v\u00edce ne\u017e 30letou prax\u00ed jako psovod specialista a metodik v\u00fdcviku ps\u016f u Policie \u010cR.\nLekce jsou rozd\u011bleny na spole\u010dn\u00e9 v\u00edkendovky (5x) \u2013 skupina 1, spole\u010dn\u00e9 v\u0161edn\u00ed (5x) \u2013 skupina 2 a spole\u010dn\u00e9 opakovac\u00ed.';
 var DEF_INFO = 'Pro z\u00e1jem o individu\u00e1ln\u00ed lekce mimo vyps\u00e1n\u00e9 term\u00edny klikn\u011bte na tla\u010d\u00edtko M\u00c1M Z\u00c1JEM.\nSpole\u010dn\u00e9 lekce prob\u00edh\u00e1 p\u0159i minim\u00e1ln\u00edm po\u010dtu 2 t\u00fdm\u016f (psovod + pes).\nPokud se p\u0159ihl\u00e1s\u00ed pouze jeden t\u00fdm, lekce se pova\u017euje za individu\u00e1ln\u00ed (cena 400,- K\u010d).\nLze zvolit pouze jednu hlavn\u00ed skupinu: Skupinu 1 nebo Skupinu 2.\nV\u0161e ostatn\u00ed si \u0159ekneme osobn\u011b. Budu se t\u011b\u0161it, instruktor Michal.\nWhatsApp skupina: https://chat.whatsapp.com/GFEg8duR6aM82viDCRFCsS?mode=gi_t';
 
 var S = { tr:[], rq:[], re:[], no:'', pw:'261497', heroTxt:DEF_HERO, infoTxt:DEF_INFO, texts:{} };
@@ -997,6 +995,12 @@ function openMultiReg(){
 }
 
 // ── PAGES ──────────────────────────────────────────────────────────────────────
+function showCalendar(){
+  showPage('home');
+  var btn=document.getElementById('btn-s-spolecne');
+  if(btn) setSection('spolecne',btn);
+  setTimeout(function(){var el=document.querySelector('.cal-wrap');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},250);
+}
 function showPage(name){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');if((b.getAttribute('onclick')||'').indexOf("'"+name+"'")>=0)b.classList.add('active');});if(name==='home'){applyFilterG();renderGroupCal();renderNotice();renderHeroTxt();renderInfoTxt();}if(name==='interest')renderPublicReqs();if(name==='admin')renderAdminPanel();}
 function renderNotice(){var el=document.getElementById('notice-display');if(S.no&&S.no.trim()){document.getElementById('notice-text').textContent=S.no;el.style.display='block';}else el.style.display='none';}
 function saveNotice(){db.collection('konfigurace').doc('hlavn\u00ed').set({'ozn\u00e1men\u00ed':document.getElementById('notice-input').value.trim(),pw:S.pw,heroTxt:S.heroTxt,infoTxt:S.infoTxt,texts:S.texts},{merge:true}).then(function(){toast('Zpr\u00e1va zve\u0159ejn\u011bna \u2713');}).catch(dbErr);}
