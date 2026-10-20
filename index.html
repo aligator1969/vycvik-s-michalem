@@ -443,12 +443,12 @@ hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 
   <div id="sec-moje" style="display:none">
     <button class="btn btn-s btn-sm" style="margin-bottom:0.9rem;font-size:0.8rem" onclick="setSection('spolecne',document.getElementById('btn-s-spolecne'))">&#8592; Zpět na tréninky</button>
-    <div class="help-tip">&#128203; <strong>Moje přihlášení.</strong> Zadejte email pro zobrazení skupinových i individuálních přihlášení. U budoucích tréninků se můžete odhlásit.</div>
+    <div class="help-tip">&#128203; <strong>Moje přihlášení.</strong> Zadejte email nebo telefon pro zobrazení skupinových i individuálních přihlášení. U budoucích tréninků se můžete odhlásit.</div>
     <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.9rem">
-      <input type="email" id="my-reg-email" placeholder="vas@email.cz" style="flex:1;min-width:0;padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg2);color:var(--white);outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
+      <input type="email" id="my-reg-email" placeholder="email nebo telefon" style="flex:1;min-width:0;padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:5px;font-family:Inter,sans-serif;font-size:0.9rem;background:var(--bg2);color:var(--white);outline:none;box-sizing:border-box" onkeydown="if(event.key==='Enter')filterMyRegsAction()">
       <button class="btn btn-s" onclick="filterMyRegsAction()" style="white-space:nowrap;flex-shrink:0">Zobrazit</button>
     </div>
-    <div id="my-reg-list"><div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div></div>
+    <div id="my-reg-list"><div style="font-size:0.88rem;color:var(--gray2)">Zadejte email nebo telefon pro zobrazení přihlášení.</div></div>
   </div>
 
   <div id="sec-eshopy" style="display:none">
@@ -1030,7 +1030,7 @@ function makeCard(t,showChk){
   if(t.type==='group'){h+='<div style="font-size:0.84rem;color:'+(full?'var(--red)':'var(--gray)')+';margin-top:0.42rem;'+(full?'font-weight:700':'')+'">'+(full?'OBSAZENO':'Volná místa: '+(max-filled)+' / '+max)+'</div><div class="spots-bar"><div class="spots-fill'+(full?' full':'')+'" style="width:'+pct+'%"></div></div>';}
   else{h+='<div style="font-size:0.84rem;margin-top:0.42rem;color:'+(full?'var(--red)':'var(--lime)')+';font-weight:700">'+(full?'OBSAZENO':'Volné místo')+'</div>';}
   if(t.regpw&&!full)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.4rem">🔑 Přihlášení pod heslem</div>';
-  if(regs.length>0)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.48rem;border-top:1px solid var(--border);padding-top:0.48rem"><span style="color:var(--lime);font-weight:700">✅</span> '+regs.map(function(r){return esc(r.name);}).join(', ')+'</div>';
+  if(regs.length>0)h+='<div style="font-size:0.76rem;color:var(--gray2);margin-top:0.48rem;border-top:1px solid var(--border);padding-top:0.48rem"><span style="color:var(--lime);font-weight:700">✅</span> '+regs.map(function(r){return esc(r.name)+(adminIn&&r.email?' <span style="font-size:0.7rem;opacity:0.7">('+esc(r.email)+')</span>':'');}).join(', ')+'</div>';
   h+='<div class="t-more">▼ Klikněte pro detail a přihlášení</div>';
   h+='</div>';
   if(showChk)h+='</div>';
@@ -1066,7 +1066,7 @@ function openDetail(id){
   if(regNamesEl){if(t.type==='group'&&regs.length>0){regNamesEl.innerHTML='<div style="margin-top:0.8rem;padding:0.7rem 0.9rem;background:var(--bg3);border-radius:7px;border:1px solid var(--border)"><div style="font-size:0.74rem;font-weight:700;color:var(--lime);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.45rem">&#9989; Přihlášeni ('+regs.length+')</div>'+regs.map(function(r,i){return'<div style="font-size:0.82rem;color:var(--white);padding:0.12rem 0">'+(i+1)+'. '+esc(r.name)+(r.dog?' <span style="color:var(--lime);font-size:0.74rem">🐶 '+esc(r.dog)+'</span>':'')+'</div>';}).join('')+'</div>';regNamesEl.style.display='block';}else{regNamesEl.style.display='none';}}
   ['det-full-msg','det-pw-gate','det-reg-form'].forEach(function(i){document.getElementById(i).style.display='none';});
   document.getElementById('reg-pw-input').value='';document.getElementById('reg-pw-err').style.display='none';
-  ['reg-name','reg-phone','reg-email','reg-dog','reg-note'].forEach(function(i){document.getElementById(i).value='';});
+  ['reg-name','reg-phone','reg-dog','reg-note'].forEach(function(i){document.getElementById(i).value='';});var emailEl=document.getElementById('reg-email');if(emailEl)emailEl.value=myEmail||localStorage.getItem('vcvikEmail')||'';
   if(full)document.getElementById('det-full-msg').style.display='block';
   else if(t.regpw&&t.regpw.trim()){document.getElementById('det-pw-gate').style.display='block';document.getElementById('reg-spots-info').textContent='Zb\u00fdv\u00e1 '+(t.type==='group'?(max-filled)+' m\u00edst z '+max:'1 m\u00edsto');}
   else{document.getElementById('det-reg-form').style.display='block';document.getElementById('reg-spots-info').textContent='Zb\u00fdv\u00e1 '+(t.type==='group'?(max-filled)+' m\u00edst z '+max:'1 m\u00edsto');}
@@ -1215,11 +1215,7 @@ function renderMyRegs(){
   if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div>';return;}
   var now=new Date();now.setHours(0,0,0,0);
   var items=[];
-  // DEBUG - dočasný výpis do konzole
-  console.log('[MyRegs] Hledam email:', em);
-  console.log('[MyRegs] S.re celkem:', S.re.length, 'zaznamu');
-  S.re.forEach(function(r){console.log('[MyRegs] registrace:', r.id, 'email:['+r.email+']', 'tid:', r.tid);});
-  S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).forEach(function(r){
+  var emN=em.replace(/[^0-9]/g,'');S.re.filter(function(r){var em2=(r.email||r['e-mail']||'').toLowerCase();var ph2=(r.phone||'').replace(/[^0-9]/g,'');return em2===em.toLowerCase()||(emN.length>=9&&ph2.length>=9&&ph2===emN);}).forEach(function(r){
     var t=S.tr.find(function(x){return x.id===r.tid;});
     if(t){
       var td=new Date(t.date);td.setHours(0,0,0,0);
@@ -1227,7 +1223,7 @@ function renderMyRegs(){
     }
     items.push({kind:'group',r:r,t:t||null,dateVal:t?t.date:r.ca});
   });
-  S.rq.filter(function(r){return(r.ownerEmail||r.email||'').toLowerCase()===em.toLowerCase()&&r.status!=='rejected';}).forEach(function(r){
+  S.rq.filter(function(r){var em2=(r.ownerEmail||r.email||'').toLowerCase();var ph2=(r.phone||'').replace(/[^0-9]/g,'');return(em2===em.toLowerCase()||(emN.length>=9&&ph2.length>=9&&ph2===emN))&&r.status!=='rejected';}).forEach(function(r){
     items.push({kind:'individual',r:r,dateVal:r.ca});
   });
   if(!items.length){el.innerHTML='<div style="font-size:0.86rem;color:var(--gray2)">Žádná přihlášení pro '+esc(em)+'.</div>';return;}
