@@ -1215,6 +1215,10 @@ function renderMyRegs(){
   if(!em){el.innerHTML='<div style="font-size:0.88rem;color:var(--gray2)">Zadejte email pro zobrazení přihlášení.</div>';return;}
   var now=new Date();now.setHours(0,0,0,0);
   var items=[];
+  // DEBUG - dočasný výpis do konzole
+  console.log('[MyRegs] Hledam email:', em);
+  console.log('[MyRegs] S.re celkem:', S.re.length, 'zaznamu');
+  S.re.forEach(function(r){console.log('[MyRegs] registrace:', r.id, 'email:['+r.email+']', 'tid:', r.tid);});
   S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).forEach(function(r){
     var t=S.tr.find(function(x){return x.id===r.tid;});
     if(t){
