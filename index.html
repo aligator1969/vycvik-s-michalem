@@ -1205,6 +1205,7 @@ window.editEshop=editEshop;window.deleteEshop=deleteEshop;
 window.editTile=editTile;window.deleteTile=deleteTile;
 
 window.cancelApprovedReq=function(id){showConf('Zru\u0161it schv\u00e1len\u00fd term\u00edn','Opravdu chcete zru\u0161it schv\u00e1len\u00fd individu\u00e1ln\u00ed term\u00edn? Tren\u00e9r bude informov\u00e1n.','',function(){db.collection('popt\u00e1vky').doc(id).update({clientFeedback:'zru\u0161eno'}).then(function(){closeConf();toast('\u26a0\ufe0f Term\u00edn zru\u0161en \u2013 tren\u00e9r bude informov\u00e1n');renderPublicReqs();renderMyRegs&&renderMyRegs();renderApprovedReqs&&renderApprovedReqs();}).catch(dbErr);});};
+window.cancelPendingReq=function(id){showConf('Zrušit zájem','Opravdu chcete zrušit váš zájem o individuální lekci?','',function(){db.collection('poptávky').doc(id).delete().then(function(){closeConf();toast('Zájem byl zrušen');renderMyRegs&&renderMyRegs();renderPublicReqs&&renderPublicReqs();}).catch(dbErr);});};
 window.cancelMyReg=function(id){showConf('Odhl\u00e1sit se','Opravdu se chcete odhl\u00e1sit z tohoto tr\u00e9ninku?','',function(){db.collection('registrace').doc(id).delete().then(function(){closeConf();toast('Odhl\u00e1\u0161en\u00ed prob\u011bhlo');renderMyRegs();}).catch(dbErr);});};
 
 function renderMyRegs(){
@@ -1216,10 +1217,11 @@ function renderMyRegs(){
   var items=[];
   S.re.filter(function(r){return(r.email||r['e-mail']||'').toLowerCase()===em.toLowerCase();}).forEach(function(r){
     var t=S.tr.find(function(x){return x.id===r.tid;});
-    if(!t)return;
-    var td=new Date(t.date);td.setHours(0,0,0,0);
-    if(td<now)return; // skrýt proběhlé
-    items.push({kind:'group',r:r,t:t,dateVal:t.date});
+    if(t){
+      var td=new Date(t.date);td.setHours(0,0,0,0);
+      if(td<now)return; // skrýt proběhlé skupinové/individuální co již proběhly
+    }
+    items.push({kind:'group',r:r,t:t||null,dateVal:t?t.date:r.ca});
   });
   S.rq.filter(function(r){return(r.ownerEmail||r.email||'').toLowerCase()===em.toLowerCase()&&r.status!=='rejected';}).forEach(function(r){
     items.push({kind:'individual',r:r,dateVal:r.ca});
@@ -1230,20 +1232,22 @@ function renderMyRegs(){
   el.innerHTML=items.map(function(item){
     if(item.kind==='group'){
       var r=item.r,t=item.t;
-      var isIndT=t.type==='individual';
+      var isIndT=t?t.type==='individual':true;
+      var tName=t?esc(t.name):'Individuální trénink';
+      var tDate=t?(fmtDate(t.date)+(t.time?' · '+t.time:'')):'Datum bude upřesněno';
       return '<div class="ri" style="margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
         +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:'+(isIndT?'rgba(168,216,50,0.12);color:var(--lime)':'rgba(100,180,255,0.15);color:#60A5FA')+';text-transform:uppercase">'+(isIndT?'Individuální':'Skupinový')+'</span>'
         +'</div>'
-        +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(t.name)+'</div>'
-        +'<div style="font-size:0.8rem;color:var(--gray2)">'+fmtDate(t.date)+(t.time?' · '+t.time:'')+'</div>'
+        +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+tName+'</div>'
+        +'<div style="font-size:0.8rem;color:var(--gray2)">'+tDate+'</div>'
         +'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelMyReg(\''+r.id+'\')">&#10005; Odhlásit se</button>'
         +'</div>';
     } else {
       var r=item.r;
       var isApproved=r.status==='approved';
       var isCancelled=r.clientFeedback==='zrušeno';
-      var canCancel=isApproved&&!isCancelled;
+      var canCancel=!isCancelled;
       return '<div class="ri" style="margin-bottom:0.5rem">'
         +'<div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.2rem">'
         +'<span style="font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:3px;background:rgba(168,216,50,0.12);color:var(--lime);text-transform:uppercase">Individuální</span>'
@@ -1253,7 +1257,7 @@ function renderMyRegs(){
         +'<div style="font-size:0.92rem;font-weight:700;color:var(--white);margin-bottom:0.18rem">'+esc(r.name)+'</div>'
         +(r.note?'<div style="font-size:0.78rem;color:var(--gray2);font-style:italic">'+esc(r.note)+'</div>':'')
         +(r.trainerNote?'<div style="font-size:0.8rem;color:var(--lime);margin-top:0.2rem;font-weight:600">💬 Trenér: '+esc(r.trainerNote)+'</div>':'')
-        +(canCancel?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="cancelApprovedReq(\''+r.id+'\')">&#10005; Zrušit termín</button>':'')
+        +(canCancel?'<button class="btn btn-d" style="margin-top:0.42rem;font-size:0.7rem;padding:0.25rem 0.6rem" onclick="'+(isApproved?'cancelApprovedReq':'cancelPendingReq')+'(\''+r.id+'\')">&#10005; '+(isApproved?'Zrušit termín':'Zrušit zájem')+'</button>':'')
         +'</div>';
     }
   }).join('');}
